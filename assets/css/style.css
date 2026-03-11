@@ -42,10 +42,11 @@
 
 .category-panel {
   margin-bottom: 1.5rem;
-  padding: 1rem;
-  border: 1px solid #dbe3f0;
-  border-radius: 14px;
-  background: linear-gradient(180deg, #f8fafc 0%, #eef4ff 100%);
+  padding: 1.25rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.05);
 }
 
 .category-panel-title {
@@ -54,8 +55,17 @@
   color: #0f172a;
 }
 
+.category-toolbar {
+  margin-top: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
 .category-help {
-  margin: 0.75rem 0 0;
+  margin: 0;
   color: #475569;
   font-size: 0.95rem;
 }
@@ -72,17 +82,21 @@
   --chip-bg: #e2e8f0;
   --chip-text: #1e293b;
   --chip-border: #cbd5e1;
+  --chip-shadow: rgba(15, 23, 42, 0.06);
   appearance: none;
   border: 1px solid var(--chip-border);
   background: var(--chip-bg);
   color: var(--chip-text);
   border-radius: 999px;
-  padding: 0.42rem 0.85rem;
+  padding: 0.55rem 0.9rem;
   font-size: 0.9rem;
   font-weight: 600;
   line-height: 1;
   cursor: pointer;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease;
 }
 
 .category-filter:hover,
@@ -90,18 +104,69 @@
 .category-filter:focus-visible,
 .category-chip:focus-visible {
   transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 10px 22px var(--chip-shadow);
+  outline: none;
 }
 
 .category-filter.active {
+  border-color: transparent;
+  background: linear-gradient(135deg, #0f172a 0%, #2563eb 100%);
+  color: #ffffff;
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.25);
+}
+
+.category-filter-all {
+  background: #0f172a;
+  color: #ffffff;
   border-color: #0f172a;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.category-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.45rem;
+  height: 1.45rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  color: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.category-filter.active .category-count {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+
+.category-clear {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: #2563eb;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0.2rem 0;
+}
+
+.category-clear:hover,
+.category-clear:focus-visible {
+  color: #1d4ed8;
+  text-decoration: underline;
+  outline: none;
 }
 
 .post-card {
   display: grid;
   gap: 0.85rem;
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
 }
 
 .post-card[hidden] {
@@ -138,69 +203,85 @@
   --chip-bg: #dbeafe;
   --chip-text: #1d4ed8;
   --chip-border: #93c5fd;
+  --chip-shadow: rgba(59, 130, 246, 0.18);
 }
 
 .category-chip--generative-ai {
   --chip-bg: #f3e8ff;
   --chip-text: #7e22ce;
   --chip-border: #d8b4fe;
+  --chip-shadow: rgba(168, 85, 247, 0.18);
 }
 
 .category-chip--diffusion {
   --chip-bg: #fee2e2;
   --chip-text: #b91c1c;
   --chip-border: #fca5a5;
+  --chip-shadow: rgba(239, 68, 68, 0.18);
 }
 
 .category-chip--llm {
   --chip-bg: #dcfce7;
   --chip-text: #15803d;
   --chip-border: #86efac;
+  --chip-shadow: rgba(34, 197, 94, 0.18);
 }
 
 .category-chip--inference {
   --chip-bg: #fef3c7;
   --chip-text: #b45309;
   --chip-border: #fcd34d;
+  --chip-shadow: rgba(245, 158, 11, 0.18);
 }
 
 .category-chip--chiplet {
   --chip-bg: #ede9fe;
   --chip-text: #6d28d9;
   --chip-border: #c4b5fd;
+  --chip-shadow: rgba(124, 58, 237, 0.18);
 }
 
 .category-chip--3d-integration {
   --chip-bg: #cffafe;
   --chip-text: #0f766e;
   --chip-border: #67e8f9;
+  --chip-shadow: rgba(6, 182, 212, 0.18);
 }
 
 .category-chip--ai-systems {
   --chip-bg: #e0f2fe;
   --chip-text: #0369a1;
   --chip-border: #7dd3fc;
+  --chip-shadow: rgba(14, 165, 233, 0.18);
 }
 
 .category-chip--neural-symbolic {
   --chip-bg: #fae8ff;
   --chip-text: #a21caf;
   --chip-border: #f0abfc;
+  --chip-shadow: rgba(217, 70, 239, 0.18);
 }
 
 .category-chip--ai-hardware {
   --chip-bg: #fce7f3;
   --chip-text: #be185d;
   --chip-border: #f9a8d4;
+  --chip-shadow: rgba(236, 72, 153, 0.18);
 }
 
 .category-chip--architecture {
   --chip-bg: #ecfccb;
   --chip-text: #4d7c0f;
   --chip-border: #bef264;
+  --chip-shadow: rgba(132, 204, 22, 0.18);
 }
 
 @media (max-width: 640px) {
+  .category-panel {
+    padding: 1rem;
+  }
+
+  .category-toolbar,
   .post-card-header {
     flex-direction: column;
     align-items: flex-start;

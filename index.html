@@ -19,24 +19,31 @@ title: Home
   <div class="category-panel">
     <p class="category-panel-title">Browse by category</p>
     <div class="category-filters" aria-label="Filter blog posts by category">
-      <button class="category-filter active" type="button" data-filter="all">All topics</button>
+      <button class="category-filter category-filter-all active" type="button" data-filter-value="all" aria-pressed="true">
+        <span>All topics</span>
+      </button>
       {% for category in sorted_categories %}
         {% assign category_name = category[0] %}
         <button
-          class="category-filter category-chip--{{ category_name | slugify }}"
+          class="category-filter category-chip category-chip--{{ category_name | slugify }}"
           type="button"
-          data-filter="{{ category_name | slugify }}"
+          data-filter-value="{{ category_name | slugify }}"
+          aria-pressed="false"
         >
-          {{ category_name }}
+          <span>{{ category_name }}</span>
+          <span class="category-count">{{ category[1].size }}</span>
         </button>
       {% endfor %}
     </div>
-    <p class="category-help">Select a category to show related blog posts.</p>
+    <div class="category-toolbar">
+      <p class="category-help" id="category-status">Showing all blog posts.</p>
+      <button id="category-clear" class="category-clear" type="button" hidden>Clear filter</button>
+    </div>
   </div>
 
   <ul class="post-list">
     {% for post in site.posts %}
-      <li class="post-card" data-categories="{% for category in post.categories %}{{ category | slugify }}{% unless forloop.last %} {% endunless %}{% endfor %}">
+      <li class="post-card" data-categories="{% for category in post.categories %}{{ category | slugify }}{% unless forloop.last %}|{% endunless %}{% endfor %}">
         <div class="post-card-header">
           <p class="meta">{{ post.date | date: "%Y-%m-%d" }}</p>
           <div class="post-categories" aria-label="Categories for {{ post.title }}">
@@ -44,15 +51,16 @@ title: Home
               <button
                 class="category-chip category-chip--{{ category | slugify }}"
                 type="button"
-                data-filter-trigger="{{ category | slugify }}"
+                data-filter-value="{{ category | slugify }}"
+                aria-label="Show posts in {{ category }}"
               >
                 {{ category }}
               </button>
             {% endfor %}
           </div>
         </div>
-        <p>{{ post.excerpt | strip_html | truncate: 180 }}</p>
         <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+        <p>{{ post.excerpt | strip_html | truncate: 180 }}</p>
       </li>
     {% endfor %}
   </ul>
@@ -61,20 +69,33 @@ title: Home
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    const filterButtons = Array.from(document.querySelectorAll('.category-filter'));
-    const tagButtons = Array.from(document.querySelectorAll('[data-filter-trigger]'));
+    const filterButtons = Array.from(document.querySelectorAll('.category-filters [data-filter-value]'));
+    const tagButtons = Array.from(document.querySelectorAll('.post-categories [data-filter-value]'));
     const posts = Array.from(document.querySelectorAll('.post-card'));
     const emptyState = document.getElementById('category-empty-state');
+    const status = document.getElementById('category-status');
+    const clearButton = document.getElementById('category-clear');
+
+    function getLabelForFilter(filter) {
+      const matchingButton = filterButtons.find((button) => button.dataset.filterValue === filter);
+      if (!matchingButton) return filter;
+      const label = matchingButton.querySelector('span');
+      return label ? label.textContent.trim() : matchingButton.textContent.trim();
+    }
 
     function setActiveFilter(filter) {
+      const normalizedFilter = (filter || 'all').trim().toLowerCase();
+
       filterButtons.forEach((button) => {
-        button.classList.toggle('active', button.dataset.filter === filter);
+        const isActive = button.dataset.filterValue === normalizedFilter;
+        button.classList.toggle('active', isActive);
+        button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       });
 
       let visibleCount = 0;
       posts.forEach((post) => {
-        const categories = post.dataset.categories.split(/\s+/).filter(Boolean);
-        const matches = filter === 'all' || categories.includes(filter);
+        const categories = (post.dataset.categories || '').split('|').filter(Boolean);
+        const matches = normalizedFilter === 'all' || categories.includes(normalizedFilter);
         post.hidden = !matches;
         if (matches) visibleCount += 1;
       });
@@ -82,18 +103,36 @@ title: Home
       if (emptyState) {
         emptyState.hidden = visibleCount !== 0;
       }
+
+      if (status) {
+        status.textContent = normalizedFilter === 'all'
+          ? 'Showing all blog posts.'
+          : 'Showing ' + visibleCount + ' post' + (visibleCount === 1 ? '' : 's') + ' in ' + getLabelForFilter(normalizedFilter) + '.';
+      }
+
+      if (clearButton) {
+        clearButton.hidden = normalizedFilter === 'all';
+      }
     }
 
     filterButtons.forEach((button) => {
       button.addEventListener('click', function () {
-        setActiveFilter(button.dataset.filter);
+        setActiveFilter(button.dataset.filterValue);
       });
     });
 
     tagButtons.forEach((button) => {
       button.addEventListener('click', function () {
-        setActiveFilter(button.dataset.filterTrigger);
+        setActiveFilter(button.dataset.filterValue);
       });
     });
+
+    if (clearButton) {
+      clearButton.addEventListener('click', function () {
+        setActiveFilter('all');
+      });
+    }
+
+    setActiveFilter('all');
   });
 </script>
