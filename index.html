@@ -15,13 +15,85 @@ title: Home
 
 <section>
   <h2>Latest Posts</h2>
+  {% assign sorted_categories = site.categories | sort %}
+  <div class="category-panel">
+    <p class="category-panel-title">Browse by category</p>
+    <div class="category-filters" aria-label="Filter blog posts by category">
+      <button class="category-filter active" type="button" data-filter="all">All topics</button>
+      {% for category in sorted_categories %}
+        {% assign category_name = category[0] %}
+        <button
+          class="category-filter category-chip--{{ category_name | slugify }}"
+          type="button"
+          data-filter="{{ category_name | slugify }}"
+        >
+          {{ category_name }}
+        </button>
+      {% endfor %}
+    </div>
+    <p class="category-help">Select a category to show related blog posts.</p>
+  </div>
+
   <ul class="post-list">
     {% for post in site.posts %}
-      <li>
-        <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
-        <p class="meta">{{ post.date | date: "%Y-%m-%d" }} · {{ post.categories | join: ", " }}</p>
+      <li class="post-card" data-categories="{% for category in post.categories %}{{ category | slugify }}{% unless forloop.last %} {% endunless %}{% endfor %}">
+        <div class="post-card-header">
+          <p class="meta">{{ post.date | date: "%Y-%m-%d" }}</p>
+          <div class="post-categories" aria-label="Categories for {{ post.title }}">
+            {% for category in post.categories %}
+              <button
+                class="category-chip category-chip--{{ category | slugify }}"
+                type="button"
+                data-filter-trigger="{{ category | slugify }}"
+              >
+                {{ category }}
+              </button>
+            {% endfor %}
+          </div>
+        </div>
         <p>{{ post.excerpt | strip_html | truncate: 180 }}</p>
+        <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
       </li>
     {% endfor %}
   </ul>
+  <p id="category-empty-state" class="category-empty-state" hidden>No posts match this category yet.</p>
 </section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const filterButtons = Array.from(document.querySelectorAll('.category-filter'));
+    const tagButtons = Array.from(document.querySelectorAll('[data-filter-trigger]'));
+    const posts = Array.from(document.querySelectorAll('.post-card'));
+    const emptyState = document.getElementById('category-empty-state');
+
+    function setActiveFilter(filter) {
+      filterButtons.forEach((button) => {
+        button.classList.toggle('active', button.dataset.filter === filter);
+      });
+
+      let visibleCount = 0;
+      posts.forEach((post) => {
+        const categories = post.dataset.categories.split(/\s+/).filter(Boolean);
+        const matches = filter === 'all' || categories.includes(filter);
+        post.hidden = !matches;
+        if (matches) visibleCount += 1;
+      });
+
+      if (emptyState) {
+        emptyState.hidden = visibleCount !== 0;
+      }
+    }
+
+    filterButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        setActiveFilter(button.dataset.filter);
+      });
+    });
+
+    tagButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        setActiveFilter(button.dataset.filterTrigger);
+      });
+    });
+  });
+</script>

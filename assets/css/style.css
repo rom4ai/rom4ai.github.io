@@ -37,5 +37,172 @@
 .post-list .meta {
   color: #6b7280;
   font-size: 0.9rem;
-  margin-bottom: 0.4rem;
+  margin: 0;
+}
+
+.category-panel {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border: 1px solid #dbe3f0;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef4ff 100%);
+}
+
+.category-panel-title {
+  margin: 0 0 0.75rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.category-help {
+  margin: 0.75rem 0 0;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.category-filters,
+.post-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.category-filter,
+.category-chip {
+  --chip-bg: #e2e8f0;
+  --chip-text: #1e293b;
+  --chip-border: #cbd5e1;
+  appearance: none;
+  border: 1px solid var(--chip-border);
+  background: var(--chip-bg);
+  color: var(--chip-text);
+  border-radius: 999px;
+  padding: 0.42rem 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;
+}
+
+.category-filter:hover,
+.category-chip:hover,
+.category-filter:focus-visible,
+.category-chip:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+}
+
+.category-filter.active {
+  border-color: #0f172a;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.post-card {
+  display: grid;
+  gap: 0.85rem;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+}
+
+.post-card[hidden] {
+  display: none;
+}
+
+.post-card-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.post-card h3 {
+  margin: 0;
+}
+
+.post-card p {
+  margin: 0;
+  color: #334155;
+}
+
+.category-empty-state {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 10px;
+  background: #fff7ed;
+  color: #9a3412;
+  border: 1px solid #fdba74;
+}
+
+.category-chip--accelerator {
+  --chip-bg: #dbeafe;
+  --chip-text: #1d4ed8;
+  --chip-border: #93c5fd;
+}
+
+.category-chip--generative-ai {
+  --chip-bg: #f3e8ff;
+  --chip-text: #7e22ce;
+  --chip-border: #d8b4fe;
+}
+
+.category-chip--diffusion {
+  --chip-bg: #fee2e2;
+  --chip-text: #b91c1c;
+  --chip-border: #fca5a5;
+}
+
+.category-chip--llm {
+  --chip-bg: #dcfce7;
+  --chip-text: #15803d;
+  --chip-border: #86efac;
+}
+
+.category-chip--inference {
+  --chip-bg: #fef3c7;
+  --chip-text: #b45309;
+  --chip-border: #fcd34d;
+}
+
+.category-chip--chiplet {
+  --chip-bg: #ede9fe;
+  --chip-text: #6d28d9;
+  --chip-border: #c4b5fd;
+}
+
+.category-chip--3d-integration {
+  --chip-bg: #cffafe;
+  --chip-text: #0f766e;
+  --chip-border: #67e8f9;
+}
+
+.category-chip--ai-systems {
+  --chip-bg: #e0f2fe;
+  --chip-text: #0369a1;
+  --chip-border: #7dd3fc;
+}
+
+.category-chip--neural-symbolic {
+  --chip-bg: #fae8ff;
+  --chip-text: #a21caf;
+  --chip-border: #f0abfc;
+}
+
+.category-chip--ai-hardware {
+  --chip-bg: #fce7f3;
+  --chip-text: #be185d;
+  --chip-border: #f9a8d4;
+}
+
+.category-chip--architecture {
+  --chip-bg: #ecfccb;
+  --chip-text: #4d7c0f;
+  --chip-border: #bef264;
+}
+
+@media (max-width: 640px) {
+  .post-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
