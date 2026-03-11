@@ -1,0 +1,12 @@
+title: ROM4AI Research Ideas
+description: Research idea blog on future AI hardware systems and accelerators.
+theme: minima
+markdown: kramdown
+plugins:
+  - jekyll-feed
+
+author:
+  name: ROM4AI
+
+header_pages:
+  - index.html
