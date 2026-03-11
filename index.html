@@ -4,17 +4,47 @@ title: Home
 ---
 
 <section class="hero">
-  <p class="eyebrow">ROM4AI · Research Blog</p>
-  <h1>Research Ideas for Next-Generation AI Hardware</h1>
-  <p>
-    This blog captures exploratory ideas at the intersection of algorithms, architecture,
-    and silicon implementation. Current focus areas include neural-symbolic AI hardware,
-    hardwired LLM accelerators, 3D chiplet-based AI systems, and diffusion model accelerators.
-  </p>
+  <div class="hero-copy">
+    <p class="eyebrow">ROM4AI · Research Blog</p>
+    <h1>Research Ideas for Next-Generation AI Hardware</h1>
+    <p class="hero-description">
+      This blog captures exploratory ideas at the intersection of algorithms, architecture,
+      and silicon implementation. Current focus areas include neural-symbolic AI hardware,
+      hardwired LLM accelerators, 3D chiplet-based AI systems, and diffusion model accelerators.
+    </p>
+
+    <div class="hero-highlights" aria-label="Key themes">
+      <span>Neural-symbolic systems</span>
+      <span>Hardwired LLM inference</span>
+      <span>3D chiplet integration</span>
+      <span>Diffusion acceleration</span>
+    </div>
+  </div>
+
+  <div class="hero-stats" aria-label="Site overview">
+    <div class="hero-stat-card">
+      <strong>{{ site.posts | size }}</strong>
+      <span>Research posts</span>
+    </div>
+    <div class="hero-stat-card">
+      <strong>{{ site.categories | size }}</strong>
+      <span>Categories</span>
+    </div>
+    <div class="hero-stat-card">
+      <strong>AI HW</strong>
+      <span>Focused topic</span>
+    </div>
+  </div>
 </section>
 
-<section>
-  <h2>Latest Posts</h2>
+<section class="posts-section">
+  <div class="section-heading">
+    <div>
+      <p class="section-kicker">Latest thinking</p>
+      <h2>Explore Research Posts</h2>
+    </div>
+    <p class="section-description">Browse by topic and quickly jump to related blog ideas in AI hardware.</p>
+  </div>
   {% assign sorted_categories = site.categories | sort %}
   <div class="category-panel">
     <p class="category-panel-title">Browse by category</p>

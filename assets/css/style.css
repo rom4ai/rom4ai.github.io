@@ -1,22 +1,148 @@
+.page-content {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 32%),
+    radial-gradient(circle at top right, rgba(168, 85, 247, 0.08), transparent 26%),
+    linear-gradient(180deg, #f8fbff 0%, #f4f7fb 100%);
+  color: #0f172a;
+}
+
 .hero {
-  background: linear-gradient(120deg, #1d4ed8, #0f172a);
+  background:
+    radial-gradient(circle at top right, rgba(96, 165, 250, 0.5), transparent 24%),
+    linear-gradient(135deg, #0f172a 0%, #1d4ed8 55%, #3b82f6 100%);
   color: #ffffff;
-  padding: 2rem;
-  border-radius: 14px;
-  margin-bottom: 2rem;
+  padding: 2.5rem;
+  border-radius: 24px;
+  margin-bottom: 2.2rem;
+  display: grid;
+  grid-template-columns: minmax(0, 2.1fr) minmax(260px, 0.9fr);
+  gap: 1.5rem;
+  box-shadow: 0 22px 50px rgba(15, 23, 42, 0.22);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto -10% -35% auto;
+  width: 260px;
+  height: 260px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  filter: blur(10px);
 }
 
 .hero .eyebrow {
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.14em;
   font-size: 0.8rem;
-  opacity: 0.9;
+  opacity: 0.82;
   margin: 0;
 }
 
 .hero h1 {
   margin-top: 0.4rem;
-  margin-bottom: 0.8rem;
+  margin-bottom: 1rem;
+  font-size: clamp(2.1rem, 4vw, 3.3rem);
+  line-height: 1.08;
+}
+
+.hero-copy,
+.hero-stats {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-description {
+  margin: 0;
+  max-width: 62ch;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1.02rem;
+  line-height: 1.75;
+}
+
+.hero-highlights {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.hero-highlights span {
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #eff6ff;
+  backdrop-filter: blur(6px);
+  font-size: 0.92rem;
+}
+
+.hero-stats {
+  display: grid;
+  gap: 1rem;
+  align-content: center;
+}
+
+.hero-stat-card {
+  padding: 1rem 1.1rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(8px);
+}
+
+.hero-stat-card strong {
+  display: block;
+  font-size: 1.65rem;
+  line-height: 1.1;
+}
+
+.hero-stat-card span {
+  display: block;
+  margin-top: 0.35rem;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.92rem;
+}
+
+.posts-section {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.section-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem;
+}
+
+.section-heading h2 {
+  margin: 0.2rem 0 0;
+  font-size: clamp(1.7rem, 3vw, 2.25rem);
+}
+
+.section-kicker {
+  margin: 0;
+  color: #2563eb;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.section-description {
+  margin: 0;
+  max-width: 42ch;
+  color: #475569;
+  line-height: 1.7;
 }
 
 .post-list {
@@ -24,14 +150,16 @@
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.15rem;
 }
 
 .post-list li {
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
-  padding: 1rem;
-  background: #ffffff;
+  border: 1px solid rgba(203, 213, 225, 0.7);
+  border-radius: 18px;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(10px);
 }
 
 .post-list .meta {
@@ -185,9 +313,20 @@
   margin: 0;
 }
 
+.post-card h3 a {
+  color: #0f172a;
+  text-decoration: none;
+}
+
+.post-card h3 a:hover,
+.post-card h3 a:focus-visible {
+  color: #1d4ed8;
+}
+
 .post-card p {
   margin: 0;
   color: #334155;
+  line-height: 1.7;
 }
 
 .category-empty-state {
@@ -277,10 +416,17 @@
 }
 
 @media (max-width: 640px) {
+  .hero {
+    padding: 1.4rem;
+    grid-template-columns: 1fr;
+    border-radius: 18px;
+  }
+
   .category-panel {
     padding: 1rem;
   }
 
+  .section-heading,
   .category-toolbar,
   .post-card-header {
     flex-direction: column;
