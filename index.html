@@ -3,8 +3,9 @@ layout: default
 title: Home
 ---
 
-<section class="hero">
-  <div class="hero-copy">
+<main class="page-content">
+  <section class="hero">
+    <div class="hero-copy">
     <p class="eyebrow">ROM4AI · Research Blog</p>
     <h1>Research Ideas for Next-Generation AI Hardware</h1>
     <p class="hero-description">
@@ -31,8 +32,8 @@ title: Home
       <span>Categories</span>
     </div>
     <div class="hero-stat-card">
-      <strong>AI HW</strong>
-      <span>Focused topic</span>
+      <strong>{{ site.posts.first.date | date: "%Y-%m-%d" }}</strong>
+      <span>Latest post</span>
     </div>
   </div>
 </section>
@@ -48,6 +49,21 @@ title: Home
   {% assign sorted_categories = site.categories | sort %}
   <div class="category-panel">
     <p class="category-panel-title">Browse by category</p>
+
+    <div class="search-panel">
+      <label class="search-label" for="post-search">Search posts</label>
+      <div class="search-input-group">
+        <input
+          id="post-search"
+          class="post-search"
+          type="search"
+          placeholder="Search by title or excerpt"
+          aria-label="Search posts by title or excerpt"
+        />
+        <button id="search-clear" class="search-clear" type="button" aria-label="Clear search" hidden>✕</button>
+      </div>
+    </div>
+
     <div class="category-filters" aria-label="Filter blog posts by category">
       <button class="category-filter category-filter-all active" type="button" data-filter-value="all" aria-pressed="true">
         <span>All topics</span>
@@ -67,7 +83,7 @@ title: Home
     </div>
     <div class="category-toolbar">
       <p class="category-help" id="category-status">Showing all blog posts.</p>
-      <button id="category-clear" class="category-clear" type="button" hidden>Clear filter</button>
+      <button id="category-clear" class="category-clear" type="button" hidden>Clear filters</button>
     </div>
   </div>
 
@@ -96,6 +112,7 @@ title: Home
   </ul>
   <p id="category-empty-state" class="category-empty-state" hidden>No posts match this category yet.</p>
 </section>
+</main>
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -105,6 +122,26 @@ title: Home
     const emptyState = document.getElementById('category-empty-state');
     const status = document.getElementById('category-status');
     const clearButton = document.getElementById('category-clear');
+    const searchInput = document.getElementById('post-search');
+    const searchClear = document.getElementById('search-clear');
+
+    function parseStateFromHash() {
+      const hash = window.location.hash.replace(/^#/, '');
+      const params = new URLSearchParams(hash);
+      return {
+        category: params.get('category') || 'all',
+        search: params.get('search') || ''
+      };
+    }
+
+    function updateHash({ category, search }) {
+      const params = new URLSearchParams();
+      if (category && category !== 'all') params.set('category', category);
+      if (search) params.set('search', search);
+      const newHash = params.toString();
+      const target = newHash ? `#${newHash}` : '';
+      history.replaceState(null, '', `${window.location.pathname}${window.location.search}${target}`);
+    }
 
     function getLabelForFilter(filter) {
       const matchingButton = filterButtons.find((button) => button.dataset.filterValue === filter);
@@ -113,8 +150,9 @@ title: Home
       return label ? label.textContent.trim() : matchingButton.textContent.trim();
     }
 
-    function setActiveFilter(filter) {
-      const normalizedFilter = (filter || 'all').trim().toLowerCase();
+    function applyFilters({ category = 'all', search = '' } = {}) {
+      const normalizedFilter = (category || 'all').trim().toLowerCase();
+      const normalizedSearch = (search || '').trim().toLowerCase();
 
       filterButtons.forEach((button) => {
         const isActive = button.dataset.filterValue === normalizedFilter;
@@ -122,12 +160,27 @@ title: Home
         button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       });
 
+      if (searchInput) {
+        searchInput.value = search || '';
+      }
+      if (searchClear) {
+        searchClear.hidden = !normalizedSearch;
+      }
+
       let visibleCount = 0;
       posts.forEach((post) => {
         const categories = (post.dataset.categories || '').split('|').filter(Boolean);
-        const matches = normalizedFilter === 'all' || categories.includes(normalizedFilter);
-        post.hidden = !matches;
-        if (matches) visibleCount += 1;
+        const matchesCategory = normalizedFilter === 'all' || categories.includes(normalizedFilter);
+
+        const title = post.querySelector('h3')?.textContent || '';
+        const excerpt = post.querySelector('p')?.textContent || '';
+        const text = `${title} ${excerpt}`.toLowerCase();
+        const matchesSearch = !normalizedSearch || text.includes(normalizedSearch);
+
+        const isVisible = matchesCategory && matchesSearch;
+        post.hidden = !isVisible;
+
+        if (isVisible) visibleCount += 1;
       });
 
       if (emptyState) {
@@ -135,34 +188,60 @@ title: Home
       }
 
       if (status) {
-        status.textContent = normalizedFilter === 'all'
-          ? 'Showing all blog posts.'
-          : 'Showing ' + visibleCount + ' post' + (visibleCount === 1 ? '' : 's') + ' in ' + getLabelForFilter(normalizedFilter) + '.';
+        if (normalizedFilter === 'all' && !normalizedSearch) {
+          status.textContent = 'Showing all blog posts.';
+        } else {
+          const parts = [];
+          if (normalizedFilter !== 'all') {
+            parts.push(`Showing ${visibleCount} post${visibleCount === 1 ? '' : 's'} in ${getLabelForFilter(normalizedFilter)}`);
+          } else {
+            parts.push(`Showing ${visibleCount} post${visibleCount === 1 ? '' : 's'}`);
+          }
+          if (normalizedSearch) {
+            parts.push(`matching “${normalizedSearch}”`);
+          }
+          status.textContent = parts.join(' ') + '.';
+        }
       }
 
       if (clearButton) {
-        clearButton.hidden = normalizedFilter === 'all';
+        clearButton.hidden = normalizedFilter === 'all' && !normalizedSearch;
       }
+
+      updateHash({ category: normalizedFilter, search: normalizedSearch });
     }
 
     filterButtons.forEach((button) => {
       button.addEventListener('click', function () {
-        setActiveFilter(button.dataset.filterValue);
+        applyFilters({ category: button.dataset.filterValue, search: searchInput?.value || '' });
       });
     });
 
     tagButtons.forEach((button) => {
       button.addEventListener('click', function () {
-        setActiveFilter(button.dataset.filterValue);
+        applyFilters({ category: button.dataset.filterValue, search: searchInput?.value || '' });
       });
     });
 
-    if (clearButton) {
-      clearButton.addEventListener('click', function () {
-        setActiveFilter('all');
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        applyFilters({ category: document.querySelector('.category-filter.active')?.dataset.filterValue || 'all', search: this.value });
       });
     }
 
-    setActiveFilter('all');
+    if (searchClear) {
+      searchClear.addEventListener('click', function () {
+        applyFilters({ category: document.querySelector('.category-filter.active')?.dataset.filterValue || 'all', search: '' });
+      });
+    }
+
+    if (clearButton) {
+      clearButton.addEventListener('click', function () {
+        applyFilters({ category: 'all', search: '' });
+      });
+    }
+
+    const initialState = parseStateFromHash();
+    applyFilters(initialState);
   });
 </script>
