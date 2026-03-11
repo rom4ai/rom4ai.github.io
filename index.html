@@ -1,0 +1,27 @@
+---
+layout: default
+title: Home
+---
+
+<section class="hero">
+  <p class="eyebrow">ROM4AI · Research Blog</p>
+  <h1>Research Ideas for Next-Generation AI Hardware</h1>
+  <p>
+    This blog captures exploratory ideas at the intersection of algorithms, architecture,
+    and silicon implementation. Current focus areas include neural-symbolic AI hardware,
+    hardwired LLM accelerators, 3D chiplet-based AI systems, and diffusion model accelerators.
+  </p>
+</section>
+
+<section>
+  <h2>Latest Posts</h2>
+  <ul class="post-list">
+    {% for post in site.posts %}
+      <li>
+        <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+        <p class="meta">{{ post.date | date: "%Y-%m-%d" }} · {{ post.categories | join: ", " }}</p>
+        <p>{{ post.excerpt | strip_html | truncate: 180 }}</p>
+      </li>
+    {% endfor %}
+  </ul>
+</section>
