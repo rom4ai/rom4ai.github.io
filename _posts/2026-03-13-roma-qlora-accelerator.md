@@ -49,7 +49,7 @@ ROMA 采用 ROM 存储量化基础模型，SRAM 存储 LoRA 权重和 KV 缓存�
 - **ROM 优势**：相比 SRAM，ROM 提供显著更高的存储密度。在 TSMC 7nm 工艺下，ROM 比特单元面积约为 SRAM 比特单元的三分之一，使得将整个 LLM 存储在片上成为可能。
 - **ROM 不可变性的处理**：虽然 ROM 在制造后无法修改，但这对存储 QLoRA 量化基础模型不是问题，因为基础模型稳定，而 LoRA 模块提供学习新数据的灵活性。
 
-![ROMA 整体架构](/assets/roma-accelerator/roma-architecture.png)  
+![ROMA 整体架构](/assets/roma-accelerator/roma-page-1.png)  
 *图：ROMA 整体架构，采用混合 ROM 和 SRAM 的 QLoRA 加速器（来源：原文 Figure 3）*
 
 ### 2.2 核心模块设计

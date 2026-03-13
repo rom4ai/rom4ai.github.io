@@ -71,8 +71,7 @@ LEGOSim 的核心创新在于**按需同步机制**与**统一集成接口**的�
 
 LEGOSim 将多芯片系统仿真分解为三个组件：
 
-![LEGOSim 架构](/assets/legosim/legosim-architecture.png)  
-*图：LEGOSim 架构概览（来源：原文 Figure 3）*
+> 📌 **架构图注**：原文 Figure 3 展示 LEGOSim 三组件架构——Simlets（异构芯片仿真单元）、NoI 仿真器（中介层网络）、统一集成接口（UII）。由于 IEEE 论文版权限制，此处略去原图。详见 [ACM Digital Library](https://doi.org/10.1145/3725843.3756068)。
 
 **（1）异构芯片仿真单元（Simlets）**：
 - 不同 simlets（CPU、GPU、NPU、CiM 等）是并行仿真中的独立仿真进程

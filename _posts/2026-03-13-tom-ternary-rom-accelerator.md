@@ -74,8 +74,8 @@ TOM 的核心创新在于**三元量化与 ROM 的协同设计**。研究团队�
 
 TOM 采用分布式处理架构，将计算与内存共置：
 
-![TOM 架构概览](/assets/tom-accelerator/tom-architecture.png)  
-*图：TOM 分布式处理架构，将 ROM 库与计算单元共置（来源：原文）*
+![TOM 架构概览](/assets/tom-accelerator/tom-figure-2.jpeg)  
+*图：TOM 分布式处理架构，将 ROM 库与计算单元共置（来源：原文 Figure 2）*
 
 **处理单元（Processing Lanes）**：
 - 每个处理单元包含本地 ROM 库和计算单元
