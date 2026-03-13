@@ -3,121 +3,192 @@ layout: default
 title: Home
 ---
 
-<main class="page-content">
+{% assign sorted_categories = site.categories | sort %}
+{% assign latest_post = site.posts.first %}
+
+<div class="page-content home-page">
   <section class="hero">
     <div class="hero-copy">
-    <p class="eyebrow">ROM4AI · Research Blog</p>
-    <h1>Research Ideas for Next-Generation AI Hardware</h1>
-    <p class="hero-description">
-      This blog captures exploratory ideas at the intersection of algorithms, architecture,
-      and silicon implementation. Current focus areas include neural-symbolic AI hardware,
-      hardwired LLM accelerators, 3D chiplet-based AI systems, and diffusion model accelerators.
-    </p>
+      <p class="eyebrow">ROM4AI · Research Blog</p>
+      <h1>Research ideas for next-generation AI hardware.</h1>
+      <p class="hero-description">
+        This site tracks early-stage concepts across algorithms, architecture, and silicon.
+        The writing clusters around neural-symbolic systems, hardwired LLM inference, 3D
+        chiplet integration, and diffusion-oriented accelerators.
+      </p>
 
-    <div class="hero-highlights" aria-label="Key themes">
-      <span>Neural-symbolic systems</span>
-      <span>Hardwired LLM inference</span>
-      <span>3D chiplet integration</span>
-      <span>Diffusion acceleration</span>
-    </div>
-  </div>
+      <div class="hero-actions">
+        <a class="button button-primary" href="#latest-posts">Browse research notes</a>
+        {% if latest_post %}
+          <a class="button button-secondary" href="{{ latest_post.url | relative_url }}">Read the latest note</a>
+        {% endif %}
+      </div>
 
-  <div class="hero-stats" aria-label="Site overview">
-    <div class="hero-stat-card">
-      <strong>{{ site.posts | size }}</strong>
-      <span>Research posts</span>
-    </div>
-    <div class="hero-stat-card">
-      <strong>{{ site.categories | size }}</strong>
-      <span>Categories</span>
-    </div>
-    <div class="hero-stat-card">
-      <strong>{{ site.posts.first.date | date: "%Y-%m-%d" }}</strong>
-      <span>Latest post</span>
-    </div>
-  </div>
-</section>
-
-<section class="posts-section">
-  <div class="section-heading">
-    <div>
-      <p class="section-kicker">Latest thinking</p>
-      <h2>Explore Research Posts</h2>
-    </div>
-    <p class="section-description">Browse by topic and quickly jump to related blog ideas in AI hardware.</p>
-  </div>
-  {% assign sorted_categories = site.categories | sort %}
-  <div class="category-panel">
-    <p class="category-panel-title">Browse by category</p>
-
-    <div class="search-panel">
-      <label class="search-label" for="post-search">Search posts</label>
-      <div class="search-input-group">
-        <input
-          id="post-search"
-          class="post-search"
-          type="search"
-          placeholder="Search by title or excerpt"
-          aria-label="Search posts by title or excerpt"
-        />
-        <button id="search-clear" class="search-clear" type="button" aria-label="Clear search" hidden>✕</button>
+      <div class="hero-highlights" aria-label="Key themes">
+        <span>Neural-symbolic systems</span>
+        <span>Hardwired LLM inference</span>
+        <span>3D chiplet integration</span>
+        <span>Diffusion acceleration</span>
       </div>
     </div>
 
-    <div class="category-filters" aria-label="Filter blog posts by category">
-      <button class="category-filter category-filter-all active" type="button" data-filter-value="all" aria-pressed="true">
-        <span>All topics</span>
-      </button>
-      {% for category in sorted_categories %}
-        {% assign category_name = category[0] %}
-        <button
-          class="category-filter category-chip category-chip--{{ category_name | slugify }}"
-          type="button"
-          data-filter-value="{{ category_name | slugify }}"
-          aria-pressed="false"
-        >
-          <span>{{ category_name }}</span>
-          <span class="category-count">{{ category[1].size }}</span>
-        </button>
-      {% endfor %}
-    </div>
-    <div class="category-toolbar">
-      <p class="category-help" id="category-status">Showing all blog posts.</p>
-      <button id="category-clear" class="category-clear" type="button" hidden>Clear filters</button>
-    </div>
-  </div>
+    <div class="hero-rail">
+      <div class="hero-stats" aria-label="Site overview">
+        <div class="hero-stat-card">
+          <strong>{{ site.posts | size }}</strong>
+          <span>Research posts</span>
+        </div>
+        <div class="hero-stat-card">
+          <strong>{{ site.categories | size }}</strong>
+          <span>Tracked topics</span>
+        </div>
+        <div class="hero-stat-card hero-stat-card--wide">
+          <strong>{% if latest_post %}{{ latest_post.date | date: "%Y-%m-%d" }}{% else %}N/A{% endif %}</strong>
+          <span>Latest publication</span>
+        </div>
+      </div>
 
-  <ul class="post-list">
-    {% for post in site.posts %}
-      <li class="post-card" data-categories="{% for category in post.categories %}{{ category | slugify }}{% unless forloop.last %}|{% endunless %}{% endfor %}">
-        <div class="post-card-header">
-          <p class="meta">{{ post.date | date: "%Y-%m-%d" }}</p>
-          <div class="post-categories" aria-label="Categories for {{ post.title }}">
-            {% for category in post.categories %}
-              <button
-                class="category-chip category-chip--{{ category | slugify }}"
-                type="button"
-                data-filter-value="{{ category | slugify }}"
-                aria-label="Show posts in {{ category }}"
-              >
-                {{ category }}
-              </button>
-            {% endfor %}
+      {% if latest_post %}
+        <article class="hero-featured">
+          <p class="hero-featured-kicker">Latest note</p>
+          <h2><a href="{{ latest_post.url | relative_url }}">{{ latest_post.title }}</a></h2>
+          <p>{{ latest_post.excerpt | strip_html | truncate: 165 }}</p>
+          <div class="hero-featured-meta">
+            <span>{{ latest_post.date | date: "%Y-%m-%d" }}</span>
+            <span>{{ latest_post.categories | size }} focus areas</span>
+          </div>
+        </article>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="home-grid" id="latest-posts">
+    <div class="content-column">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Latest thinking</p>
+          <h2>Explore research posts</h2>
+        </div>
+        <p class="section-description">
+          Use category filters and text search to move through the current set of hardware research ideas quickly.
+        </p>
+      </div>
+
+      <div class="category-panel">
+        <p class="category-panel-title">Browse by category</p>
+
+        <div class="search-panel">
+          <label class="search-label" for="post-search">Search posts</label>
+          <div class="search-input-group">
+            <input
+              id="post-search"
+              class="post-search"
+              type="search"
+              placeholder="Search by title or summary"
+              aria-label="Search posts by title or summary"
+            />
+            <button id="search-clear" class="search-clear" type="button" aria-label="Clear search" hidden>✕</button>
           </div>
         </div>
-        <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
-        <p>{{ post.excerpt | strip_html | truncate: 180 }}</p>
-      </li>
-    {% endfor %}
-  </ul>
-  <p id="category-empty-state" class="category-empty-state" hidden>No posts match this category yet.</p>
-</section>
-</main>
+
+        <div class="category-filters" aria-label="Filter blog posts by category">
+          <button class="category-filter category-filter-all active" type="button" data-filter-value="all" aria-pressed="true">
+            <span>All topics</span>
+          </button>
+          {% for category in sorted_categories %}
+            {% assign category_name = category[0] %}
+            <button
+              class="category-filter category-chip category-chip--{{ category_name | slugify }}"
+              type="button"
+              data-filter-value="{{ category_name | slugify }}"
+              aria-pressed="false"
+            >
+              <span>{{ category_name }}</span>
+              <span class="category-count">{{ category[1].size }}</span>
+            </button>
+          {% endfor %}
+        </div>
+
+        <div class="category-toolbar">
+          <p class="category-help" id="category-status">Showing all blog posts.</p>
+          <button id="category-clear" class="category-clear" type="button" hidden>Clear filters</button>
+        </div>
+      </div>
+
+      <ul class="post-list">
+        {% for post in site.posts %}
+          <li
+            class="post-card"
+            data-categories="{% for category in post.categories %}{{ category | slugify }}{% unless forloop.last %}|{% endunless %}{% endfor %}"
+            data-search-text="{{ post.title | append: ' ' | append: post.excerpt | strip_html | strip_newlines | escape }}"
+          >
+            <div class="post-card-header">
+              <p class="meta">{{ post.date | date: "%Y-%m-%d" }}</p>
+              <div class="post-categories" aria-label="Categories for {{ post.title }}">
+                {% for category in post.categories %}
+                  <button
+                    class="category-chip category-chip--{{ category | slugify }} js-apply-filter"
+                    type="button"
+                    data-filter-value="{{ category | slugify }}"
+                    aria-label="Show posts in {{ category }}"
+                  >
+                    {{ category }}
+                  </button>
+                {% endfor %}
+              </div>
+            </div>
+            <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+            <p class="post-summary">{{ post.excerpt | strip_html | truncate: 190 }}</p>
+            <a class="post-link" href="{{ post.url | relative_url }}">Open research note</a>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <p id="category-empty-state" class="category-empty-state" hidden>No posts match this filter yet.</p>
+    </div>
+
+    <aside class="insights-rail" aria-label="Research overview">
+      <div class="rail-card">
+        <div>
+          <p class="rail-kicker">Research map</p>
+          <h2>Where the writing is concentrated</h2>
+        </div>
+        <ul class="topic-list">
+          {% for category in sorted_categories limit: 6 %}
+            {% assign category_name = category[0] %}
+            <li>
+              <button
+                class="category-chip category-chip--{{ category_name | slugify }} js-apply-filter"
+                type="button"
+                data-filter-value="{{ category_name | slugify }}"
+              >
+                <span>{{ category_name }}</span>
+                <span class="category-count">{{ category[1].size }}</span>
+              </button>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="rail-card">
+        <div>
+          <p class="rail-kicker">Working model</p>
+          <h2>How each note is framed</h2>
+        </div>
+        <ol class="workflow-list">
+          <li>Start from an execution bottleneck, system gap, or integration constraint.</li>
+          <li>Sketch a hardware-software co-design direction that narrows the problem.</li>
+          <li>Capture open questions so the idea can evolve into a research agenda.</li>
+        </ol>
+      </div>
+    </aside>
+  </section>
+</div>
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const filterButtons = Array.from(document.querySelectorAll('.category-filters [data-filter-value]'));
-    const tagButtons = Array.from(document.querySelectorAll('.post-categories [data-filter-value]'));
+    const quickFilterButtons = Array.from(document.querySelectorAll('.js-apply-filter'));
     const posts = Array.from(document.querySelectorAll('.post-card'));
     const emptyState = document.getElementById('category-empty-state');
     const status = document.getElementById('category-status');
@@ -134,12 +205,12 @@ title: Home
       };
     }
 
-    function updateHash({ category, search }) {
+    function updateHash(state) {
       const params = new URLSearchParams();
-      if (category && category !== 'all') params.set('category', category);
-      if (search) params.set('search', search);
-      const newHash = params.toString();
-      const target = newHash ? `#${newHash}` : '';
+      if (state.category && state.category !== 'all') params.set('category', state.category);
+      if (state.search) params.set('search', state.search);
+      const nextHash = params.toString();
+      const target = nextHash ? `#${nextHash}` : '';
       history.replaceState(null, '', `${window.location.pathname}${window.location.search}${target}`);
     }
 
@@ -150,9 +221,9 @@ title: Home
       return label ? label.textContent.trim() : matchingButton.textContent.trim();
     }
 
-    function applyFilters({ category = 'all', search = '' } = {}) {
-      const normalizedFilter = (category || 'all').trim().toLowerCase();
-      const normalizedSearch = (search || '').trim().toLowerCase();
+    function applyFilters(state = {}) {
+      const normalizedFilter = (state.category || 'all').trim().toLowerCase();
+      const normalizedSearch = (state.search || '').trim().toLowerCase();
 
       filterButtons.forEach((button) => {
         const isActive = button.dataset.filterValue === normalizedFilter;
@@ -160,32 +231,23 @@ title: Home
         button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       });
 
-      if (searchInput) {
-        searchInput.value = search || '';
-      }
-      if (searchClear) {
-        searchClear.hidden = !normalizedSearch;
-      }
+      if (searchInput) searchInput.value = state.search || '';
+      if (searchClear) searchClear.hidden = !normalizedSearch;
 
       let visibleCount = 0;
+
       posts.forEach((post) => {
         const categories = (post.dataset.categories || '').split('|').filter(Boolean);
         const matchesCategory = normalizedFilter === 'all' || categories.includes(normalizedFilter);
-
-        const title = post.querySelector('h3')?.textContent || '';
-        const excerpt = post.querySelector('p')?.textContent || '';
-        const text = `${title} ${excerpt}`.toLowerCase();
-        const matchesSearch = !normalizedSearch || text.includes(normalizedSearch);
-
+        const searchText = (post.dataset.searchText || '').toLowerCase();
+        const matchesSearch = !normalizedSearch || searchText.includes(normalizedSearch);
         const isVisible = matchesCategory && matchesSearch;
-        post.hidden = !isVisible;
 
+        post.hidden = !isVisible;
         if (isVisible) visibleCount += 1;
       });
 
-      if (emptyState) {
-        emptyState.hidden = visibleCount !== 0;
-      }
+      if (emptyState) emptyState.hidden = visibleCount !== 0;
 
       if (status) {
         if (normalizedFilter === 'all' && !normalizedSearch) {
@@ -197,41 +259,41 @@ title: Home
           } else {
             parts.push(`Showing ${visibleCount} post${visibleCount === 1 ? '' : 's'}`);
           }
-          if (normalizedSearch) {
-            parts.push(`matching “${normalizedSearch}”`);
-          }
+          if (normalizedSearch) parts.push(`matching "${normalizedSearch}"`);
           status.textContent = parts.join(' ') + '.';
         }
       }
 
-      if (clearButton) {
-        clearButton.hidden = normalizedFilter === 'all' && !normalizedSearch;
-      }
+      if (clearButton) clearButton.hidden = normalizedFilter === 'all' && !normalizedSearch;
 
       updateHash({ category: normalizedFilter, search: normalizedSearch });
     }
 
     filterButtons.forEach((button) => {
       button.addEventListener('click', function () {
-        applyFilters({ category: button.dataset.filterValue, search: searchInput?.value || '' });
+        applyFilters({ category: button.dataset.filterValue, search: searchInput ? searchInput.value : '' });
       });
     });
 
-    tagButtons.forEach((button) => {
+    quickFilterButtons.forEach((button) => {
       button.addEventListener('click', function () {
-        applyFilters({ category: button.dataset.filterValue, search: searchInput?.value || '' });
+        applyFilters({ category: button.dataset.filterValue, search: searchInput ? searchInput.value : '' });
+        const targetSection = document.getElementById('latest-posts');
+        if (targetSection) targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
 
     if (searchInput) {
       searchInput.addEventListener('input', function () {
-        applyFilters({ category: document.querySelector('.category-filter.active')?.dataset.filterValue || 'all', search: this.value });
+        const activeFilter = document.querySelector('.category-filter.active');
+        applyFilters({ category: activeFilter ? activeFilter.dataset.filterValue : 'all', search: this.value });
       });
     }
 
     if (searchClear) {
       searchClear.addEventListener('click', function () {
-        applyFilters({ category: document.querySelector('.category-filter.active')?.dataset.filterValue || 'all', search: '' });
+        const activeFilter = document.querySelector('.category-filter.active');
+        applyFilters({ category: activeFilter ? activeFilter.dataset.filterValue : 'all', search: '' });
       });
     }
 
@@ -241,7 +303,6 @@ title: Home
       });
     }
 
-    const initialState = parseStateFromHash();
-    applyFilters(initialState);
+    applyFilters(parseStateFromHash());
   });
 </script>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: 'en' }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% if page.title and page.title != 'Home' %}{{ page.title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
+    <meta name="description" content="{{ page.excerpt | default: site.description | strip_html | strip_newlines | escape }}">
+    {% include head-custom.html %}
+  </head>
+  <body class="layout-{{ page.layout | default: 'default' }}">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="{{ '/' | relative_url }}" aria-label="{{ site.title }}">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>{{ site.title }}</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="{{ '/' | relative_url }}" class="{% if page.url == '/' or page.url == '/index.html' %}is-active{% endif %}">Home</a>
+            {% if site.posts.first %}
+              <a href="{{ site.posts.first.url | relative_url }}">Latest note</a>
+            {% endif %}
+          </nav>
+        </div>
+      </header>
+
+      {{ content }}
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>{{ site.posts | size }} posts</span>
+            <span>{{ site.categories | size }} categories</span>
+            {% if site.posts.first %}
+              <span>Updated {{ site.posts.first.date | date: "%Y-%m-%d" }}</span>
+            {% endif %}
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

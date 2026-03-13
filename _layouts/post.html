@@ -1,0 +1,48 @@
+---
+layout: base
+---
+
+<main class="site-main article-page">
+  <article class="article-shell">
+    <a class="back-link" href="{{ '/' | relative_url }}#latest-posts">All research notes</a>
+
+    <header class="article-hero">
+      <p class="article-kicker">Research note</p>
+      <h1>{{ page.title }}</h1>
+      <div class="article-meta">
+        <span>{{ page.date | date: "%B %-d, %Y" }}</span>
+        {% if page.categories %}
+          <div class="article-tags" aria-label="Categories">
+            {% for category in page.categories %}
+              <a class="category-chip category-chip--{{ category | slugify }}" href="{{ '/' | relative_url }}#category={{ category | slugify }}">{{ category }}</a>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </header>
+
+    <div class="article-layout">
+      <aside class="article-aside">
+        {% if page.categories %}
+          <div class="article-aside-card">
+            <p class="aside-label">Focus areas</p>
+            <ul class="article-category-list">
+              {% for category in page.categories %}
+                <li>{{ category }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        <div class="article-aside-card">
+          <p class="aside-label">Context</p>
+          <p>{{ site.description }}</p>
+        </div>
+      </aside>
+
+      <div class="article-content">
+        {{ content }}
+      </div>
+    </div>
+  </article>
+</main>
