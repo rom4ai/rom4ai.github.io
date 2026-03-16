@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" width="1000" height="700">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="encoderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea"/>
+      <stop offset="100%" style="stop-color:#764ba2"/>
+    </linearGradient>
+    <linearGradient id="decoderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f093fb"/>
+      <stop offset="100%" style="stop-color:#f5576c"/>
+    </linearGradient>
+    <linearGradient id="selfAttnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4facfe"/>
+      <stop offset="100%" style="stop-color:#00f2fe"/>
+    </linearGradient>
+    <linearGradient id="crossAttnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#43e97b"/>
+      <stop offset="100%" style="stop-color:#38f9d7"/>
+    </linearGradient>
+    <linearGradient id="ffnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fa709a"/>
+      <stop offset="100%" style="stop-color:#fee140"/>
+    </linearGradient>
+    <linearGradient id="inputGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a8edea"/>
+      <stop offset="100%" style="stop-color:#fed6e3"/>
+    </linearGradient>
+    <linearGradient id="outputGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#d299c2"/>
+      <stop offset="100%" style="stop-color:#fef9d7"/>
+    </linearGradient>
+    
+    <!-- Arrow marker -->
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7f8c8d"/>
+    </marker>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1000" height="700" fill="#ffffff"/>
+  
+  <!-- Title -->
+  <text x="500" y="35" text-anchor="middle" font-family="Georgia, serif" font-size="22" font-weight="600" fill="#2c3e50">Transformer Encoder-Decoder Architecture</text>
+  
+  <!-- Input Section -->
+  <rect x="350" y="60" width="300" height="35" rx="6" fill="url(#inputGrad)" stroke="#bdc3c7" stroke-width="1"/>
+  <text x="500" y="83" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="500" fill="#2c3e50">Input Sequence (Embeddings + Positional Encoding)</text>
+  
+  <!-- Arrow down from input -->
+  <line x1="500" y1="95" x2="500" y2="115" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Encoder Stack -->
+  <g id="encoder">
+    <!-- Encoder label -->
+    <text x="250" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#2c3e50" text-transform="uppercase" letter-spacing="1">Encoder Stack (N×)</text>
+    
+    <!-- Encoder Layer 1: Self-Attention -->
+    <rect x="120" y="145" width="260" height="45" rx="6" fill="url(#encoderGrad)"/>
+    <text x="250" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="500" fill="#ffffff">Multi-Head Self-Attention</text>
+    <text x="250" y="182" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#ffffff" opacity="0.9">(Query = Key = Value)</text>
+    
+    <!-- Add & Norm -->
+    <rect x="130" y="200" width="240" height="28" rx="4" fill="#e8e8e8"/>
+    <text x="250" y="219" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="500" fill="#555555">Add &amp; LayerNorm</text>
+    
+    <!-- Arrow -->
+    <line x1="250" y1="228" x2="250" y2="245" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowhead)"/>
+    
+    <!-- FFN -->
+    <rect x="120" y="255" width="260" height="40" rx="6" fill="url(#ffnGrad)"/>
+    <text x="250" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="500" fill="#4a2a3a">Feed-Forward Network</text>
+    
+    <!-- Add & Norm -->
+    <rect x="130" y="305" width="240" height="28" rx="4" fill="#e8e8e8"/>
+    <text x="250" y="324" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="500" fill="#555555">Add &amp; LayerNorm</text>
+    
+    <!-- Arrow -->
+    <line x1="250" y1="333" x2="250" y2="350" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowhead)"/>
+    
+    <!-- Dots for repetition -->
+    <text x="250" y="365" text-anchor="middle" font-family="Georgia, serif" font-size="20" fill="#7f8c8d">⋮</text>
+    <text x="250" y="382" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#7f8c8d" font-style="italic">(Repeat N times)</text>
+    
+    <!-- Arrow -->
+    <line x1="250" y1="390" x2="250" y2="410" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowhead)"/>
+    
+    <!-- Encoder Output -->
+    <rect x="110" y="420" width="280" height="50" rx="6" fill="url(#selfAttnGrad)"/>
+    <text x="250" y="442" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="500" fill="#1a3a52">Encoder Output</text>
+    <text x="250" y="458" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#1a3a52">(Key &amp; Value for Decoder)</text>
+  </g>
+  
+  <!-- Connection line from Encoder to Decoder (Cross-Attention) -->
+  <line x1="390" y1="445" x2="580" y2="445" stroke="#bdc3c7" stroke-width="2" stroke-dasharray="5,5"/>
+  <text x="485" y="438" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#7f8c8d" font-style="italic">K, V</text>
+  
+  <!-- Decoder Stack -->
+  <g id="decoder">
+    <!-- Decoder label -->
+    <text x="750" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#2c3e50" text-transform="uppercase" letter-spacing="1">Decoder Stack (N×)</text>
+    
+    <!-- Decoder Layer 1: Masked Self-Attention -->
+    <rect x="620" y="145" width="260" height="45" rx="6" fill="url(#decoderGrad)"/>
+    <text x="750" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="500" fill="#ffffff">Masked Multi-Head Self-Attention</text>
+    <text x="750" y="182" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#ffffff" opacity="0.9">(Causal Mask)</text>
+    
+    <!-- Add & Norm -->
+    <rect x="630" y="200" width="240" height="28" rx="4" fill="#e8e8e8"/>
+    <text x="750" y="219" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="500" fill="#555555">Add &amp; LayerNorm</text>
+    
+    <!-- Arrow -->
+    <line x1="750" y1="228" x2="750" y2="245" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowhead)"/>
+    
+    <!-- Cross-Attention Box -->
+    <rect x="610" y="255" width="280" height="50" rx="6" fill="url(#crossAttnGrad)"/>
+    <text x="750" y="277" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="500" fill="#1a4a3a">Multi-Head Cross-Attention</text>
+    <text x="750" y="294" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#1a4a3a">(Q from decoder, K,V from encoder)</text>
+    
+    <!-- Add & Norm -->
+    <rect x="630" y="315" width="240" height="28" rx="4" fill="#e8e8e8"/>
+    <text x="750" y="334" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="500" fill="#555555">Add &amp; LayerNorm</text>
+    
+    <!-- Arrow -->
+    <line x1="750" y1="343" x2="750" y2="360" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowhead)"/>
+    
+    <!-- FFN -->
+    <rect x="620" y="370" width="260" height="40" rx="6" fill="url(#ffnGrad)"/>
+    <text x="750" y="395" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="500" fill="#4a2a3a">Feed-Forward Network</text>
+    
+    <!-- Add & Norm -->
+    <rect x="630" y="420" width="240" height="28" rx="4" fill="#e8e8e8"/>
+    <text x="750" y="439" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="500" fill="#555555">Add &amp; LayerNorm</text>
+    
+    <!-- Arrow -->
+    <line x1="750" y1="448" x2="750" y2="465" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowhead)"/>
+    
+    <!-- Dots for repetition -->
+    <text x="750" y="480" text-anchor="middle" font-family="Georgia, serif" font-size="20" fill="#7f8c8d">⋮</text>
+    <text x="750" y="497" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#7f8c8d" font-style="italic">(Repeat N times)</text>
+  </g>
+  
+  <!-- Arrow to output -->
+  <line x1="750" y1="515" x2="750" y2="545" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Output Section -->
+  <rect x="600" y="555" width="300" height="40" rx="6" fill="url(#outputGrad)" stroke="#bdc3c7" stroke-width="1"/>
+  <text x="750" y="580" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="500" fill="#2c3e50">Output Probabilities (Softmax)</text>
+  
+  <!-- Legend -->
+  <g id="legend" transform="translate(50, 620)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="11" font-weight="600" fill="#2c3e50">Legend:</text>
+    
+    <rect x="60" y="-10" width="20" height="20" rx="3" fill="url(#encoderGrad)"/>
+    <text x="85" y="5" font-family="Arial, sans-serif" font-size="10" fill="#555">Encoder Layer</text>
+    
+    <rect x="180" y="-10" width="20" height="20" rx="3" fill="url(#decoderGrad)"/>
+    <text x="205" y="5" font-family="Arial, sans-serif" font-size="10" fill="#55">Decoder Layer</text>
+    
+    <rect x="300" y="-10" width="20" height="20" rx="3" fill="url(#selfAttnGrad)"/>
+    <text x="325" y="5" font-family="Arial, sans-serif" font-size="10" fill="#55">Self-Attention</text>
+    
+    <rect x="420" y="-10" width="20" height="20" rx="3" fill="url(#crossAttnGrad)"/>
+    <text x="445" y="5" font-family="Arial, sans-serif" font-size="10" fill="#55">Cross-Attention</text>
+    
+    <rect x="540" y="-10" width="20" height="20" rx="3" fill="url(#ffnGrad)"/>
+    <text x="565" y="5" font-family="Arial, sans-serif" font-size="10" fill="#55">Feed-Forward</text>
+    
+    <rect x="660" y="-10" width="20" height="20" rx="3" fill="#e8e8e8" stroke="#bdc3c7"/>
+    <text x="685" y="5" font-family="Arial, sans-serif" font-size="10" fill="#55">Add &amp; Norm</text>
+  </g>
+</svg>
