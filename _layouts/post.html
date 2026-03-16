@@ -4,41 +4,43 @@ layout: base
 
 <main class="site-main article-page">
   <article class="article-shell">
-    <a class="back-link" href="{{ '/' | relative_url }}#latest-posts">All research notes</a>
+    <div class="article-frame">
+      <a class="back-link" href="{{ '/' | relative_url }}#latest-posts">All research notes</a>
 
-    <header class="article-hero">
-      <p class="article-kicker">Research note</p>
-      <h1>{{ page.title }}</h1>
-      <div class="article-meta">
-        <span>{{ page.date | date: "%B %-d, %Y" }}</span>
-        {% if page.categories %}
-          <div class="article-tags" aria-label="Categories">
-            {% for category in page.categories %}
-              <a class="category-chip category-chip--{{ category | slugify }}" href="{{ '/' | relative_url }}#category={{ category | slugify }}">{{ category }}</a>
-            {% endfor %}
-          </div>
-        {% endif %}
-      </div>
-    </header>
+      <header class="article-hero">
+        <div class="article-heading">
+          <p class="article-kicker">Research note</p>
+          <h1>{{ page.title }}</h1>
+        </div>
+        <div class="article-meta">
+          <span>{{ page.date | date: "%B %-d, %Y" }}</span>
+          {% if page.categories %}
+            <div class="article-tags" aria-label="Categories">
+              {% for category in page.categories %}
+                <a class="category-chip category-chip--{{ category | slugify }}" href="{{ '/' | relative_url }}#category={{ category | slugify }}">{{ category }}</a>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      </header>
 
-    <div class="article-layout">
-      <aside class="article-aside">
+      <div class="article-context-bar" aria-label="Article context">
         {% if page.categories %}
-          <div class="article-aside-card">
+          <section class="article-context-card">
             <p class="aside-label">Focus areas</p>
             <ul class="article-category-list">
               {% for category in page.categories %}
                 <li>{{ category }}</li>
               {% endfor %}
             </ul>
-          </div>
+          </section>
         {% endif %}
 
-        <div class="article-aside-card">
+        <section class="article-context-card article-context-card--summary">
           <p class="aside-label">Context</p>
           <p>{{ site.description }}</p>
-        </div>
-      </aside>
+        </section>
+      </div>
 
       <div class="article-content">
         {{ content }}
