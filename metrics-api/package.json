@@ -1,0 +1,17 @@
+{
+  "name": "rom4ai-metrics",
+  "version": "1.0.0",
+  "description": "Metrics API for ROM4AI blog - post views and ratings",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail"
+  },
+  "keywords": ["cloudflare", "workers", "metrics", "jekyll"],
+  "author": "ROM4AI",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}

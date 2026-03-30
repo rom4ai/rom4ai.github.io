@@ -3,7 +3,7 @@ description: Research idea blog on future AI hardware systems and accelerators.
 theme: minima
 markdown: kramdown
 future: true
-post_metrics_endpoint: ""
+post_metrics_endpoint: "https://rom4ai-metrics.your-subdomain.workers.dev"
 plugins:
   - jekyll-feed
 
