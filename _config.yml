@@ -1,6 +1,5 @@
-title: ROM4AI Research Ideas
-description: Research idea blog on future AI hardware systems and accelerators.
-theme: minima
+title: ROM4AI
+description: Research ideas for next-generation AI hardware systems and accelerators.
 markdown: kramdown
 future: true
 post_metrics_endpoint: "https://rom4ai-blog-metrics.shiruizhao-pro.workers.dev"

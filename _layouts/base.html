@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="{{ site.lang | default: 'en' }}">
+<html lang="{{ site.lang | default: 'en' }}" data-theme="dark">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% if page.title and page.title != 'Home' %}{{ page.title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
     <meta name="description" content="{{ page.excerpt | default: site.description | strip_html | strip_newlines | escape }}">
+    <link rel="stylesheet" href="{{ '/assets/css/style-new.css' | relative_url }}">
     {% include head-custom.html %}
   </head>
   <body class="layout-{{ page.layout | default: 'default' }}">
@@ -12,18 +13,26 @@
       <header class="site-header">
         <div class="site-header-inner">
           <a class="site-brand" href="{{ '/' | relative_url }}" aria-label="{{ site.title }}">
-            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-mark">R4A</span>
             <span class="site-brand-copy">
               <strong>{{ site.title }}</strong>
-              <span>Exploratory AI hardware notes</span>
+              <span>Research Blog</span>
             </span>
           </a>
 
           <nav class="site-nav" aria-label="Primary">
             <a href="{{ '/' | relative_url }}" class="{% if page.url == '/' or page.url == '/index.html' %}is-active{% endif %}">Home</a>
             {% if site.posts.first %}
-              <a href="{{ site.posts.first.url | relative_url }}">Latest note</a>
+              <a href="{{ site.posts.first.url | relative_url }}">Latest</a>
             {% endif %}
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode">
+              <svg class="sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+              </svg>
+              <svg class="moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+              </svg>
+            </button>
           </nav>
         </div>
       </header>
@@ -33,18 +42,103 @@
       <footer class="site-footer">
         <div class="site-footer-inner">
           <div class="site-footer-copy">
-            <strong>ROM4AI</strong>
-            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+            © {{ 'now' | date: '%Y' }} {{ site.title }}. All rights reserved.
           </div>
-          <div class="site-footer-stats" aria-label="Site stats">
-            <span>{{ site.posts | size }} posts</span>
-            <span>{{ site.categories | size }} categories</span>
+          <div class="site-footer-links">
+            <a href="{{ '/' | relative_url }}">Home</a>
             {% if site.posts.first %}
-              <span>Updated {{ site.posts.first.date | date: "%Y-%m-%d" }}</span>
+              <a href="{{ site.posts.first.url | relative_url }}">Latest Post</a>
             {% endif %}
           </div>
         </div>
       </footer>
     </div>
+
+    <script>
+      // Theme Toggle
+      (function() {
+        const html = document.documentElement;
+        const toggle = document.getElementById('theme-toggle');
+        const sunIcon = toggle.querySelector('.sun-icon');
+        const moonIcon = toggle.querySelector('.moon-icon');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        html.setAttribute('data-theme', savedTheme);
+        updateIcons(savedTheme);
+        
+        toggle.addEventListener('click', () => {
+          const currentTheme = html.getAttribute('data-theme');
+          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+          html.setAttribute('data-theme', newTheme);
+          localStorage.setItem('theme', newTheme);
+          updateIcons(newTheme);
+        });
+        
+        function updateIcons(theme) {
+          if (theme === 'dark') {
+            sunIcon.style.display = 'block';
+            moonIcon.style.display = 'none';
+          } else {
+            sunIcon.style.display = 'none';
+            moonIcon.style.display = 'block';
+          }
+        }
+      })();
+
+      // Typewriter Effect
+      (function() {
+        const typewriterElements = document.querySelectorAll('.typewriter-text');
+        
+        typewriterElements.forEach(el => {
+          const text = el.getAttribute('data-text') || el.textContent;
+          const speed = parseInt(el.getAttribute('data-speed')) || 80;
+          const delay = parseInt(el.getAttribute('data-delay')) || 0;
+          
+          el.textContent = '';
+          el.classList.add('typewriter');
+          
+          const cursor = document.createElement('span');
+          cursor.className = 'typewriter-cursor';
+          el.appendChild(cursor);
+          
+          setTimeout(() => {
+            let i = 0;
+            const type = () => {
+              if (i < text.length) {
+                el.insertBefore(document.createTextNode(text.charAt(i)), cursor);
+                i++;
+                setTimeout(type, speed);
+              }
+            };
+            type();
+          }, delay);
+        });
+      })();
+
+      // Table of Contents Active State
+      (function() {
+        const tocLinks = document.querySelectorAll('.toc-list a');
+        const headings = document.querySelectorAll('.article-body h2, .article-body h3');
+        
+        if (tocLinks.length && headings.length) {
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                const id = entry.target.id;
+                tocLinks.forEach(link => {
+                  link.classList.remove('is-active');
+                  if (link.getAttribute('href') === '#' + id) {
+                    link.classList.add('is-active');
+                  }
+                });
+              }
+            });
+          }, { rootMargin: '-20% 0px -80% 0px' });
+          
+          headings.forEach(heading => observer.observe(heading));
+        }
+      })();
+    </script>
   </body>
 </html>

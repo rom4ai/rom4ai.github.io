@@ -1,4 +1,663 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2026-03-30T12:31:59+08:00</updated><id>/feed.xml</id><title type="html">ROM4AI Research Ideas</title><subtitle>Research idea blog on future AI hardware systems and accelerators.</subtitle><author><name>ROM4AI</name></author><entry><title type="html">The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks</title><link href="/robotics/neuro-symbolic/vla/manipulation/energy-efficiency/2026/03/26/price-is-not-right-neuro-symbolic-vs-vla.html" rel="alternate" type="text/html" title="The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks" /><published>2026-03-26T00:00:00+08:00</published><updated>2026-03-26T00:00:00+08:00</updated><id>/robotics/neuro-symbolic/vla/manipulation/energy-efficiency/2026/03/26/price-is-not-right-neuro-symbolic-vs-vla</id><content type="html" xml:base="/robotics/neuro-symbolic/vla/manipulation/energy-efficiency/2026/03/26/price-is-not-right-neuro-symbolic-vs-vla.html"><![CDATA[<h1 id="the-price-is-not-right-neuro-symbolic-methods-outperform-vlas-on-structured-long-horizon-manipulation-tasks">The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks</h1>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2026-03-30T23:03:17+08:00</updated><id>/feed.xml</id><title type="html">ROM4AI</title><subtitle>Research ideas for next-generation AI hardware systems and accelerators.</subtitle><author><name>ROM4AI</name></author><entry><title type="html">ME-ViT: Memory-Efficient FPGA Accelerator for Vision Transformers</title><link href="/research/vision-transformer/fpga/accelerator/memory-bandwidth/2026/03/30/me-vit-memory-efficient-fpga-accelerator.html" rel="alternate" type="text/html" title="ME-ViT: Memory-Efficient FPGA Accelerator for Vision Transformers" /><published>2026-03-30T16:10:00+08:00</published><updated>2026-03-30T16:10:00+08:00</updated><id>/research/vision-transformer/fpga/accelerator/memory-bandwidth/2026/03/30/me-vit-memory-efficient-fpga-accelerator</id><content type="html" xml:base="/research/vision-transformer/fpga/accelerator/memory-bandwidth/2026/03/30/me-vit-memory-efficient-fpga-accelerator.html"><![CDATA[<h1 id="me-vit-a-single-load-memory-efficient-fpga-accelerator-for-vision-transformers">ME-ViT: A Single-Load Memory-Efficient FPGA Accelerator for Vision Transformers</h1>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2402.09709">arXiv:2402.09709</a></td>
+        <td><a href="https://arxiv.org/pdf/2402.09709.pdf">PDF</a></td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<p><strong>作者</strong>: Kyle Marino, Pengmiao Zhang, Viktor K. Prasanna (University of Southern California)</p>
+
+<hr />
+
+<h2 id="摘要">摘要</h2>
+
+<p>Vision Transformers (ViTs) 已成为目标分类任务的最先进解决方案，但其巨大的计算需求和参数量使其难以实现实时推理。现有 ViT 硬件加速器面临频繁的外部内存访问问题，限制了可达到的吞吐量。本文提出 ME-ViT，一种新颖的内存高效 FPGA 加速器，通过<strong>单次加载策略</strong>最小化内存流量：模型参数仅加载一次，中间结果存储在片上，所有操作在单一处理单元中实现。</p>
+
+<p><strong>核心成果</strong>:</p>
+<ul>
+  <li>内存带宽提升 <strong>9.22×</strong> (32阵列) 和 <strong>17.89×</strong> (16阵列)</li>
+  <li>每 DSP 吞吐量提升 <strong>2.16×</strong></li>
+  <li>能效提升最高达 <strong>4.00×</strong> (相比 GPU)</li>
+  <li>在 Xilinx Alveo U200 上可实现 <strong>5 个 ME-PE 实例</strong>，吞吐量提升 <strong>5.10×</strong></li>
+</ul>
+
+<hr />
+
+<h2 id="1-问题定义">1. 问题定义</h2>
+
+<h3 id="11-vision-transformer-的内存瓶颈">1.1 Vision Transformer 的内存瓶颈</h3>
+
+<blockquote>
+  <p>“Computing capabilities of hardware such as GPUs and TPUs have outpaced memory bandwidth improvements, resulting in a poor Compute-to-Communication (C2C) ratio and limited model performance”</p>
+</blockquote>
+
+<p>Vision Transformers 虽然在图像分类任务上取得了卓越性能，但其实现面临严峻挑战：</p>
+
+<ol>
+  <li><strong>巨大的参数量</strong> - ViT-Base 模型包含超过 86M 参数</li>
+  <li><strong>高内存带宽需求</strong> - 自注意力机制需要频繁的矩阵乘法</li>
+  <li><strong>内存墙限制</strong> - GPU/TPU 的计算能力远超内存带宽提升速度</li>
+</ol>
+
+<h3 id="12-现有方法的局限">1.2 现有方法的局限</h3>
+
+<p>现有 ViT 加速方法包括：</p>
+<ul>
+  <li>模型压缩 (pruning, distillation)</li>
+  <li>权重量化 (INT8, INT4)</li>
+  <li>算法优化 (稀疏注意力)</li>
+</ul>
+
+<p>然而，这些方法<strong>没有直接解决核心问题</strong>：内存带宽瓶颈。块矩阵乘法 (BMM) 方法虽然将大矩阵分块，但仍需要频繁地将块写回和重新加载到片外内存。</p>
+
+<h3 id="13-fpga-的机会与挑战">1.3 FPGA 的机会与挑战</h3>
+
+<p>FPGA 提供了高计算并行性和可定制架构，但同样面临内存带宽限制。如图 1 所示，ViT 和 DeiT 模型在没有专门优化的情况下严重受限于内存带宽。</p>
+
+<hr />
+
+<h2 id="2-方法框架">2. 方法框架</h2>
+
+<h3 id="21-单次加载策略-single-load-policy">2.1 单次加载策略 (Single-Load Policy)</h3>
+
+<p>ME-ViT 的核心设计原则是<strong>单次加载策略</strong>：</p>
+
+<ol>
+  <li><strong>模型参数仅加载一次</strong> - 所有权重在推理开始时加载到片上 BRAM</li>
+  <li><strong>中间结果片上存储</strong> - 避免写回片外内存</li>
+  <li><strong>单一处理单元执行所有操作</strong> - 线性投影、自注意力、MLP 在同一架构上执行</li>
+</ol>
+
+<p>这与传统的块矩阵乘法方法不同，后者需要在不同块之间重新加载相同的权重。</p>
+
+<h3 id="22-内存高效处理单元-me-pe">2.2 内存高效处理单元 (ME-PE)</h3>
+
+<p>为实现单次加载策略，作者设计了 <strong>ME-PE</strong> (Memory-Efficient Processing Element)：</p>
+
+<h4 id="多用途缓冲区设计">多用途缓冲区设计</h4>
+
+<blockquote>
+  <p>“Multi-purpose buffers are designed to achieve the goals of the single-load policy while addressing its requirement of large BRAM allocations”</p>
+</blockquote>
+
+<p>关键创新：</p>
+<ul>
+  <li><strong>缓冲区复用</strong> - 同一缓冲区在不同计算阶段存储不同数据</li>
+  <li><strong>战略排序</strong> - 精心安排计算顺序以最小化资源使用</li>
+  <li><strong>BRAM 高效打包</strong> - 为不同计算阶段重新打包和复用 BRAM</li>
+</ul>
+
+<h4 id="集成-softmax-和-layernorm">集成 Softmax 和 LayerNorm</h4>
+
+<p>ME-PE 将 Softmax 和 LayerNorm 函数集成到处理单元中：</p>
+<ul>
+  <li>最小化矩阵乘法之间的停顿</li>
+  <li>减少与主机 CPU 的通信</li>
+  <li>避免中间结果写回内存</li>
+</ul>
+
+<h3 id="23-支持的-vit-操作">2.3 支持的 ViT 操作</h3>
+
+<p>ME-PE 执行 ViT 推理的三个关键操作：</p>
+
+<ol>
+  <li><strong>线性投影 (Linear Projection, LP)</strong> - 将输入映射到 Q, K, V</li>
+  <li><strong>多头自注意力 (Multi-headed Self-Attention, MSA)</strong> - 核心注意力计算</li>
+  <li><strong>多层感知机 (Multi-Layer Perceptron, MLP)</strong> - 前馈网络</li>
+</ol>
+
+<p>通过为 MSA 操作设计最小化架构，并将其复用于 MLP 计算，无需额外的 BRAM 资源。</p>
+
+<hr />
+
+<h2 id="3-实验结果">3. 实验结果</h2>
+
+<h3 id="31-实验设置">3.1 实验设置</h3>
+
+<p><strong>硬件平台</strong>: Xilinx Alveo U200 FPGA
+<strong>评估模型</strong>:</p>
+<ul>
+  <li>ViT-Base (ViT-B)</li>
+  <li>DeiT-Base, DeiT-Small, DeiT-Tiny (DeiT-B, DeiT-S, DeiT-T)</li>
+</ul>
+
+<p><strong>阵列配置</strong>:</p>
+<ul>
+  <li>32×32 脉动阵列</li>
+  <li>16×16 脉动阵列</li>
+</ul>
+
+<h3 id="32-性能对比">3.2 性能对比</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>ME-ViT (32)</th>
+      <th>ME-ViT (16)</th>
+      <th>SOTA FPGA</th>
+      <th>提升幅度</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>内存带宽效率</strong></td>
+      <td>优化</td>
+      <td>优化</td>
+      <td>瓶颈</td>
+      <td><strong>9.22× / 17.89×</strong></td>
+    </tr>
+    <tr>
+      <td><strong>每 DSP 吞吐量</strong></td>
+      <td>峰值</td>
+      <td>峰值</td>
+      <td>受限</td>
+      <td><strong>2.16×</strong></td>
+    </tr>
+    <tr>
+      <td><strong>能效 (vs GPU)</strong></td>
+      <td>4.00×</td>
+      <td>-</td>
+      <td>1.00×</td>
+      <td><strong>4.00×</strong></td>
+    </tr>
+    <tr>
+      <td><strong>能效 (vs FPGA)</strong></td>
+      <td>1.03×</td>
+      <td>-</td>
+      <td>1.00×</td>
+      <td><strong>1.03×</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="33-roofline-模型分析">3.3 Roofline 模型分析</h3>
+
+<p>如图 1 所示，ME-ViT 优化了内存带宽，使其在 GOPS (每秒十亿次操作) 上达到接近峰值的性能，而现有最先进实现受限于内存带宽。</p>
+
+<h3 id="34-多实例扩展">3.4 多实例扩展</h3>
+
+<p>在 Xilinx Alveo U200 上：</p>
+<ul>
+  <li>可实现 <strong>5 个 ME-PE 实例</strong></li>
+  <li>吞吐量提升 <strong>5.10×</strong> (相比 SOTA FPGA)</li>
+  <li>能效提升 <strong>5.85×</strong> (相比 GPU) 和 <strong>1.51×</strong> (相比 FPGA)</li>
+</ul>
+
+<hr />
+
+<h2 id="4-技术亮点">4. 技术亮点</h2>
+
+<h3 id="41-核心创新">4.1 核心创新</h3>
+
+<ol>
+  <li><strong>单次加载策略</strong> - 从根本上消除重复内存访问</li>
+  <li><strong>多用途缓冲区</strong> - 通过复用实现大容量片上存储</li>
+  <li><strong>统一处理单元</strong> - 单一架构支持所有 ViT 操作</li>
+  <li><strong>函数集成</strong> - Softmax/LayerNorm 嵌入 PE 减少通信</li>
+</ol>
+
+<h3 id="42-设计权衡">4.2 设计权衡</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>设计选择</th>
+      <th>优势</th>
+      <th>代价</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>大 BRAM 分配</td>
+      <td>避免片外访问</td>
+      <td>限制 PE 实例数量</td>
+    </tr>
+    <tr>
+      <td>缓冲区复用</td>
+      <td>减少资源使用</td>
+      <td>复杂的数据流控制</td>
+    </tr>
+    <tr>
+      <td>单一 PE 架构</td>
+      <td>简化设计</td>
+      <td>操作间需重新配置</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="43-适用场景">4.3 适用场景</h3>
+
+<p><strong>最适合</strong>:</p>
+<ul>
+  <li>边缘 FPGA 设备（内存带宽受限）</li>
+  <li>实时图像分类应用</li>
+  <li>功耗敏感的部署环境</li>
+</ul>
+
+<p><strong>限制</strong>:</p>
+<ul>
+  <li>需要足够的片上 BRAM</li>
+  <li>模型大小受限于 FPGA 资源</li>
+  <li>不适用于超大模型（如 ViT-Huge）</li>
+</ul>
+
+<hr />
+
+<h2 id="5-对-ai-硬件设计的启示">5. 对 AI 硬件设计的启示</h2>
+
+<h3 id="51-内存优先设计">5.1 内存优先设计</h3>
+
+<p>ME-ViT 证明：对于 Transformer 类模型，<strong>内存带宽优化比计算优化更重要</strong>。未来的 AI 加速器应该：</p>
+<ul>
+  <li>优先考虑数据局部性</li>
+  <li>最大化片上存储利用率</li>
+  <li>减少片外内存访问次数</li>
+</ul>
+
+<h3 id="52-专用-vs-通用架构">5.2 专用 vs 通用架构</h3>
+
+<blockquote>
+  <p>“Custom FPGA architectures can meet the computational and memory demands of ViT inference more effectively than the general-purpose architecture of a GPU”</p>
+</blockquote>
+
+<p>对于特定工作负载（如 ViT 推理），专用架构可以显著优于通用 GPU。这支持了领域专用加速器 (DSA) 的发展趋势。</p>
+
+<h3 id="53-边缘-ai-的机会">5.3 边缘 AI 的机会</h3>
+
+<p>ME-ViT 的能效优势（4× 相比 GPU）使其特别适合边缘部署：</p>
+<ul>
+  <li>低功耗设备上的实时推理</li>
+  <li>无需云端连接的本地处理</li>
+  <li>隐私敏感应用（数据不上传）</li>
+</ul>
+
+<hr />
+
+<h2 id="6-局限与未来方向">6. 局限与未来方向</h2>
+
+<h3 id="61-当前局限">6.1 当前局限</h3>
+
+<ol>
+  <li><strong>模型大小限制</strong> - 受 FPGA BRAM 容量限制</li>
+  <li><strong>仅支持推理</strong> - 不支持训练</li>
+  <li><strong>特定模型优化</strong> - 主要针对 DeiT 和 ViT-Base</li>
+</ol>
+
+<h3 id="62-未来研究方向">6.2 未来研究方向</h3>
+
+<ol>
+  <li><strong>扩展到大模型</strong> - 支持 ViT-Large, ViT-Huge</li>
+  <li><strong>训练支持</strong> - 探索梯度计算和权重更新</li>
+  <li><strong>其他 Transformer 变体</strong> - Swin, DETR 等</li>
+  <li><strong>稀疏性利用</strong> - 结合稀疏注意力机制</li>
+  <li><strong>混合精度</strong> - 支持 INT8/INT4 量化</li>
+</ol>
+
+<hr />
+
+<h2 id="7-总结">7. 总结</h2>
+
+<p>ME-ViT 通过<strong>单次加载策略</strong>和<strong>内存高效处理单元</strong>设计，成功解决了 Vision Transformer 在 FPGA 上的内存带宽瓶颈问题。其核心贡献在于：</p>
+
+<ul>
+  <li><strong>9.22× 内存带宽效率提升</strong></li>
+  <li><strong>2.16× 每 DSP 吞吐量提升</strong></li>
+  <li><strong>4.00× 能效提升</strong> (相比 GPU)</li>
+</ul>
+
+<p>这项工作为边缘设备上的高效 ViT 推理提供了可行方案，并强调了内存优化在 Transformer 加速器设计中的关键作用。</p>
+
+<hr />
+
+<h2 id="参考文献">参考文献</h2>
+
+<ol>
+  <li>K. Marino, P. Zhang, and V. K. Prasanna, “ME-ViT: A Single-Load Memory-Efficient FPGA Accelerator for Vision Transformers,” arXiv:2402.09709, 2024.</li>
+  <li>A. Vaswani et al., “Attention is All You Need,” NeurIPS, 2017.</li>
+  <li>A. Dosovitskiy et al., “An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale,” ICLR, 2021.</li>
+  <li>T. Xiao et al., “Early Convolutions Help Transformers See Better,” NeurIPS, 2021.</li>
+</ol>
+
+<hr />
+
+<p><em>本文使用 paper_to_blog 工具自动生成</em></p>]]></content><author><name>ROM4AI</name></author><category term="research" /><category term="vision-transformer" /><category term="fpga" /><category term="accelerator" /><category term="memory-bandwidth" /><category term="vision-transformer" /><category term="fpga" /><category term="memory-bandwidth" /><category term="hardware-accelerator" /><category term="edge-ai" /><summary type="html"><![CDATA[ME-ViT: A Single-Load Memory-Efficient FPGA Accelerator for Vision Transformers]]></summary></entry><entry><title type="html">Daily Research: Neuromorphic Computing &amp;amp; Spiking Neural Networks</title><link href="/daily-roundup/neuromorphic/spiking-neural-networks/hardware/energy-efficiency/2026/03/30/daily-research-neuromorphic-snn.html" rel="alternate" type="text/html" title="Daily Research: Neuromorphic Computing &amp;amp; Spiking Neural Networks" /><published>2026-03-30T15:55:00+08:00</published><updated>2026-03-30T15:55:00+08:00</updated><id>/daily-roundup/neuromorphic/spiking-neural-networks/hardware/energy-efficiency/2026/03/30/daily-research-neuromorphic-snn</id><content type="html" xml:base="/daily-roundup/neuromorphic/spiking-neural-networks/hardware/energy-efficiency/2026/03/30/daily-research-neuromorphic-snn.html"><![CDATA[<h2 id="-todays-research-focus">🔍 Today’s Research Focus</h2>
+
+<p>Automated search across:</p>
+<ul>
+  <li>Neuromorphic computing architectures</li>
+  <li>Spiking neural network (SNN) accelerators</li>
+  <li>Probabilistic models hardware</li>
+  <li>Energy-efficient AI hardware</li>
+</ul>
+
+<hr />
+
+<h2 id="-papers-found">📄 Papers Found</h2>
+
+<h3 id="1-energy-efficient-multi-core-neuromorphic-architecture-for-deep-snn-training">1. Energy-Efficient Multi-Core Neuromorphic Architecture for Deep SNN Training</h3>
+
+<p><strong>Source:</strong> Nature Communications (March 2025)<br />
+<strong>Link:</strong> https://www.nature.com/articles/s41467-026-70586-x</p>
+
+<p><strong>Key Innovations:</strong></p>
+<ul>
+  <li>First multi-core architecture enabling backpropagation training for deep SNNs</li>
+  <li>Multi-engine core design with multi-level parallelism</li>
+  <li>Sparsity optimization for event-driven computation</li>
+  <li>FPGA validation demonstrating real-world feasibility</li>
+</ul>
+
+<p><strong>Why It Matters for AI Hardware:</strong></p>
+<ul>
+  <li><strong>Training on neuromorphic hardware</strong> - Most SNN accelerators only support inference; this enables on-chip training</li>
+  <li><strong>Energy efficiency</strong> - Event-driven sparsity reduces power consumption by orders of magnitude</li>
+  <li><strong>Scalability</strong> - Multi-core approach addresses the scaling challenges mentioned in recent ScienceDaily coverage</li>
+  <li><strong>Edge deployment potential</strong> - Training at the edge opens new applications in continual learning</li>
+</ul>
+
+<p><strong>Technical Insights:</strong></p>
+<ul>
+  <li>Deep SNNs (previously limited to shallow networks due to training challenges)</li>
+  <li>Backpropagation through time (BPTT) adapted for spike-based computation</li>
+  <li>Hardware-software co-design for sparsity exploitation</li>
+</ul>
+
+<hr />
+
+<h3 id="2-latency-coding-framework-for-deep-snns-with-ultra-low-latency">2. Latency Coding Framework for Deep SNNs with Ultra-Low Latency</h3>
+
+<p><strong>Source:</strong> arXiv (March 2025)<br />
+<strong>Link:</strong> https://arxiv.org/abs/2603.23206</p>
+
+<p><strong>Key Innovations:</strong></p>
+<ul>
+  <li>Time-to-First-Spike (TTFS) coding optimization</li>
+  <li>State-of-the-art accuracy with minimal inference latency</li>
+  <li>Superior energy efficiency through temporal coding</li>
+</ul>
+
+<p><strong>Why It Matters for AI Hardware:</strong></p>
+<ul>
+  <li><strong>Temporal computing</strong> - Uses time domain for information encoding, reducing hardware resources</li>
+  <li><strong>Ultra-low latency</strong> - Critical for real-time applications (robotics, autonomous systems)</li>
+  <li><strong>Accuracy-efficiency trade-off</strong> - Achieves competitive accuracy with ANNs while maintaining SNN efficiency</li>
+</ul>
+
+<p><strong>Technical Insights:</strong></p>
+<ul>
+  <li>TTFS coding: earlier spikes represent higher activation values</li>
+  <li>Surrogate gradient methods for training</li>
+  <li>Potential for analog implementation in mixed-signal circuits</li>
+</ul>
+
+<hr />
+
+<h3 id="3-surrogates-spikes-and-sparsity-snn-hyperparameters-on-hardware">3. Surrogates, Spikes, and Sparsity: SNN Hyperparameters on Hardware</h3>
+
+<p><strong>Source:</strong> arXiv (March 2025)<br />
+<strong>Link:</strong> https://arxiv.org/abs/2603.24891</p>
+
+<p><strong>Key Innovations:</strong></p>
+<ul>
+  <li>Systematic characterization of SNN hyperparameters</li>
+  <li>Hardware-aware performance analysis</li>
+  <li>Sparsity patterns and their impact on different architectures</li>
+</ul>
+
+<p><strong>Why It Matters for AI Hardware:</strong></p>
+<ul>
+  <li><strong>Design space exploration</strong> - Provides guidelines for SNN accelerator architects</li>
+  <li><strong>Sparsity exploitation</strong> - Shows how to design hardware that maximizes benefit from event-driven computation</li>
+  <li><strong>Surrogate gradient selection</strong> - Hardware implications of different training methods</li>
+</ul>
+
+<hr />
+
+<h3 id="4-scaling-neuromorphic-computing-for-ai-everywhere">4. Scaling Neuromorphic Computing for AI Everywhere</h3>
+
+<p><strong>Source:</strong> ScienceDaily / Research Summary (January 2025)<br />
+<strong>Link:</strong> https://www.sciencedaily.com/releases/2025/01/250123224036.htm</p>
+
+<p><strong>Key Points:</strong></p>
+<ul>
+  <li>Neuromorphic computing needs to scale up to compete with traditional methods</li>
+  <li>Brain-inspired architectures for energy-efficient AI</li>
+  <li>Applications in edge computing and always-on devices</li>
+</ul>
+
+<p><strong>Why It Matters for AI Hardware:</strong></p>
+<ul>
+  <li><strong>Market validation</strong> - Growing recognition that neuromorphic is essential for energy-constrained AI</li>
+  <li><strong>Scaling challenges</strong> - Highlights the need for better interconnects and memory architectures</li>
+  <li><strong>Commercial timeline</strong> - Predicts widespread adoption by 2027-2028</li>
+</ul>
+
+<hr />
+
+<h2 id="-key-trends-identified">💡 Key Trends Identified</h2>
+
+<h3 id="1-training-on-neuromorphic-hardware">1. Training on Neuromorphic Hardware</h3>
+<ul>
+  <li>Shift from inference-only to training-capable architectures</li>
+  <li>Backpropagation adaptation for spike-based computation</li>
+  <li>Opens path to continual learning and edge adaptation</li>
+</ul>
+
+<h3 id="2-temporal-coding-advances">2. Temporal Coding Advances</h3>
+<ul>
+  <li>TTFS and other time-domain encoding methods maturing</li>
+  <li>Reduced latency without sacrificing accuracy</li>
+  <li>Natural fit for asynchronous hardware implementations</li>
+</ul>
+
+<h3 id="3-sparsity-exploitation">3. Sparsity Exploitation</h3>
+<ul>
+  <li>Event-driven computation as key differentiator</li>
+  <li>Hardware designs optimizing for sparse activity</li>
+  <li>Potential for analog/mixed-signal implementations</li>
+</ul>
+
+<h3 id="4-scaling-challenges">4. Scaling Challenges</h3>
+<ul>
+  <li>Multi-core architectures addressing scaling needs</li>
+  <li>Interconnect and memory bottlenecks becoming critical</li>
+  <li>Need for standardized benchmarking</li>
+</ul>
+
+<hr />
+
+<h2 id="-implications-for-next-gen-ai-chips">🎯 Implications for Next-Gen AI Chips</h2>
+
+<h3 id="near-term-2025-2026">Near-term (2025-2026):</h3>
+<ul>
+  <li><strong>Hybrid architectures</strong> combining SNNs with traditional DNNs</li>
+  <li><strong>FPGA-based prototypes</strong> validating neuromorphic concepts</li>
+  <li><strong>Edge deployment</strong> for always-on, low-power applications</li>
+</ul>
+
+<h3 id="medium-term-2027-2028">Medium-term (2027-2028):</h3>
+<ul>
+  <li><strong>Commercial SNN accelerators</strong> for specific workloads</li>
+  <li><strong>Training-capable edge devices</strong> enabling continual learning</li>
+  <li><strong>Integration with sensors</strong> for event-driven perception</li>
+</ul>
+
+<h3 id="research-priorities">Research Priorities:</h3>
+<ol>
+  <li><strong>Hardware-software co-design</strong> for sparsity</li>
+  <li><strong>Training algorithms</strong> adapted to hardware constraints</li>
+  <li><strong>Benchmarking standards</strong> for fair comparison</li>
+  <li><strong>Mixed-signal implementations</strong> for analog computation</li>
+</ol>
+
+<hr />
+
+<h2 id="-related-reading">📚 Related Reading</h2>
+
+<ul>
+  <li><a href="/2026/03/30/daily-research-roundup.html">Daily Research Roundup: LLM Hardware &amp; World Models</a> (Today’s earlier post)</li>
+  <li>SpiNNaker and BrainScaleS systems (EBRAINS infrastructure)</li>
+  <li>Intel Loihi 2 and other commercial neuromorphic platforms</li>
+</ul>
+
+<hr />
+
+<p><em>This post was automatically generated by the Daily Research Search task at 2026-03-30 15:55.</em></p>]]></content><author><name>ROM4AI</name></author><category term="daily-roundup" /><category term="neuromorphic" /><category term="spiking-neural-networks" /><category term="hardware" /><category term="energy-efficiency" /><summary type="html"><![CDATA[🔍 Today’s Research Focus]]></summary></entry><entry><title type="html">Daily Research Roundup: LLM Hardware Acceleration &amp;amp; World Models</title><link href="/daily-roundup/llm/accelerator/world-models/hardware/2026/03/30/daily-research-roundup.html" rel="alternate" type="text/html" title="Daily Research Roundup: LLM Hardware Acceleration &amp;amp; World Models" /><published>2026-03-30T15:30:00+08:00</published><updated>2026-03-30T15:30:00+08:00</updated><id>/daily-roundup/llm/accelerator/world-models/hardware/2026/03/30/daily-research-roundup</id><content type="html" xml:base="/daily-roundup/llm/accelerator/world-models/hardware/2026/03/30/daily-research-roundup.html"><![CDATA[<h2 id="-todays-research-focus">🔍 Today’s Research Focus</h2>
+
+<p>Automated search across key research areas:</p>
+<ul>
+  <li>Neural symbolic AI</li>
+  <li>Embodied AI &amp; World Models</li>
+  <li>LLM Hardware Accelerators</li>
+  <li>AI Chip Architecture</li>
+</ul>
+
+<hr />
+
+<h2 id="-papers-found">📄 Papers Found</h2>
+
+<h3 id="1-arclight-a-lightweight-llm-inference-architecture-for-many-core-cpus">1. ArcLight: A Lightweight LLM Inference Architecture for Many-Core CPUs</h3>
+
+<p><strong>Source:</strong> arXiv (March 2025)<br />
+<strong>Link:</strong> https://arxiv.org/abs/2603.07770</p>
+
+<p><strong>Key Insights:</strong></p>
+<ul>
+  <li>Focuses on CPU-optimized LLM inference for edge deployment</li>
+  <li>Leverages ARM NEON SIMD and i8mm instructions for 8-bit integer acceleration</li>
+  <li>Addresses the gap between datacenter GPUs and edge CPUs</li>
+</ul>
+
+<p><strong>Relevance to AI Hardware:</strong></p>
+<ul>
+  <li>Demonstrates that specialized CPU architectures can compete with GPUs for inference</li>
+  <li>Highlights importance of mixed-precision (INT8) support in hardware</li>
+  <li>Shows potential for many-core CPU designs in LLM inference workloads</li>
+</ul>
+
+<hr />
+
+<h3 id="2-architecture-aware-llm-inference-optimization-on-amd-instinct-gpus">2. Architecture-Aware LLM Inference Optimization on AMD Instinct GPUs</h3>
+
+<p><strong>Source:</strong> arXiv (March 2025)<br />
+<strong>Link:</strong> https://arxiv.org/abs/2603.10031</p>
+
+<p><strong>Key Insights:</strong></p>
+<ul>
+  <li>Cross-architecture evaluation on AMD MI325X GPUs</li>
+  <li>Benchmarks models from 235B to 1T parameters</li>
+  <li>Compares MoE+MLA, Dense+GQA, and MoE+GQA architectures</li>
+</ul>
+
+<p><strong>Relevance to AI Hardware:</strong></p>
+<ul>
+  <li>Provides empirical data on how different model architectures map to GPU hardware</li>
+  <li>Critical for chip designers choosing between sparse (MoE) vs dense architectures</li>
+  <li>Shows memory bandwidth remains the key bottleneck at scale</li>
+</ul>
+
+<hr />
+
+<h3 id="3-supernetwork-based-efficient-mapping-to-mixed-precision-hardware">3. Supernetwork-based Efficient Mapping to Mixed-Precision Hardware</h3>
+
+<p><strong>Source:</strong> Nature Communications (March 2025)<br />
+<strong>Link:</strong> https://www.nature.com/articles/s41467-026-71071-1</p>
+
+<p><strong>Key Insights:</strong></p>
+<ul>
+  <li>Mixed-precision supernetwork for analog-digital accelerators</li>
+  <li>Joint optimization of model mapping and adaptation</li>
+  <li>Achieves faster search, higher accuracy, and improved energy efficiency</li>
+</ul>
+
+<p><strong>Relevance to AI Hardware:</strong></p>
+<ul>
+  <li>Addresses the challenge of deploying models on heterogeneous hardware</li>
+  <li>Shows promise for analog computing accelerators</li>
+  <li>Demonstrates hardware-software co-design importance</li>
+</ul>
+
+<hr />
+
+<h3 id="4-inspatio-worldfm-open-source-real-time-3d-world-model">4. InSpatio-WorldFM: Open-Source Real-Time 3D World Model</h3>
+
+<p><strong>Source:</strong> InSpatio (March 2025)<br />
+<strong>Link:</strong> https://www.inspatio.com/en/models/worldfm</p>
+
+<p><strong>Key Insights:</strong></p>
+<ul>
+  <li>Open-source world model for embodied AI</li>
+  <li>Real-time 3D environment simulation</li>
+  <li>Targets robotics and autonomous systems</li>
+</ul>
+
+<p><strong>Relevance to AI Hardware:</strong></p>
+<ul>
+  <li>World models require massive parallel computation for real-time simulation</li>
+  <li>Need for specialized hardware that can handle physics simulation + neural inference</li>
+  <li>Opportunity for domain-specific accelerators in embodied AI</li>
+</ul>
+
+<hr />
+
+<h3 id="5-intelligence-per-watt-local-llm-inference-study">5. Intelligence Per Watt: Local LLM Inference Study</h3>
+
+<p><strong>Source:</strong> arXiv (March 2025)<br />
+<strong>Link:</strong> https://arxiv.org/abs/2511.07885</p>
+
+<p><strong>Key Insights:</strong></p>
+<ul>
+  <li>Large-scale empirical study across 20+ models, 8 hardware accelerators</li>
+  <li>1M real-world queries spanning 2023-2025</li>
+  <li>Proposes “intelligence per watt” as unified metric</li>
+</ul>
+
+<p><strong>Relevance to AI Hardware:</strong></p>
+<ul>
+  <li>Provides hardware efficiency benchmarks across different accelerators</li>
+  <li>Critical data for chip designers optimizing for edge deployment</li>
+  <li>Shows evolution of local inference capabilities</li>
+</ul>
+
+<hr />
+
+<h2 id="-key-trends-identified">💡 Key Trends Identified</h2>
+
+<ol>
+  <li><strong>Edge Inference Focus</strong> - Multiple papers addressing CPU/GPU efficiency for local deployment</li>
+  <li><strong>Mixed-Precision Dominance</strong> - INT8/FP8 becoming standard for inference optimization</li>
+  <li><strong>Architecture Specialization</strong> - Hardware increasingly tailored to specific model types (MoE vs Dense)</li>
+  <li><strong>World Models Rising</strong> - Growing interest in embodied AI hardware requirements</li>
+  <li><strong>Benchmarking Standardization</strong> - Need for unified metrics like “intelligence per watt”</li>
+</ol>
+
+<hr />
+
+<h2 id="-recommendations-for-further-reading">🎯 Recommendations for Further Reading</h2>
+
+<p><strong>High Priority:</strong></p>
+<ul>
+  <li>ArcLight CPU architecture (edge inference)</li>
+  <li>AMD MI325X benchmarking study (datacenter scaling)</li>
+  <li>Nature Communications mixed-precision paper (analog accelerators)</li>
+</ul>
+
+<p><strong>Watch List:</strong></p>
+<ul>
+  <li>InSpatio WorldFM (embodied AI hardware implications)</li>
+  <li>Intelligence per watt study (efficiency metrics)</li>
+</ul>
+
+<hr />
+
+<p><em>This post was automatically generated by the Daily Research Search task.</em></p>]]></content><author><name>ROM4AI</name></author><category term="daily-roundup" /><category term="llm" /><category term="accelerator" /><category term="world-models" /><category term="hardware" /><summary type="html"><![CDATA[🔍 Today’s Research Focus]]></summary></entry><entry><title type="html">The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks</title><link href="/robotics/neuro-symbolic/vla/manipulation/energy-efficiency/2026/03/26/price-is-not-right-neuro-symbolic-vs-vla.html" rel="alternate" type="text/html" title="The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks" /><published>2026-03-26T00:00:00+08:00</published><updated>2026-03-26T00:00:00+08:00</updated><id>/robotics/neuro-symbolic/vla/manipulation/energy-efficiency/2026/03/26/price-is-not-right-neuro-symbolic-vs-vla</id><content type="html" xml:base="/robotics/neuro-symbolic/vla/manipulation/energy-efficiency/2026/03/26/price-is-not-right-neuro-symbolic-vs-vla.html"><![CDATA[<h1 id="the-price-is-not-right-neuro-symbolic-methods-outperform-vlas-on-structured-long-horizon-manipulation-tasks">The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks</h1>
 
 <blockquote>
   <table>
@@ -2416,1246 +3075,4 @@
 
 <h2 id="总结">总结</h2>
 
-<p>ZipServ 通过硬件感知的无损压缩设计，首次实现了在 GPU 上同时获得存储节省和推理加速。TCA-TBE 编码和 ZipGEMM 融合内核的创新设计，为 LLM 部署提供了新的优化方向，特别适用于对精度要求严格的生产环境。</p>]]></content><author><name>ROM4AI</name></author><category term="llm" /><category term="compression" /><category term="gpu" /><category term="inference" /><category term="systems" /><summary type="html"><![CDATA[原文链接: arXiv PDF]]></summary></entry><entry><title type="html">Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展</title><link href="/research/ai/hardware/risc-v/2026/03/23/design-conductor-autonomous-riscv-cpu.html" rel="alternate" type="text/html" title="Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展" /><published>2026-03-23T00:00:00+08:00</published><updated>2026-03-23T00:00:00+08:00</updated><id>/research/ai/hardware/risc-v/2026/03/23/design-conductor-autonomous-riscv-cpu</id><content type="html" xml:base="/research/ai/hardware/risc-v/2026/03/23/design-conductor-autonomous-riscv-cpu.html"><![CDATA[<h1 id="design-conductor-ai-自主构建-15ghz-risc-v-cpu-的突破性进展">Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展</h1>
-
-<blockquote>
-  <table>
-    <tbody>
-      <tr>
-        <td><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2603.08716">arXiv:2603.08716</a></td>
-        <td><a href="https://arxiv.org/pdf/2603.08716.pdf">PDF</a></td>
-      </tr>
-    </tbody>
-  </table>
-</blockquote>
-
-<h2 id="核心亮点">核心亮点</h2>
-
-<p>这是<strong>首次</strong>有自主 AI 代理从规格说明到 GDSII 完整构建出一个可工作的 CPU。Design Conductor (DC) 在 12 小时内自主构建了一个完整的 RISC-V CPU（VerCore），时钟频率达到 1.48 GHz，CoreMark 得分 3261，性能约等于 2011 年的 Intel Celeron SU2300。</p>
-
-<h2 id="摘要">摘要</h2>
-
-<p>Design Conductor 是一个端到端的自主代理系统，能够应用前沿模型的能力来构建半导体——从概念到可 tape-out 的 GDSII 布局文件。仅从一个 219 词的需求文档开始，DC 在 12 小时内完全自主地构建了多个微架构变体的完整 RISC-V CPU，满足 1.48 GHz 的时序要求。VerCore 的 CoreMark 得分为 3261。本报告回顾了 DC 的设计架构、方法论、关键组件，以及如何与 EDA 工具交互实现时序收敛，并讨论了前沿模型如何改进以更好地支持此类应用。</p>
-
-<h2 id="1-问题定义">1. 问题定义</h2>
-
-<p>芯片设计是一个高度耗时且昂贵的过程。将新的领先设计推向市场需要超过 4 亿美元，耗时 18-36 个月，即使有数百人的工程团队。芯片设计流程包括多个独立步骤：</p>
-
-<ul>
-  <li>架构定义</li>
-  <li>RTL 实现</li>
-  <li>测试平台实现和功能验证</li>
-  <li>前端综合</li>
-  <li>布局布线</li>
-  <li>功耗估计</li>
-  <li>封装</li>
-</ul>
-
-<p>其中最关键的挑战是<strong>极高的功能测试覆盖率要求</strong>——因为单次 tape-out 成本高达数千万美元，生产后”修复”bug 是不可行的。这导致验证成本占总成本的 50% 以上。</p>
-
-<blockquote>
-  <p>“由于这些成本和挑战，许多硅市场由少数供应商服务，初创企业的进入比软件行业更为罕见。”</p>
-</blockquote>
-
-<p>Design Conductor 的目标是通过长时程自主 AI 代理来改变这一范式，解决从概念到 GDSII 的整个问题。</p>
-
-<h2 id="2-design-conductor-架构">2. Design Conductor 架构</h2>
-
-<h3 id="21-核心能力">2.1 核心能力</h3>
-
-<p>DC 被设计为实现以下关键能力：</p>
-
-<p><strong>稳定长时程执行</strong>：芯片设计是复杂任务，包含多个子组件。DC 必须能够在消耗数百亿 token 的过程中持续向目标推进——功能正确、高性能的设计。</p>
-
-<p><strong>上下文管理</strong>：DC 必须为底层 LLM 提供做出良好决策所需的信息，同时精心管理有限的上下文窗口。</p>
-
-<p><strong>技术掌握</strong>：芯片设计需要特定领域的深度知识。DC 必须达到足够高的知识水平，能够与领域专家顺畅合作。</p>
-
-<p><strong>正确性与验证</strong>：当生产数百万单位时，”凭感觉设计芯片”是不可行的。DC 必须交付可验证的正确设计。</p>
-
-<p><strong>平衡探索与速度</strong>：芯片设计空间巨大。DC 必须能够探索该空间，同时避免陷入”兔子洞”，及时完成总体目标。</p>
-
-<p><strong>端到端操作</strong>：人类芯片设计过程中最昂贵和痛苦的部分是在 tape-out 前最后一刻需要 RTL 更改以满足时序目标或修复功能 bug。DC 必须执行相同的操作，同时保持必要的上下文和记忆。</p>
-
-<p><strong>基础设施</strong>：大规模芯片设计对硬件资源要求极高。VCD 跟踪文件可达数百 GB，EDA 工具在综合、布局和布线期间使用大量 DRAM。</p>
-
-<h3 id="22-系统架构">2.2 系统架构</h3>
-
-<p>DC 是一个可扩展的、基于云的应用程序，运行在分布式文件系统上。LLM 会话由工作服务器管理，所有服务器都同步到中央数据库。这些会话连接到存在于一个或多个执行环境中的工具服务器。</p>
-
-<p>上下文管理模块监控和控制各种会话的上下文窗口使用。DC Core 模块管理子代理和更高级别的算法（如进化算法），与下层 LLM 会话交互。</p>
-
-<p>特定知识通过专用知识库提供给 DC。记忆无限期存在并完全自主管理。单个 DC”实例”专用于一个客户的设计，确保代码、记忆或任何信息不会在客户之间交叉。</p>
-
-<h2 id="3-方法论">3. 方法论</h2>
-
-<h3 id="31-输入规格">3.1 输入规格</h3>
-
-<p>DC 的唯一用户输入是一个简洁的需求文档：</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>VerCore RISC-V Design Requirements Overview
-
-构建 VerCore，一个支持 RV32I 和 ZMMUL 的 RISC-V CPU 核心：
-- 指令缓存接口（32 位数据路径）
-- 数据缓存接口（32 位数据路径）
-- 其他接口信号：核心时钟输入、复位输入（低有效）
-- 简单 5 级流水线设计，顺序执行，单发射
-- 不支持压缩指令
-- 寄存器文件实现为触发器
-- CPI &lt;= 1.5
-- 目标时钟频率 1.6 GHz
-- 最大化 CoreMark 得分
-- 使用 ASAP7 平台/PDK 和 OpenROAD flow scripts 生成 GDSII
-</code></pre></div></div>
-
-<h3 id="32-设计流程">3.2 设计流程</h3>
-
-<p>DC 遵循以下流程：</p>
-
-<ol>
-  <li>
-    <p><strong>设计提案</strong>：DC 首先创建详细的架构设计提案，包括流水线阶段、冒险处理、转发逻辑等</p>
-  </li>
-  <li>
-    <p><strong>手动审查</strong>：DC 会”手动”和”细致”地审查提案的每个方面，确保设计在实现前是正确的</p>
-  </li>
-  <li>
-    <p><strong>模块实现</strong>：DC 构建每个模块的测试平台，在继续之前修复模块功能以确保测试通过</p>
-  </li>
-  <li>
-    <p><strong>集成测试</strong>：DC 使用 Spike 构建整体测试平台，在 DUT 上运行测试程序并确认设计的架构状态和内存事务与 Spike 报告匹配</p>
-  </li>
-  <li>
-    <p><strong>调试与修复</strong>：当发现与 Spike 的差异时，DC 观察条件并检查 VCD 文件调试问题。通常将 VCD 转换为 CSV 文件，使用 Python 能力简化处理</p>
-  </li>
-  <li>
-    <p><strong>PPA 收敛</strong>：所有测试程序通过后，DC 审查时序报告并进行 RTL 更改以实现 PPA（性能、功耗、面积）收敛</p>
-  </li>
-</ol>
-
-<h3 id="33-调试方法示例">3.3 调试方法示例</h3>
-
-<p>DC 在调试过程中编写了脚本来分析 VCD 文件：</p>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">pandas</span> <span class="k">as</span> <span class="n">pd</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nf">read_csv</span><span class="p">(</span><span class="sh">'</span><span class="s">vercore_tb.csv</span><span class="sh">'</span><span class="p">)</span>
-<span class="c1"># 比较预期和实际的寄存器写入
-# 追踪流水线状态，识别根本原因
-</span></code></pre></div></div>
-
-<p>通过 VCD 分析，DC 能够追踪问题的根本原因，提出修复方案，实施并再次测试。</p>
-
-<h2 id="4-实验结果">4. 实验结果</h2>
-
-<h3 id="41-关键指标">4.1 关键指标</h3>
-
-<table>
-  <thead>
-    <tr>
-      <th>指标</th>
-      <th>值</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>CoreMark 得分</td>
-      <td>3261</td>
-    </tr>
-    <tr>
-      <td>面积（不含缓存）</td>
-      <td>2809 µm²</td>
-    </tr>
-    <tr>
-      <td>时钟频率</td>
-      <td>1.48 GHz</td>
-    </tr>
-    <tr>
-      <td>工艺</td>
-      <td>ASAP7 7nm</td>
-    </tr>
-  </tbody>
-</table>
-
-<h3 id="42-vercore-流水线特性">4.2 VerCore 流水线特性</h3>
-
-<p>VerCore 采用 5 级流水线设计，具有以下特性：</p>
-
-<ul>
-  <li><strong>早期分支解析</strong>：在 ID 阶段尽可能早地解析分支</li>
-  <li><strong>早期转发</strong>：实现 EX→ID 转发以解决 ALU 依赖</li>
-  <li><strong>高效 Booth-Wallace 乘法器</strong>：4 级流水线，单独时钟频率达 2.57 GHz</li>
-  <li><strong>1 周期分支惩罚</strong>：DC 通过完整实现多个变体并生成 GDSII，得出结论：即使有更长的关键路径，1 周期分支惩罚设计也能满足时钟频率目标</li>
-</ul>
-
-<p>这些特性是 DC 自主发现的，并未包含在任何输入指令中。DC 本质上重新发现了原始 MIPS 5 级 RISC CPU 设计的关键路径，后者也采用了 1 周期分支惩罚！</p>
-
-<h3 id="43-流水线冒险处理">4.3 流水线冒险处理</h3>
-
-<p>DC 实现了完整的冒险检测和处理逻辑：</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>冒险类型</th>
-      <th>处理机制</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Load-use</td>
-      <td>stall IF/ID + PC 保持，插入 bubble</td>
-    </tr>
-    <tr>
-      <td>Branch/jalr</td>
-      <td>使用与 load-use 相同的检测，EX→ID 转发解决 ALU 依赖</td>
-    </tr>
-    <tr>
-      <td>Mul stall</td>
-      <td>全局 stall 保持所有流水线寄存器 + PC</td>
-    </tr>
-    <tr>
-      <td>Branch/jump taken</td>
-      <td>更新 PC 到目标，flush IF/ID，插入 bubble</td>
-    </tr>
-  </tbody>
-</table>
-
-<h2 id="5-前沿模型的教训">5. 前沿模型的教训</h2>
-
-<h3 id="51-架构推理">5.1 架构推理</h3>
-
-<p>基础模型需要额外帮助来像架构师一样推理。观察到模型做出次优设计选择的情况，需要大量 token 来优化。例如，转发实现最初往往导致过长的关键路径。只有在观察到时序结果后，模型才理解问题并修复。</p>
-
-<h3 id="52-rtl-和时序理解">5.2 RTL 和时序理解</h3>
-
-<p>观察到模型将 Verilog（事件驱动语言）推理为顺序代码的情况。虽然这不影响 DC 实现功能正确性，但使调试时序问题更具挑战性。</p>
-
-<blockquote>
-  <p>“DC 错误地推理减少依赖代码行数会缩短芯片中的关键路径。”</p>
-</blockquote>
-
-<p>这些错误最终会被纠正，因为 DC 可以访问工具的实际时序报告，但它们会减慢 DC 的进度并消耗额外 token。</p>
-
-<h3 id="53-规格要求">5.3 规格要求</h3>
-
-<p>输入规格必须以极其谨慎、严格和可验证/可测量的方式编写。例如，如果没有 CPI 要求，DC 有时会生成分支和转发性能明显较差的处理器。有了这一行，DC 会在测试平台中使用周期计数器来计算 Spike 跟踪中报告的每 PC 周期数来估计 CPI。</p>
-
-<h2 id="6-未来方向">6. 未来方向</h2>
-
-<h3 id="61-扩展">6.1 扩展</h3>
-
-<p>DC 扩展到非常大的代码库（如数百万行 Verilog）没有特别问题。在 13 级乱序处理器的代码库测试中，DC 能够像在 VerCore 上一样解决功能和时序问题。</p>
-
-<p>关键挑战不在于处理代码库的机制，而在于 DC 需要由特定设计领域经验丰富的架构师操作才能取得良好结果。</p>
-
-<h3 id="62-新设计流程">6.2 新设计流程</h3>
-
-<p>有了 DC 这样的系统，目前由 100 多人组成的团队将能够同时探索许多不同的设计、架构和产品想法，每个都从概念到 GDSII。这些团队将能够在 3-6 个月内 tape-out 最复杂的设计，而不是当前的 18-36 个月。</p>
-
-<blockquote>
-  <p>“未来团队中的高级工程师和大师级设计师将拥有更少的’工具操作’责任，而是依靠他们的判断和经验，DC 能够处理几乎所有其他工程工作。”</p>
-</blockquote>
-
-<p>公司还将在以前因量太小而无法盈利服务的应用中找到更多可寻址的 socket。</p>
-
-<h2 id="7-总结">7. 总结</h2>
-
-<p>Design Conductor 代表了芯片设计自动化的重大突破：</p>
-
-<p><strong>成就</strong>：</p>
-<ul>
-  <li>首次自主代理从 spec 到 GDSII 构建完整 CPU</li>
-  <li>12 小时内完成，1.48 GHz 时钟频率</li>
-  <li>CoreMark 3261，相当于 2011 年 Celeron 水平</li>
-  <li>自主发现优化技术（早期转发、Booth-Wallace 乘法器）</li>
-</ul>
-
-<p><strong>关键创新</strong>：</p>
-<ul>
-  <li>长时程稳定执行（数百亿 token）</li>
-  <li>端到端操作（RTL 到 GDSII）</li>
-  <li>验证驱动方法（Spike 比对、VCD 分析）</li>
-  <li>记忆系统管理跨会话上下文</li>
-</ul>
-
-<p><strong>局限性</strong>：</p>
-<ul>
-  <li>需要人类架构师指导以获得最佳结果</li>
-  <li>模型对 RTL/时序理解仍有改进空间</li>
-  <li>规格必须极其严格和可验证</li>
-</ul>
-
-<p><strong>未来影响</strong>：</p>
-<ul>
-  <li>设计周期从 18-36 个月缩短到 3-6 个月</li>
-  <li>小批量设计变得经济可行</li>
-  <li>工程师角色从工具操作转向架构决策</li>
-</ul>
-
-<p>这标志着 AI 在硬件设计领域的里程碑，展示了自主代理在复杂工程任务中的巨大潜力。</p>
-
-<h2 id="参考文献">参考文献</h2>
-
-<ol>
-  <li>Verkor Team. Design Conductor: An agent autonomously builds a 1.5 GHz Linux-capable RISC-V CPU. arXiv:2603.08716, 2026.</li>
-  <li>EEMBC. CoreMark EEMBC Benchmark. https://www.eembc.org/coremark/</li>
-  <li>RISC-V International. Spike, a RISC-V ISA Simulator. https://github.com/riscv-software-src/riscv-isa-sim</li>
-  <li>Andrew Waterman et al. The RISC-V Instruction Set Manual, Volume I: Base User-Level ISA. UC Berkeley, 2011.</li>
-</ol>]]></content><author><name>ROM4AI</name></author><category term="research" /><category term="ai" /><category term="hardware" /><category term="risc-v" /><category term="AI Agent" /><category term="Chip Design" /><category term="RISC-V" /><category term="Design Automation" /><category term="LLM" /><summary type="html"><![CDATA[Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展]]></summary></entry><entry><title type="html">模型够聪明之后，工程师该做什么：Harness Engineering 实战指南</title><link href="/engineering/ai/productivity/2026/03/23/harness-engineering-ai-coding.html" rel="alternate" type="text/html" title="模型够聪明之后，工程师该做什么：Harness Engineering 实战指南" /><published>2026-03-23T00:00:00+08:00</published><updated>2026-03-23T00:00:00+08:00</updated><id>/engineering/ai/productivity/2026/03/23/harness-engineering-ai-coding</id><content type="html" xml:base="/engineering/ai/productivity/2026/03/23/harness-engineering-ai-coding.html"><![CDATA[<h1 id="模型够聪明之后工程师该做什么harness-engineering-实战指南">模型够聪明之后，工程师该做什么：Harness Engineering 实战指南</h1>
-
-<blockquote>
-  <p><strong>原文来源</strong>: <a href="https://www.xiaohongshu.com/discovery/item/69ba69d8000000001d01ede6">小红书 - 模型够聪明之后，工程师该做什么</a></p>
-</blockquote>
-
-<p>最近科技圈在疯传一个数字：<strong>OpenAI 的 3 个工程师用 5 个月生成了 100 万行生产代码，没有一行是人手写的。</strong></p>
-
-<p>他们给这种工作方式起了个名字：<strong>Harness Engineering</strong>（编排工程）。</p>
-
-<p>这句话点破了本质：</p>
-
-<blockquote>
-  <p>模型已经够聪明了，问题出在你给它的环境不够好。</p>
-</blockquote>
-
-<p>同一个模型，换个环境设计，性能能差 <strong>64%</strong>。不是 AI 不行，是你没给它搭好”跑道”。</p>
-
-<hr />
-
-<h2 id="harness-engineering-的-6-个层次">Harness Engineering 的 6 个层次</h2>
-
-<h3 id="1️⃣-持久状态--解决-ai失忆问题">1️⃣ 持久状态 — 解决 AI”失忆”问题</h3>
-
-<p>每次对话 AI 都是白纸一张，你得用文件让它记住做到哪了。</p>
-
-<p><strong>实战要点</strong>：</p>
-<ul>
-  <li>使用 <code class="language-plaintext highlighter-rouge">memory/</code> 目录保存会话状态</li>
-  <li>每个任务创建独立的上下文文件</li>
-  <li>用 Git 跟踪状态变更历史</li>
-</ul>
-
-<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gh"># memory/task-state.md</span>
-<span class="p">-</span> [x] 需求分析完成
-<span class="p">-</span> [ ] 代码实现中 (进度：3/5 模块)
-<span class="p">-</span> [ ] 测试用例编写
-</code></pre></div></div>
-
-<h3 id="2️⃣-执行环境--给-ai-手和脚">2️⃣ 执行环境 — 给 AI 手和脚</h3>
-
-<p>不只是能写代码，还得能跑代码、看页面、查日志。</p>
-
-<p><strong>实战要点</strong>：</p>
-<ul>
-  <li>配置沙箱执行环境（Docker/容器）</li>
-  <li>提供日志访问权限</li>
-  <li>支持浏览器自动化（Playwright/Puppeteer）</li>
-</ul>
-
-<h3 id="3️⃣-上下文工程--对抗信息污染">3️⃣ 上下文工程 — 对抗信息污染</h3>
-
-<p>200K 的窗口实际可用只有 160K，信息越多推理越差。</p>
-
-<p><strong>实战要点</strong>：</p>
-<ul>
-  <li>只加载当前任务相关的文件</li>
-  <li>用摘要代替完整历史</li>
-  <li>定期清理过期上下文</li>
-</ul>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 示例：只加载相关文件</span>
-find src <span class="nt">-name</span> <span class="s2">"*.py"</span> | <span class="nb">grep</span> <span class="nt">-E</span> <span class="s2">"(core|api)"</span> | <span class="nb">head</span> <span class="nt">-20</span>
-</code></pre></div></div>
-
-<h3 id="4️⃣-反馈验证--闭合回路">4️⃣ 反馈验证 — 闭合回路</h3>
-
-<p>AI 说”做完了”不算数，测试通过了才算数。</p>
-
-<p><strong>实战要点</strong>：</p>
-<ul>
-  <li>每个任务必须有自动化测试</li>
-  <li>CI/CD 流水线集成</li>
-  <li>失败时自动回滚 + 错误报告</li>
-</ul>
-
-<h3 id="5️⃣-架构约束--防止代码漂移">5️⃣ 架构约束 — 防止代码漂移</h3>
-
-<p>AI 会复制坏模式，必须用规则机械化地拦住。</p>
-
-<p><strong>实战要点</strong>：</p>
-<ul>
-  <li>用 linter 强制执行代码规范</li>
-  <li>架构决策记录（ADR）</li>
-  <li>代码审查 checklist</li>
-</ul>
-
-<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># .github/copilot-rules.yaml</span>
-<span class="na">allowed_patterns</span><span class="pi">:</span>
-  <span class="pi">-</span> <span class="s2">"</span><span class="s">async/await</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">I/O"</span>
-  <span class="pi">-</span> <span class="s2">"</span><span class="s">type</span><span class="nv"> </span><span class="s">hints</span><span class="nv"> </span><span class="s">required"</span>
-<span class="na">forbidden_patterns</span><span class="pi">:</span>
-  <span class="pi">-</span> <span class="s2">"</span><span class="s">global</span><span class="nv"> </span><span class="s">mutable</span><span class="nv"> </span><span class="s">state"</span>
-  <span class="pi">-</span> <span class="s2">"</span><span class="s">bare</span><span class="nv"> </span><span class="s">except:"</span>
-</code></pre></div></div>
-
-<h3 id="6️⃣-编排协调--跨会话接力">6️⃣ 编排协调 — 跨会话接力</h3>
-
-<p>一个会话做不完的事，怎么让下一个 AI 接着做。</p>
-
-<p><strong>实战要点</strong>：</p>
-<ul>
-  <li>标准化的交接文档格式</li>
-  <li>任务队列管理</li>
-  <li>会话间状态同步机制</li>
-</ul>
-
-<hr />
-
-<h2 id="关键洞察判断力才是核心竞争力">关键洞察：判断力才是核心竞争力</h2>
-
-<blockquote>
-  <p>工具层的配置很快就能学会，真正拉开差距的是<strong>判断力</strong>——你能不能定义什么叫”好”、什么叫”做完了”、什么架构约束是必须守住的。</p>
-</blockquote>
-
-<p><strong>AI 擅长生成和执行，人擅长判断和决策。</strong></p>
-
-<p>最好的方式不是跟 AI 抢同一件事，而是各司其职：</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>AI 负责</th>
-      <th>人负责</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>代码生成</td>
-      <td>定义验收标准</td>
-    </tr>
-    <tr>
-      <td>测试执行</td>
-      <td>判断测试是否充分</td>
-    </tr>
-    <tr>
-      <td>文档草稿</td>
-      <td>审核技术准确性</td>
-    </tr>
-    <tr>
-      <td>重构建议</td>
-      <td>评估架构影响</td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-
-<h2 id="判断力从哪里来">判断力从哪里来？</h2>
-
-<blockquote>
-  <p>判断力来自对计算机科学体系化的理解 + 持续和 AI 协作的实践。</p>
-</blockquote>
-
-<p>不需要你手写排序算法，但你得知道：</p>
-<ul>
-  <li>这个复杂度在当前规模下行不行</li>
-  <li>这个架构选择对扩展性意味着什么</li>
-  <li>这个技术债将来要花多少代价</li>
-</ul>
-
-<hr />
-
-<h2 id="行动清单">行动清单</h2>
-
-<p>如果你今天开始实践 Harness Engineering：</p>
-
-<ol>
-  <li><strong>搭建持久状态系统</strong> — 创建 <code class="language-plaintext highlighter-rouge">memory/</code> 目录和状态跟踪模板</li>
-  <li><strong>配置执行环境</strong> — 确保 AI 能跑代码、看日志、访问测试</li>
-  <li><strong>定义架构约束</strong> — 写清楚什么能做、什么不能做</li>
-  <li><strong>建立反馈闭环</strong> — 每个任务必须有自动化验证</li>
-  <li><strong>设计交接协议</strong> — 标准化跨会话协作格式</li>
-</ol>
-
-<hr />
-
-<h2 id="写在最后">写在最后</h2>
-
-<p>Harness Engineering 不是要取代工程师，而是要<strong>放大工程师的价值</strong>。</p>
-
-<p>当 AI 处理生成和执行时，你可以把精力集中在：</p>
-<ul>
-  <li>理解用户需求</li>
-  <li>设计系统架构</li>
-  <li>做出关键决策</li>
-  <li>探索创新方向</li>
-</ul>
-
-<p>这才是工程师该做的事。</p>
-
-<hr />
-
-<h2 id="相关资源">相关资源</h2>
-
-<ul>
-  <li><a href="https://docs.anthropic.com/claude-code/">Claude Code Documentation</a></li>
-  <li><a href="https://github.com/context-engineering/awesome-context-engineering">Context Engineering Best Practices</a></li>
-  <li><a href="https://github.com/rome/ai-dev-patterns">AI-Assisted Development Patterns</a></li>
-</ul>
-
-<hr />
-
-<table>
-  <tbody>
-    <tr>
-      <td>*Posted on 2026-03-23</td>
-      <td>Categories: Engineering, AI, Productivity*</td>
-    </tr>
-  </tbody>
-</table>]]></content><author><name>ROM4AI</name></author><category term="engineering" /><category term="ai" /><category term="productivity" /><category term="harness-engineering" /><category term="ai-coding" /><category term="claude-code" /><category term="developer-productivity" /><category term="context-engineering" /><summary type="html"><![CDATA[模型够聪明之后，工程师该做什么：Harness Engineering 实战指南]]></summary></entry><entry><title type="html">History-Guided Video Diffusion: 用历史引导实现超长视频生成</title><link href="/research/ai/video-generation/diffusion-models/2026/03/23/history-guided-video-diffusion.html" rel="alternate" type="text/html" title="History-Guided Video Diffusion: 用历史引导实现超长视频生成" /><published>2026-03-23T00:00:00+08:00</published><updated>2026-03-23T00:00:00+08:00</updated><id>/research/ai/video-generation/diffusion-models/2026/03/23/history-guided-video-diffusion</id><content type="html" xml:base="/research/ai/video-generation/diffusion-models/2026/03/23/history-guided-video-diffusion.html"><![CDATA[<h1 id="history-guided-video-diffusion-用历史引导实现超长视频生成">History-Guided Video Diffusion: 用历史引导实现超长视频生成</h1>
-
-<blockquote>
-  <table>
-    <tbody>
-      <tr>
-        <td><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2502.06764">arXiv:2502.06764</a></td>
-        <td><a href="https://arxiv.org/pdf/2502.06764.pdf">PDF</a></td>
-      </tr>
-    </tbody>
-  </table>
-</blockquote>
-
-<p><strong>会议</strong>: ICML 2025 (Proceedings of the 42nd International Conference on Machine Learning)</p>
-
-<p><strong>机构</strong>: MIT, Carnegie Mellon University, Harvard</p>
-
-<h2 id="核心亮点">核心亮点</h2>
-
-<p>本文提出<strong>Diffusion Forcing Transformer (DFoT)</strong>和<strong>History Guidance (HG)</strong>，实现了灵活的历史帧条件视频生成。该方法能够稳定生成<strong>862 帧</strong>的超长导航视频——远超训练集最大视频长度，性能媲美需要<strong>一个数量级更多计算资源</strong>的行业模型。</p>
-
-<h2 id="摘要">摘要</h2>
-
-<p>Classifier-free guidance (CFG) 是扩散模型中提升条件生成质量的关键技术。在视频扩散中，自然地将可变数量的上下文帧（称为”历史”）作为条件变量。然而，使用可变长度历史进行引导面临两个关键挑战：<strong>仅支持固定大小条件输入的架构</strong>，以及<strong>CFG 风格的历史丢弃经验上表现不佳</strong>。</p>
-
-<p>本文提出 Diffusion Forcing Transformer (DFoT)——一个视频扩散架构和理论基础的训练目标，共同实现了对灵活数量历史帧的条件化。进而引入 History Guidance，一系列由 DFoT 独特支持的引导方法。最简单形式（vanilla history guidance）已显著提升视频生成质量和时间一致性。更高级的方法（history guidance across time and frequency）进一步增强运动动态，实现对分布外历史的组合泛化，并能稳定 rollout 超长视频。</p>
-
-<h2 id="1-问题定义">1. 问题定义</h2>
-
-<h3 id="11-视频扩散中的条件化挑战">1.1 视频扩散中的条件化挑战</h3>
-
-<p>视频扩散模型是条件扩散模型 <code class="language-plaintext highlighter-rouge">p(x|c)</code>，其中 <code class="language-plaintext highlighter-rouge">x</code> 表示要生成的帧，<code class="language-plaintext highlighter-rouge">c</code> 表示条件（如文本提示或观察到的 prior 帧）。在视频生成中，历史帧作为条件变量至关重要，特别是对于自回归扩展新生成的视频。</p>
-
-<blockquote>
-  <p>“然而，我们发现使用可变长度历史进行引导面临两个关键挑战：仅支持固定大小条件输入的架构，以及 CFG 风格的历史丢弃经验上表现不佳。”</p>
-</blockquote>
-
-<h3 id="12-现有方法的局限">1.2 现有方法的局限</h3>
-
-<p><strong>固定长度条件限制</strong>：</p>
-<ul>
-  <li>DiT 或 U-Net 基扩散模型通常使用 AdaLN 层或沿通道维度拼接来注入条件</li>
-  <li>这种设计将条件限制为固定大小向量</li>
-  <li>某些模型采用序列编码器处理可变长度条件（如文本输入），但这些编码器通常是预训练的，无法与扩散模型共享参数来编码历史帧</li>
-  <li>因此，引导被限制为固定长度且通常较短的历史</li>
-</ul>
-
-<p><strong>Framewise Binary Dropout 表现不佳</strong>：</p>
-<ul>
-  <li>CFG 通常使用单个网络联合表示条件和无条件扩散模型，通过随机丢弃条件 <code class="language-plaintext highlighter-rouge">c</code> 实现</li>
-  <li>当扩展到历史引导时，这种二元丢弃训练经验上表现次优</li>
-  <li>导致样本质量显著下降</li>
-</ul>
-
-<h3 id="13-核心研究问题">1.3 核心研究问题</h3>
-
-<blockquote>
-  <p>“能否使用不同部分的历史——可变长度、帧子集、甚至不同的图像域频率——作为视频生成的引导形式？”</p>
-</blockquote>
-
-<h2 id="2-方法">2. 方法</h2>
-
-<h3 id="21-diffusion-forcing-transformer-dfot">2.1 Diffusion Forcing Transformer (DFoT)</h3>
-
-<p>DFoT 扩展了 Diffusion Forcing 中的”noising-as-masking”范式到非因果 transformer，通过<strong>对每帧应用独立噪声级别</strong>来训练视频扩散模型。</p>
-
-<h4 id="核心设计">核心设计</h4>
-
-<p><strong>传统视频扩散 vs DFoT</strong>：</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>特性</th>
-      <th>传统方法</th>
-      <th>DFoT</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>噪声级别</td>
-      <td>所有 token 统一</td>
-      <td>每帧独立变化</td>
-    </tr>
-    <tr>
-      <td>历史处理</td>
-      <td>单独编码器 + AdaLN 注入</td>
-      <td>不区分历史和生成帧</td>
-    </tr>
-    <tr>
-      <td>条件化</td>
-      <td>固定长度</td>
-      <td>任意子集</td>
-    </tr>
-    <tr>
-      <td>架构兼容性</td>
-      <td>需专门设计</td>
-      <td>兼容现有 DiT/U-ViT</td>
-    </tr>
-  </tbody>
-</table>
-
-<p><strong>训练目标</strong>：</p>
-
-<p>给定 T 帧视频剪辑 <code class="language-plaintext highlighter-rouge">x_T</code>，定义 <code class="language-plaintext highlighter-rouge">H ⊂ T</code> 为用于条件的历史帧索引，<code class="language-plaintext highlighter-rouge">G = T \ H</code> 为要生成的帧索引。目标是建模条件分布 <code class="language-plaintext highlighter-rouge">p(x_G | x_H)</code>。</p>
-
-<p>DFoT 对序列所有帧去噪，其中帧具有独立变化的噪声级别。在采样时，可以通过噪声选择性掩码历史的部分，实现灵活的条件化和引导。</p>
-
-<h4 id="理论-justification">理论 justification</h4>
-
-<p>通过变分下界提供训练目标的理论 justification。DFoT 可以高效地通过微调预训练视频扩散模型实现。</p>
-
-<h3 id="22-history-guidance-hg-家族">2.2 History Guidance (HG) 家族</h3>
-
-<p>在采样时，DFoT 支持一系列历史条件引导方法：</p>
-
-<h4 id="221-vanilla-history-guidance-hg-v">2.2.1 Vanilla History Guidance (HG-v)</h4>
-
-<p>最简单的形式，使用<strong>任意长度的历史</strong>作为 CFG 的条件变量：</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>∇ log p_k(x_k^G) + ω [∇ log p_k(x_k^G | x_H) - ∇ log p_k(x_k^G)]
-</code></pre></div></div>
-
-<p>其中 <code class="language-plaintext highlighter-rouge">ω ≥ 1</code> 是引导尺度。</p>
-
-<blockquote>
-  <p>“值得注意的是，即使这种简单方法也显著增强了视频质量。”</p>
-</blockquote>
-
-<h4 id="222-temporal-history-guidance-hg-t">2.2.2 Temporal History Guidance (HG-t)</h4>
-
-<p>组合不同历史窗口的分数：</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>s(x) = ω1 · s(x | H1) + ω2 · s(x | H2) - s(x | ∅)
-</code></pre></div></div>
-
-<p>其中 <code class="language-plaintext highlighter-rouge">H1</code> 和 <code class="language-plaintext highlighter-rouge">H2</code> 是不同的历史子序列（如 <code class="language-plaintext highlighter-rouge">{0,1,2}</code> 和 <code class="language-plaintext highlighter-rouge">{1,2,3}</code>）。</p>
-
-<p><strong>关键优势</strong>：</p>
-<ul>
-  <li>实现对分布外（OOD）历史的鲁棒性</li>
-  <li>通过组合分布内短历史窗口近似严格 OOD 历史</li>
-</ul>
-
-<h4 id="223-fractional-history-guidance-hg-f">2.2.3 Fractional History Guidance (HG-f)</h4>
-
-<p>对历史窗口应用<strong>不同程度的噪声腐蚀</strong>，有效充当历史帧的”低通滤波器”：</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>s(x) = ∇ log p_k(x_k^G | x_H^{k_H})
-</code></pre></div></div>
-
-<p>其中 <code class="language-plaintext highlighter-rouge">k_H</code> 是分数掩码程度（如 <code class="language-plaintext highlighter-rouge">k_H = 0.8</code>）。</p>
-
-<p><strong>扩展</strong>：通过轻微修改，可以针对特定频率带宽增强生成视频的动态程度。</p>
-
-<h4 id="224-history-guidance-across-time-and-frequency-hg-tf">2.2.4 History Guidance Across Time and Frequency (HG-tf)</h4>
-
-<p>组合 HG-t 和 HG-f 创建全面的历史引导范式：</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>s(x) = ω_t · [s(x | H1) + s(x | H2)] + ω_f · s(x | H^{k_H})
-</code></pre></div></div>
-
-<h3 id="23-实现细节">2.3 实现细节</h3>
-
-<h4 id="架构配置">架构配置</h4>
-
-<p><strong>Kinetics-600 模型</strong>：</p>
-<ul>
-  <li>Backbone: DiT</li>
-  <li>层数：28</li>
-  <li>隐藏大小：1152</li>
-  <li>注意力头：16</li>
-  <li>训练步数：640k</li>
-  <li>批量大小：192</li>
-</ul>
-
-<p><strong>RealEstate10K 模型</strong>：</p>
-<ul>
-  <li>Backbone: U-ViT</li>
-  <li>层配置：<code class="language-plaintext highlighter-rouge">[ResNet×2, Transformer×2] × 4</code></li>
-  <li>隐藏大小：<code class="language-plaintext highlighter-rouge">[128, 256, 576, 1152]</code></li>
-  <li>训练步数：500k</li>
-</ul>
-
-<p><strong>Minecraft 模型</strong>：</p>
-<ul>
-  <li>Backbone: DiT</li>
-  <li>层数：12</li>
-  <li>隐藏大小：768</li>
-  <li>输入：50 帧 256×256</li>
-</ul>
-
-<h4 id="训练技巧">训练技巧</h4>
-
-<p><strong>帧跳跃（Frame Skip）</strong>：</p>
-<ul>
-  <li>Kinetics-600: stride=1</li>
-  <li>Minecraft: stride=2</li>
-  <li>RealEstate10K: 从 10 开始递增到最大可能</li>
-</ul>
-
-<p><strong>Loss 重加权</strong>：</p>
-<ul>
-  <li>min-SNR: Kinetics 和 robot learning</li>
-  <li>Sigmoid: RealEstate10K 和 Minecraft</li>
-</ul>
-
-<p><strong>噪声调度偏移</strong>：<code class="language-plaintext highlighter-rouge">0.125</code>，显著提升样本质量</p>
-
-<p><strong>参数化</strong>：v-parameterization（除 robot 模型使用 x0）</p>
-
-<h2 id="3-实验结果">3. 实验结果</h2>
-
-<h3 id="31-kinetics-600-基准测试">3.1 Kinetics-600 基准测试</h3>
-
-<p><strong>任务设置</strong>：条件化前 5 帧历史，预测接下来 11 帧</p>
-
-<p><strong>FVD 比较</strong>（越低越好）：</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>方法</th>
-      <th>FVD</th>
-      <th>参数量</th>
-      <th>批量大小</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Video Diffusion</td>
-      <td>~200</td>
-      <td>1.1B</td>
-      <td>256</td>
-    </tr>
-    <tr>
-      <td>MAGVIT</td>
-      <td>~190</td>
-      <td>-</td>
-      <td>256</td>
-    </tr>
-    <tr>
-      <td>MAGVIT-v2</td>
-      <td>~185</td>
-      <td>-</td>
-      <td>256</td>
-    </tr>
-    <tr>
-      <td>W.A.L.T</td>
-      <td>~175</td>
-      <td>-</td>
-      <td>512</td>
-    </tr>
-    <tr>
-      <td>Rolling Diffusion</td>
-      <td>~190</td>
-      <td>1.2B</td>
-      <td>512</td>
-    </tr>
-    <tr>
-      <td><strong>DFoT (scratch)</strong></td>
-      <td><strong>181.6</strong></td>
-      <td>673M</td>
-      <td>192</td>
-    </tr>
-    <tr>
-      <td><strong>DFoT + HG-v</strong></td>
-      <td><strong>170.4</strong></td>
-      <td>673M</td>
-      <td>192</td>
-    </tr>
-    <tr>
-      <td><strong>DFoT + HG-f</strong></td>
-      <td><strong>170.4</strong></td>
-      <td>673M</td>
-      <td>192</td>
-    </tr>
-  </tbody>
-</table>
-
-<blockquote>
-  <p>“尽管资源劣势，DFoT 证明与这些强基线高度竞争。仅略落后于 W.A.L.T，与 MAGVIT-v2 相当，并超越其他。”</p>
-</blockquote>
-
-<h3 id="32-history-guidance-效果">3.2 History Guidance 效果</h3>
-
-<h4 id="引导尺度消融">引导尺度消融</h4>
-
-<p><strong>FVD vs 引导尺度 ω</strong>：</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>ω</th>
-      <th>DFoT + HG-v</th>
-      <th>BD + HG-v</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>1.0</td>
-      <td>208.0</td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td>1.5</td>
-      <td><strong>181.6</strong></td>
-      <td>196.0</td>
-    </tr>
-    <tr>
-      <td>2.0</td>
-      <td>185.0</td>
-      <td>188.0</td>
-    </tr>
-    <tr>
-      <td>2.5</td>
-      <td>190.0</td>
-      <td><strong>185.0</strong></td>
-    </tr>
-    <tr>
-      <td>3.0</td>
-      <td>195.0</td>
-      <td>192.0</td>
-    </tr>
-    <tr>
-      <td>4.0</td>
-      <td>210.0</td>
-      <td>220.0</td>
-    </tr>
-  </tbody>
-</table>
-
-<p><strong>最优配置</strong>：<code class="language-plaintext highlighter-rouge">ω = 1.5</code> 时 DFoT 达到最低 FVD 181.6，而 Binary-Dropout (BD) 为 196.0</p>
-
-<p><strong>定性比较</strong>：DFoT 生成一致、高质量样本，而 BD 难以与历史帧保持一致并产生伪影。</p>
-
-<h3 id="33-分布外ood历史泛化">3.3 分布外（OOD）历史泛化</h3>
-
-<p><strong>任务</strong>：给定 4 帧历史（不同旋转角度），生成 4 帧插值</p>
-
-<p><strong>旋转角度分布</strong>：</p>
-<ul>
-  <li>训练集：通常 &lt; 100°</li>
-  <li>OOD 定义：&gt; 140°（训练集中 &lt; 100 个场景）</li>
-</ul>
-
-<p><strong>LPIPS 比较</strong>（越低越好）：</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>方法</th>
-      <th>ID (0-100°)</th>
-      <th>Slight OOD (100-140°)</th>
-      <th>OOD (&gt;140°)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>标准 CFG</td>
-      <td>0.15</td>
-      <td>0.28</td>
-      <td>0.45</td>
-    </tr>
-    <tr>
-      <td><strong>HG-t</strong></td>
-      <td><strong>0.14</strong></td>
-      <td><strong>0.18</strong></td>
-      <td><strong>0.22</strong></td>
-    </tr>
-  </tbody>
-</table>
-
-<blockquote>
-  <p>“通过组合分布内短历史窗口，HG-t 能有效近似训练期间未见过的严格 OOD 历史。”</p>
-</blockquote>
-
-<h3 id="34-长上下文生成minecraft">3.4 长上下文生成（Minecraft）</h3>
-
-<p><strong>任务设置</strong>：</p>
-<ul>
-  <li>训练：50 帧 DFoT 模型，条件化历史最长 25 帧</li>
-  <li>测试：自回归扩散接下来 25 帧，rollout 5 次共 125 帧</li>
-</ul>
-
-<p><strong>FVD 比较</strong>：</p>
-<ul>
-  <li>标准条件扩散（全上下文）：97.625</li>
-  <li><strong>DFoT + HG-t</strong>: <strong>79.19</strong></li>
-</ul>
-
-<p><strong>定性观察</strong>：DFoT 的预测在大多数帧上与 ground truth 语义对齐，而长上下文模型无时间引导会遭受高维上下文问题，更可能在历史中看到 OOD 帧。</p>
-
-<h3 id="35-机器人模仿学习">3.5 机器人模仿学习</h3>
-
-<p><strong>任务</strong>：水果交换任务——使用第三个槽交换两个水果的位置</p>
-
-<p><strong>挑战</strong>：</p>
-<ul>
-  <li>需要长期记忆（记住水果初始位置）</li>
-  <li>需要局部反应行为（应对人类扰动）</li>
-</ul>
-
-<p><strong>基线</strong>：</p>
-<ul>
-  <li>Markov 模型：仅基于当前观察扩散接下来动作</li>
-  <li>2-frame 模型：看到前两帧作为短历史</li>
-  <li>Full-history 模型：条件化到目前为止的整个历史</li>
-</ul>
-
-<p><strong>成功率比较</strong>：</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>方法</th>
-      <th>无扰动</th>
-      <th>人类扰动</th>
-      <th>强扰动</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Markov</td>
-      <td>0%</td>
-      <td>0%</td>
-      <td>0%</td>
-    </tr>
-    <tr>
-      <td>2-frame</td>
-      <td>0%</td>
-      <td>15%</td>
-      <td>0%</td>
-    </tr>
-    <tr>
-      <td>Full-history</td>
-      <td>75%</td>
-      <td>12%</td>
-      <td>0%</td>
-    </tr>
-    <tr>
-      <td><strong>DFoT + HG</strong></td>
-      <td><strong>85%</strong></td>
-      <td><strong>83%</strong></td>
-      <td><strong>28%</strong></td>
-    </tr>
-  </tbody>
-</table>
-
-<blockquote>
-  <p>“DFoT 组合引导实际上是在拼接子轨迹做决策，或至少同时从全上下文模型借用记忆，同时使用短上下文模型保持局部反应性。”</p>
-</blockquote>
-
-<p><strong>引导配置</strong>：</p>
-<ul>
-  <li>Full-history 模型：权重 0.2</li>
-  <li>1-frame 模型：权重 0.45</li>
-  <li>4-frame 模型：权重 0.45</li>
-</ul>
-
-<h3 id="36-超长视频生成realestate10k">3.6 超长视频生成（RealEstate10K）</h3>
-
-<p><strong>核心成果</strong>：从单张图像生成<strong>862 帧</strong>导航视频</p>
-
-<p><strong>生成流程</strong>：</p>
-
-<p><strong>Phase 1: Rollout</strong></p>
-<ul>
-  <li>滑动窗口方法：条件化最后 4 帧生成接下来 4 帧</li>
-  <li>第一次迭代例外：条件化单张图像生成接下来 7 帧</li>
-  <li>用户导航 UI：指定水平/垂直角度和移动距离</li>
-  <li>默认引导：HG-f (<code class="language-plaintext highlighter-rouge">ω=4, k_H=0.4</code>)</li>
-  <li>挑战场景切换：HG-v (<code class="language-plaintext highlighter-rouge">ω=4</code>)，当方向变化 &gt;30° 或移动距离超过阈值</li>
-</ul>
-
-<p><strong>Phase 2: Interpolation</strong></p>
-<ul>
-  <li>插值因子：7×</li>
-  <li>每对连续生成帧之间插值 6 帧</li>
-  <li>相机姿态：SLERP 插值旋转矩阵，线性插值平移向量</li>
-  <li>引导：HG-v (<code class="language-plaintext highlighter-rouge">ω=1.5</code>) 确保平滑一致</li>
-</ul>
-
-<p><strong>稳定化技术</strong>：</p>
-<ul>
-  <li>先前生成帧标记为轻微噪声 (<code class="language-plaintext highlighter-rouge">k=0.02</code>)</li>
-  <li>防止误差累积</li>
-</ul>
-
-<p><strong>与基线比较</strong>：</p>
-<ul>
-  <li>SD (Standard Diffusion): ~30 帧失败</li>
-  <li>4DiM (文献最佳): 最大 32 帧</li>
-  <li><strong>DFoT + HG</strong>: <strong>862 帧稳定 rollout</strong></li>
-</ul>
-
-<h2 id="4-技术亮点">4. 技术亮点</h2>
-
-<h3 id="41-微调效率">4.1 微调效率</h3>
-
-<p>从预训练 full-sequence (FS) 模型微调 DFoT：</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>配置</th>
-      <th>训练步数</th>
-      <th>FVD</th>
-      <th>训练 Loss</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>DFoT (scratch)</td>
-      <td>640k</td>
-      <td>4.3</td>
-      <td>0.108</td>
-    </tr>
-    <tr>
-      <td>DFoT (fine-tuned)</td>
-      <td>40k</td>
-      <td>5.2</td>
-      <td>0.110</td>
-    </tr>
-    <tr>
-      <td>DFoT (fine-tuned)</td>
-      <td>80k</td>
-      <td>4.7</td>
-      <td><strong>0.106</strong></td>
-    </tr>
-  </tbody>
-</table>
-
-<blockquote>
-  <p>“微调模型仅 40k 步后达到与从头训练 405k 步相当的训练 loss——约<strong>10×加速</strong>。”</p>
-</blockquote>
-
-<h3 id="42-计算资源对比">4.2 计算资源对比</h3>
-
-<p><strong>DFoT 资源</strong>：</p>
-<ul>
-  <li>参数量：673M (DiT/XL)</li>
-  <li>批量大小：192</li>
-  <li>GPU: 12×H100, ~5 天</li>
-</ul>
-
-<p><strong>行业基线</strong>：</p>
-<ul>
-  <li>Video Diffusion: 1.1B, batch=256</li>
-  <li>W.A.L.T: DiT/L, batch=512</li>
-  <li>Rolling Diffusion: 1.2B, batch=512</li>
-</ul>
-
-<blockquote>
-  <p>“MAGVIT 和 MAGVIT-v2 使用与 DFoT 相当的资源，而 Video Diffusion、W.A.L.T 和 Rolling Diffusion 需要显著更多资源。”</p>
-</blockquote>
-
-<h3 id="43-引导方案总结">4.3 引导方案总结</h3>
-
-<table>
-  <thead>
-    <tr>
-      <th>方法</th>
-      <th>适用场景</th>
-      <th>引导尺度</th>
-      <th>特点</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>HG-v</td>
-      <td>通用提升</td>
-      <td>ω=1.5-4.0</td>
-      <td>简单有效</td>
-    </tr>
-    <tr>
-      <td>HG-t</td>
-      <td>OOD 泛化</td>
-      <td>ω1=ω2=2.0</td>
-      <td>组合历史窗口</td>
-    </tr>
-    <tr>
-      <td>HG-f</td>
-      <td>长 rollout 稳定</td>
-      <td>ω=4.0, k_H=0.4</td>
-      <td>分数掩码</td>
-    </tr>
-    <tr>
-      <td>HG-tf</td>
-      <td>综合场景</td>
-      <td>组合</td>
-      <td>时间 + 频率</td>
-    </tr>
-  </tbody>
-</table>
-
-<h2 id="5-与相关工作的对比">5. 与相关工作的对比</h2>
-
-<h3 id="51-vs-classifier-free-guidance">5.1 vs Classifier-Free Guidance</h3>
-
-<table>
-  <thead>
-    <tr>
-      <th>特性</th>
-      <th>传统 CFG</th>
-      <th>History Guidance</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>条件变量</td>
-      <td>文本/单帧</td>
-      <td>任意历史子集</td>
-    </tr>
-    <tr>
-      <td>训练方式</td>
-      <td>二元丢弃</td>
-      <td>独立噪声级别</td>
-    </tr>
-    <tr>
-      <td>引导形式</td>
-      <td>单条件</td>
-      <td>多条件组合</td>
-    </tr>
-    <tr>
-      <td>OOD 鲁棒性</td>
-      <td>有限</td>
-      <td>强（HG-t）</td>
-    </tr>
-  </tbody>
-</table>
-
-<h3 id="52-vs-diffusion-forcing">5.2 vs Diffusion Forcing</h3>
-
-<table>
-  <thead>
-    <tr>
-      <th>特性</th>
-      <th>Diffusion Forcing</th>
-      <th>DFoT</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>架构</td>
-      <td>因果 state-space</td>
-      <td>非因果 state-free</td>
-    </tr>
-    <tr>
-      <td>应用</td>
-      <td>序列建模</td>
-      <td>视频生成</td>
-    </tr>
-    <tr>
-      <td>条件化</td>
-      <td>因果历史</td>
-      <td>任意子集</td>
-    </tr>
-    <tr>
-      <td>引导</td>
-      <td>无</td>
-      <td>History Guidance 家族</td>
-    </tr>
-  </tbody>
-</table>
-
-<h2 id="6-局限性与未来方向">6. 局限性与未来方向</h2>
-
-<h3 id="61-当前局限">6.1 当前局限</h3>
-
-<p><strong>EMA 影响</strong>：</p>
-<ul>
-  <li>微调模型训练 loss 更低但 FVD 略高</li>
-  <li>归因于 EMA (decay=0.9999) 受最后数万步影响</li>
-  <li>无 EMA 时 FVD 显著升高（80k 步：7.3 vs 4.7）</li>
-</ul>
-
-<p><strong>强 OOD 挑战</strong>：</p>
-<ul>
-  <li>强扰动下成功率仅 28%</li>
-  <li>需要更多数据或更强泛化能力</li>
-</ul>
-
-<h3 id="62-未来方向">6.2 未来方向</h3>
-
-<p><strong>大规模微调</strong>：</p>
-<ul>
-  <li>微调大型基础视频扩散模型到 DFoT</li>
-  <li>计算成本小，潜力巨大</li>
-</ul>
-
-<p><strong>EMA 优化</strong>：</p>
-<ul>
-  <li>选择更小 EMA decay 保证样本质量</li>
-  <li>Post hoc EMA tuning 策略</li>
-</ul>
-
-<p><strong>频率引导扩展</strong>：</p>
-<ul>
-  <li>针对特定频率带宽</li>
-  <li>增强动态程度控制</li>
-</ul>
-
-<h2 id="7-总结">7. 总结</h2>
-
-<p>History-Guided Video Diffusion 代表了视频生成的重要进展：</p>
-
-<p><strong>核心贡献</strong>：</p>
-<ol>
-  <li><strong>DFoT 架构</strong>：竞争性视频扩散框架，支持采样时使用任意部分历史进行条件化</li>
-  <li><strong>History Guidance 家族</strong>：HG-v、HG-t、HG-f、HG-tf，显著提升一致性、运动动态和视觉质量</li>
-  <li><strong>SOTA 性能</strong>：尤其在长视频生成中展现新能力</li>
-</ol>
-
-<p><strong>关键成果</strong>：</p>
-<ul>
-  <li>Kinetics-600 FVD 170.4，媲美需要更多资源的行业模型</li>
-  <li>OOD 历史泛化：LPIPS 从 0.45 降至 0.22</li>
-  <li>机器人模仿学习成功率 83%</li>
-  <li><strong>862 帧超长视频稳定生成</strong></li>
-</ul>
-
-<p><strong>技术亮点</strong>：</p>
-<ul>
-  <li>独立噪声级别训练实现灵活条件化</li>
-  <li>多历史窗口组合实现 OOD 鲁棒性</li>
-  <li>分数掩码充当低通滤波器增强稳定性</li>
-  <li>微调预训练模型实现 10× 加速</li>
-</ul>
-
-<p><strong>影响</strong>：</p>
-<ul>
-  <li>为超长视频生成开辟新路径</li>
-  <li>提供理论基础的灵活条件化框架</li>
-  <li>兼容现有架构便于采用</li>
-</ul>
-
-<p>这项工作展示了历史引导在视频扩散中的巨大潜力，为构建更强大、更灵活的视频生成模型奠定了基础。</p>
-
-<h2 id="参考文献">参考文献</h2>
-
-<ol>
-  <li>Kiwhan Song et al. History-Guided Video Diffusion. ICML, 2025.</li>
-  <li>Boyuan Chen et al. Diffusion Forcing: Next-token Prediction Meets Full-Sequence Diffusion. NeurIPS, 2024.</li>
-  <li>William Peebles &amp; Saining Xie. Scalable Diffusion Models with Transformers. ICCV, 2023.</li>
-  <li>Jonathan Ho &amp; Tim Salimans. Classifier-Free Diffusion Guidance. NeurIPS, 2022.</li>
-  <li>Team Wan. Wan: Open and Advanced Large-Scale Video Generative Models. arXiv:2503.20314, 2025.</li>
-</ol>]]></content><author><name>ROM4AI</name></author><category term="research" /><category term="ai" /><category term="video-generation" /><category term="diffusion-models" /><category term="Video Diffusion" /><category term="Classifier-Free Guidance" /><category term="DFoT" /><category term="Long Video Generation" /><category term="Temporal Consistency" /><summary type="html"><![CDATA[History-Guided Video Diffusion: 用历史引导实现超长视频生成]]></summary></entry></feed>
+<p>ZipServ 通过硬件感知的无损压缩设计，首次实现了在 GPU 上同时获得存储节省和推理加速。TCA-TBE 编码和 ZipGEMM 融合内核的创新设计，为 LLM 部署提供了新的优化方向，特别适用于对精度要求严格的生产环境。</p>]]></content><author><name>ROM4AI</name></author><category term="llm" /><category term="compression" /><category term="gpu" /><category term="inference" /><category term="systems" /><summary type="html"><![CDATA[原文链接: arXiv PDF]]></summary></entry></feed>
