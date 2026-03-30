@@ -2,7 +2,10 @@ name = "rom4ai-metrics"
 main = "src/index.js"
 compatibility_date = "2024-01-01"
 
+# Workers.dev subdomain enabled
+# URL: rom4ai-metrics.shiruizhao-pro.workers.dev
+
 # KV Namespace binding
 [[kv_namespaces]]
 binding = "METRICS_KV"
-id = "your_kv_namespace_id"
+id = "d39e7ef914b44250a3a5875c6d9a0abb"
