@@ -1,4 +1,4 @@
-name = "rom4ai-metrics"
+name = "rom4ai-blog-metrics"
 main = "src/index.js"
 compatibility_date = "2024-01-01"
 
