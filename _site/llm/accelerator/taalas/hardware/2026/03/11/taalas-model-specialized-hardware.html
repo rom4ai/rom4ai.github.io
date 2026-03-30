@@ -1,54 +1,272 @@
----
-layout: base
----
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Taalas: Model-Specialized Hardware - Turning AI Models into Silicon | ROM4AI Research Ideas</title>
+    <meta name="description" content="">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
 
-<main class="site-main article-page">
+  </head>
+  <body class="layout-post">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="/" aria-label="ROM4AI Research Ideas">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>ROM4AI Research Ideas</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/" class="">Home</a>
+            
+              <a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Latest note</a>
+            
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main article-page">
   <article
     class="article-shell"
-    data-post-id="{{ page.post_id | default: page.url }}"
-    data-metrics-endpoint="{{ site.post_metrics_endpoint | default: '' }}"
+    data-post-id="/llm/accelerator/taalas/hardware/2026/03/11/taalas-model-specialized-hardware.html"
+    data-metrics-endpoint=""
   >
     <div class="article-frame">
-      <a class="back-link" href="{{ '/' | relative_url }}#latest-posts">All research notes</a>
+      <a class="back-link" href="/#latest-posts">All research notes</a>
 
       <header class="article-hero">
         <div class="article-heading">
           <p class="article-kicker">Research note</p>
-          <h1>{{ page.title }}</h1>
+          <h1>Taalas: Model-Specialized Hardware - Turning AI Models into Silicon</h1>
         </div>
         <div class="article-meta">
-          <span>{{ page.date | date: "%B %-d, %Y" }}</span>
-          {% if page.categories %}
+          <span>March 11, 2026</span>
+          
             <div class="article-tags" aria-label="Categories">
-              {% for category in page.categories %}
-                <a class="category-chip category-chip--{{ category | slugify }}" href="{{ '/' | relative_url }}#category={{ category | slugify }}">{{ category }}</a>
-              {% endfor %}
+              
+                <a class="category-chip category-chip--llm" href="/#category=llm">llm</a>
+              
+                <a class="category-chip category-chip--accelerator" href="/#category=accelerator">accelerator</a>
+              
+                <a class="category-chip category-chip--taalas" href="/#category=taalas">taalas</a>
+              
+                <a class="category-chip category-chip--hardware" href="/#category=hardware">hardware</a>
+              
             </div>
-          {% endif %}
+          
         </div>
       </header>
 
       <div class="article-context-bar" aria-label="Article context">
-        {% if page.categories %}
+        
           <section class="article-context-card">
             <p class="aside-label">Focus areas</p>
             <ul class="article-category-list">
-              {% for category in page.categories %}
-                <li>{{ category }}</li>
-              {% endfor %}
+              
+                <li>llm</li>
+              
+                <li>accelerator</li>
+              
+                <li>taalas</li>
+              
+                <li>hardware</li>
+              
             </ul>
           </section>
-        {% endif %}
+        
 
         <section class="article-context-card article-context-card--summary">
           <p class="aside-label">Context</p>
-          <p>{{ site.description }}</p>
+          <p>Research idea blog on future AI hardware systems and accelerators.</p>
         </section>
       </div>
 
       <div class="article-layout">
         <div class="article-content" id="article-content">
-          {{ content }}
+          <p><img src="/assets/taalas-chip-architecture.png" alt="Taalas Chip Architecture" /></p>
+
+<h2 id="background">Background</h2>
+
+<p>Taalas is an AI chip startup founded approximately 2.5 years ago (around 2023), with a team including former AMD and Tenstorrent employees. The company has raised $169 million in funding with the goal of challenging NVIDIA’s dominance in the AI chip market.</p>
+
+<p><strong>CEO</strong>: Ljubisa Bajic (previously founded Tenstorrent)</p>
+
+<h2 id="core-technology-model-as-computer">Core Technology: “Model as Computer”</h2>
+
+<p>Traditional AI hardware runs models on general-purpose GPUs, requiring significant data movement between memory and compute units. Taalas takes a radical approach:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Traditional: General Hardware → Software Model → Data Movement
+Taalas:     Model Weights Hardwired → Compute-in-Memory → No Software Scheduling
+</code></pre></div></div>
+
+<h3 id="eliminating-the-memory-wall">Eliminating the “Memory Wall”</h3>
+
+<ul>
+  <li><strong>Traditional problem</strong>: 90% of energy consumption goes to data transfer between memory and compute</li>
+  <li><strong>Taalas solution</strong>: Hardware-based model parameter embedding eliminates external HBM dependency</li>
+</ul>
+
+<h2 id="hc1-hardcore-1-first-generation-chip">HC1 (Hardcore 1): First Generation Chip</h2>
+
+<h3 id="architecture">Architecture</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Component</th>
+      <th>Technology</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Weight固化层 (MaskROM)</strong></td>
+      <td>Mask ROM process encodes model weights in chip metal layers, co-located with compute units on the same silicon die</td>
+    </tr>
+    <tr>
+      <td><strong>SRAM Dynamic Layer</strong></td>
+      <td>Stores dynamic data (e.g., KV cache for Transformer models)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="performance-metrics">Performance Metrics</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Inference Speed</strong></td>
+      <td>17,000 tokens/second (Llama 3.1 8B)</td>
+    </tr>
+    <tr>
+      <td><strong>Performance/Watt</strong></td>
+      <td>1000x improvement</td>
+    </tr>
+    <tr>
+      <td><strong>Performance/Dollar</strong></td>
+      <td>1000x improvement</td>
+    </tr>
+    <tr>
+      <td><strong>Cost Reduction</strong></td>
+      <td>20x</td>
+    </tr>
+    <tr>
+      <td><strong>Speed Improvement</strong></td>
+      <td>10x</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="hardware-specifications">Hardware Specifications</h3>
+
+<ul>
+  <li><strong>Process</strong>: TSMC 6nm</li>
+  <li><strong>Die Area</strong>: 815 mm²</li>
+  <li><strong>Data Type</strong>: 3-bit base quantization (mixed 3-bit/6-bit)</li>
+  <li><strong>Trade-off</strong>: Some accuracy loss due to quantization</li>
+</ul>
+
+<h2 id="hc2-next-generation">HC2: Next Generation</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Feature</th>
+      <th>Plan</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Release</strong></td>
+      <td>Expected Winter 2026</td>
+    </tr>
+    <tr>
+      <td><strong>Format</strong></td>
+      <td>Standard 4-bit floating point</td>
+    </tr>
+    <tr>
+      <td><strong>Target</strong></td>
+      <td>Frontier-scale LLMs</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="key-innovations">Key Innovations</h2>
+
+<h3 id="1-extreme-specialization">1. Extreme Specialization</h3>
+<ul>
+  <li>Custom chip for each AI model</li>
+  <li>Only 2 metal layers need modification (out of 100+)</li>
+  <li>Model-to-hardware in 2 months (vs. 6+ months traditionally)</li>
+</ul>
+
+<h3 id="2-simplified-hardware-design">2. Simplified Hardware Design</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>No HBM required
+No 3D stacking
+No liquid cooling
+No high-speed I/O
+
+Result: Single chip = complete AI system
+</code></pre></div></div>
+
+<h3 id="3-automated-design-flow">3. Automated Design Flow</h3>
+<ul>
+  <li>Proprietary toolchain converts model computation graphs directly to chip physical layout</li>
+  <li>Rapid adaptation to new models (e.g., Meta Llama series)</li>
+</ul>
+
+<h2 id="market-position">Market Position</h2>
+
+<ul>
+  <li><strong>Target</strong>: AI inference market</li>
+  <li><strong>Scenarios</strong>: Edge computing, data center inference requiring low latency and high energy efficiency</li>
+  <li><strong>Strategy</strong>: Compete with general-purpose GPUs through specialization and cost advantages</li>
+</ul>
+
+<h2 id="challenges">Challenges</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Challenge</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Model Dependency</strong></td>
+      <td>Chip tightly bound to specific model; model updates require hardware modification (though only 2 metal layers)</td>
+    </tr>
+    <tr>
+      <td><strong>Accuracy Trade-off</strong></td>
+      <td>Current 3-bit quantization may affect high-precision tasks</td>
+    </tr>
+    <tr>
+      <td><strong>Ecosystem</strong></td>
+      <td>Need ongoing adaptation with mainstream AI frameworks</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Taalas redefines AI chip architecture through “model hardwareization,” aiming to carve out a new market position against NVIDIA’s dominance. The short-term goal is to validate technical feasibility through HC1, while long-term expansion depends on HC2 and subsequent products to broaden model support.</p>
+
+<p><em>Report generated: 2026-03-11</em></p>
+
         </div>
 
         <aside class="article-rail insights-rail" aria-label="Post navigation and metrics">
@@ -75,18 +293,62 @@ layout: base
             </div>
             <p id="article-rating-summary">Rate this post from 1 to 5 stars.</p>
             <div class="article-rating-stars" id="article-rating-stars" role="radiogroup" aria-label="Rate this post">
-              {% for score in (1..5) %}
+              
                 <button
                   type="button"
                   class="article-rating-star"
-                  data-rating-value="{{ score }}"
+                  data-rating-value="1"
                   role="radio"
                   aria-checked="false"
-                  aria-label="Rate {{ score }} out of 5"
+                  aria-label="Rate 1 out of 5"
                 >
                   ★
                 </button>
-              {% endfor %}
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="2"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 2 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="3"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 3 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="4"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 4 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="5"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 5 out of 5"
+                >
+                  ★
+                </button>
+              
             </div>
           </section>
         </aside>
@@ -375,3 +637,23 @@ layout: base
     buildToc();
   });
 </script>
+
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>33 posts</span>
+            <span>46 categories</span>
+            
+              <span>Updated 2026-03-26</span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

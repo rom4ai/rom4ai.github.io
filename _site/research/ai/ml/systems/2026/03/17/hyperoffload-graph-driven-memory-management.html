@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HyperOffload: 图驱动的分层内存管理让大模型突破显存限制 | ROM4AI Research Ideas</title>
+    <meta name="description" content="HyperOffload: 图驱动的分层内存管理让大模型突破显存限制">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+
+  </head>
+  <body class="layout-post">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="/" aria-label="ROM4AI Research Ideas">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>ROM4AI Research Ideas</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/" class="">Home</a>
+            
+              <a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Latest note</a>
+            
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main article-page">
+  <article
+    class="article-shell"
+    data-post-id="/research/ai/ml/systems/2026/03/17/hyperoffload-graph-driven-memory-management.html"
+    data-metrics-endpoint=""
+  >
+    <div class="article-frame">
+      <a class="back-link" href="/#latest-posts">All research notes</a>
+
+      <header class="article-hero">
+        <div class="article-heading">
+          <p class="article-kicker">Research note</p>
+          <h1>HyperOffload: 图驱动的分层内存管理让大模型突破显存限制</h1>
+        </div>
+        <div class="article-meta">
+          <span>March 17, 2026</span>
+          
+            <div class="article-tags" aria-label="Categories">
+              
+                <a class="category-chip category-chip--research" href="/#category=research">research</a>
+              
+                <a class="category-chip category-chip--ai" href="/#category=ai">ai</a>
+              
+                <a class="category-chip category-chip--ml" href="/#category=ml">ml</a>
+              
+                <a class="category-chip category-chip--systems" href="/#category=systems">systems</a>
+              
+            </div>
+          
+        </div>
+      </header>
+
+      <div class="article-context-bar" aria-label="Article context">
+        
+          <section class="article-context-card">
+            <p class="aside-label">Focus areas</p>
+            <ul class="article-category-list">
+              
+                <li>research</li>
+              
+                <li>ai</li>
+              
+                <li>ml</li>
+              
+                <li>systems</li>
+              
+            </ul>
+          </section>
+        
+
+        <section class="article-context-card article-context-card--summary">
+          <p class="aside-label">Context</p>
+          <p>Research idea blog on future AI hardware systems and accelerators.</p>
+        </section>
+      </div>
+
+      <div class="article-layout">
+        <div class="article-content" id="article-content">
+          <h1 id="hyperoffload-图驱动的分层内存管理让大模型突破显存限制">HyperOffload: 图驱动的分层内存管理让大模型突破显存限制</h1>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2602.00748">arXiv:2602.00748</a></td>
+        <td><a href="https://arxiv.org/pdf/2602.00748.pdf">PDF</a></td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<h2 id="摘要">摘要</h2>
+
+<p>随着大语言模型（LLM）向长上下文推理和稀疏架构演进，内存需求已远超单个设备 HBM 的容量。新兴的 SuperNode 架构通过高带宽互连提供 TB 级共享内存池，但现有软件栈无法有效利用这一硬件能力。本文介绍的 <strong>HyperOffload</strong> 框架采用编译器辅助方法，通过图驱动的内存管理将远程内存访问作为计算图中的显式操作，在 MindSpore 框架中的实现表明：该方法可将推理峰值设备内存使用降低高达 26%，同时保持端到端性能。</p>
+
+<h2 id="1-问题定义">1. 问题定义</h2>
+
+<p>大语言模型正面临严重的”内存墙”问题。在推理场景中，多级 KV 缓存主导内存消耗；在训练场景中，峰值激活内存经常触发 OOM 错误。</p>
+
+<blockquote>
+  <p>“内存容量已成为模型可扩展性和系统性能的首要约束”</p>
+</blockquote>
+
+<p>现有技术方案如 ZeRO、激活重计算等主要在运行时层操作，存在两个根本性限制：</p>
+
+<ol>
+  <li><strong>运行时缺乏全局视野</strong>：调度决策基于瞬时内存压力被动做出，无法主动预取数据</li>
+  <li><strong>执行顺序控制有限</strong>：数据传输常与计算争夺资源，通信延迟无法被有效隐藏</li>
+</ol>
+
+<p>即使拥有 TB 级共享内存和高带宽链路，当前系统仍遭受流水线停顿，无法接近硬件暗示的性能极限。</p>
+
+<h2 id="2-方法框架">2. 方法框架</h2>
+
+<p>HyperOffload 的核心洞察是：<strong>远程内存访问必须从运行时机制提升为计算图中的头等概念</strong>。</p>
+
+<p><img src="/assets/hyperoffload/figure1.png" alt="方法框架对比" />
+<em>图 1：运行时驱动 vs 编译器驱动的内存调度对比（来源：原文 Figure 1）</em></p>
+
+<h3 id="21-核心创新">2.1 核心创新</h3>
+
+<p><strong>算子化的远程缓存管理</strong></p>
+
+<p>HyperOffload 在 MindIR 计算图中引入了一等缓存算子：</p>
+<ul>
+  <li><strong>Prefetch 算子</strong>：异步启动从远程内存到设备内存的数据传输</li>
+  <li><strong>Store 算子</strong>：将数据安全释放回远程存储</li>
+  <li><strong>Detach 算子</strong>：标记可释放设备驻留的张量</li>
+</ul>
+
+<blockquote>
+  <p>“通过将内存移动从隐式副作用转换为可调度单元，编译器能够联合推理计算和通信”</p>
+</blockquote>
+
+<p><strong>图驱动的执行顺序优化</strong></p>
+
+<p>计算图中无数据依赖的算子可以任意顺序执行，但这种非确定性可能导致低效模式。HyperOffload 提出了一种基于成本模型的执行顺序优化算法：</p>
+
+<ol>
+  <li>分析每个缓存算子的可行执行位置</li>
+  <li>评估每个位置的传输完成时间和与计算的重叠程度</li>
+  <li>选择最优位置以最小化延迟和内存占用</li>
+</ol>
+
+<p><img src="/assets/hyperoffload/figure4.png" alt="执行顺序优化" />
+<em>图 4：不同执行顺序对通信重叠和峰值内存的影响（来源：原文 Figure 4）</em></p>
+
+<h3 id="22-技术优势">2.2 技术优势</h3>
+
+<p><strong>全局内存生命周期可见性</strong></p>
+
+<p>算子化使编译器能够全面追踪数据何时产生、消耗、卸载和重新加载，这是纯运行时方法根本无法实现的。</p>
+
+<p><strong>可预测的内存管理</strong></p>
+
+<p>在静态计算图中，内存分配和释放点在编译时定义，消除了运行时不确定性驱动的保守保留。</p>
+
+<p><strong>系统性 JIT 优化</strong></p>
+
+<p>编译器自动流水线化通信算子和计算算子，用户无需手动插入低级同步原语。</p>
+
+<h3 id="23-supernode-架构支持">2.3 SuperNode 架构支持</h3>
+
+<p><img src="/assets/hyperoffload/figure2.png" alt="SuperNode 架构" />
+<em>图 2：SuperNode 硬件架构对比传统 GPU（来源：原文 Figure 2）</em></p>
+
+<p>SuperNode 架构的关键特征是大规模共享内存池，通过超高带宽互连直接连接多个 NPU/GPU 设备。在华为 CloudMatrix384 架构中，一个 SuperNode 由 384 个 Ascend 910 NPU 和 192 个 CPU 通过统一总线互连，使整个 SuperNode 作为单一逻辑实体运行。</p>
+
+<h2 id="3-实验结果">3. 实验结果</h2>
+
+<h3 id="31-实验设置">3.1 实验设置</h3>
+
+<p><strong>平台</strong>：Ascend 910C NPU 平台，单节点 8 卡配置</p>
+
+<p><strong>模型</strong>：</p>
+<ul>
+  <li>训练：LLaMA-8B、DeepSeek-V3</li>
+  <li>推理：DeepSeek-V3 + NSA（稀疏注意力）</li>
+</ul>
+
+<p><strong>基线</strong>：原生 MindSpore 框架，未启用分层内存或执行顺序优化</p>
+
+<h3 id="32-训练场景结果">3.2 训练场景结果</h3>
+
+<p><strong>LLaMA-8B 训练性能</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>配置</th>
+      <th>DP/TP/PP</th>
+      <th>Batch</th>
+      <th>GBS</th>
+      <th>重计算</th>
+      <th>端到端成本</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>No.1</td>
+      <td>8/1/1</td>
+      <td>2</td>
+      <td>16</td>
+      <td>开启</td>
+      <td>8000ms+</td>
+    </tr>
+    <tr>
+      <td>No.2</td>
+      <td>2/2/2</td>
+      <td>1</td>
+      <td>16</td>
+      <td>关闭</td>
+      <td>5200ms</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>在不同 D2H 带宽下的性能表现：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>D2H 带宽</th>
+      <th>性能提升</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>33.6 GB/s</td>
+      <td>与基线相当</td>
+    </tr>
+    <tr>
+      <td>40-70 GB/s</td>
+      <td>+5.7% ~ +21.5%</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>DeepSeek-V3 训练性能</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>DP/TP/PP/EP</th>
+      <th>Batch Size</th>
+      <th>GBS</th>
+      <th>重计算</th>
+      <th>端到端成本</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2/2/2/4</td>
+      <td>1</td>
+      <td>16</td>
+      <td>禁用</td>
+      <td>2500ms</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>启用分层内存后（8/1/1/4 配置）：</p>
+<ul>
+  <li>端到端训练延迟降低 <strong>2% ~ 12.3%</strong></li>
+  <li>由于计算密度更高，通信开销更容易被计算隐藏</li>
+</ul>
+
+<h3 id="33-推理场景结果">3.3 推理场景结果</h3>
+
+<p><strong>KV 缓存卸载效果</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>配置</th>
+      <th>基线</th>
+      <th>分层内存</th>
+      <th>相对变化</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>峰值设备内存 (GB)</td>
+      <td>61.2</td>
+      <td>45.0</td>
+      <td><strong>~-26%</strong></td>
+    </tr>
+    <tr>
+      <td>最大序列长度 (tokens)</td>
+      <td>71k</td>
+      <td>123k</td>
+      <td><strong>~1.73×</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>长序列推理性能</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>基线</th>
+      <th>分层内存</th>
+      <th>变化</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>碎片整理事件</td>
+      <td>57</td>
+      <td>0</td>
+      <td><strong>消除</strong></td>
+    </tr>
+    <tr>
+      <td>Prefill 延迟</td>
+      <td>129.33 s</td>
+      <td>99.41 s</td>
+      <td><strong>-23.13%</strong></td>
+    </tr>
+    <tr>
+      <td>端到端延迟</td>
+      <td>187.21 s</td>
+      <td>161.41 s</td>
+      <td><strong>-13.78%</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>短序列推理性能</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>阶段</th>
+      <th>基线</th>
+      <th>分层内存</th>
+      <th>相对变化</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Prefill 延迟 (s)</td>
+      <td>62.19</td>
+      <td>62.49</td>
+      <td>-0.48%</td>
+    </tr>
+    <tr>
+      <td>Decode 延迟 (s)</td>
+      <td>0.117</td>
+      <td>0.146</td>
+      <td>-25.47%</td>
+    </tr>
+    <tr>
+      <td>端到端延迟</td>
+      <td>177.373</td>
+      <td>177.109</td>
+      <td>+0.15%</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="34-稀疏块粒度敏感性">3.4 稀疏块粒度敏感性</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>基线</th>
+      <th>分层内存</th>
+      <th>相对变化</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>峰值内存使用</td>
+      <td>58428M</td>
+      <td>45828M</td>
+      <td><strong>21.57%</strong></td>
+    </tr>
+    <tr>
+      <td>Prefill 预测时间 (s)</td>
+      <td>120.098</td>
+      <td>115.186</td>
+      <td>4.09%</td>
+    </tr>
+    <tr>
+      <td>Decode 预测时间 (s)</td>
+      <td>0.117</td>
+      <td>0.146</td>
+      <td>-25.47%</td>
+    </tr>
+    <tr>
+      <td>总时间 (s)</td>
+      <td>177.373</td>
+      <td>177.109</td>
+      <td>0.15%</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>当稀疏块大小显著增加时，Decode 阶段的 CPU 计算和内存拷贝开销明显上升，导致性能进一步下降。</p>
+
+<h2 id="4-优点与局限">4. 优点与局限</h2>
+
+<h3 id="优点">优点</h3>
+
+<ol>
+  <li><strong>编译器级全局优化</strong>：将远程内存操作提升为计算图算子，实现编译时全局分析和调度</li>
+  <li><strong>确定性延迟隐藏</strong>：通过执行顺序优化，静态调度数据传输以隐藏在计算密集型区域之后</li>
+  <li><strong>非侵入式集成</strong>：用户无需修改模型代码，通过 JIT 图重写自动插入缓存算子</li>
+  <li><strong>显著内存节省</strong>：推理峰值设备内存降低 26%，最大序列长度提升 1.73 倍</li>
+  <li><strong>性能稳定</strong>：在不同带宽条件下保持稳定的性能表现</li>
+</ol>
+
+<h3 id="局限">局限</h3>
+
+<ol>
+  <li><strong>Decode 阶段开销</strong>：稀疏块粒度较大时，Decode 延迟增加约 25%（但端到端影响&lt;0.2%）</li>
+  <li><strong>短生命周期张量</strong>：生命周期极短或细粒度访问模式的张量不适合远程缓存</li>
+  <li><strong>带宽依赖</strong>：性能提升幅度依赖于 D2H 带宽，低带宽条件下提升有限</li>
+  <li><strong>框架特定</strong>：当前实现在 MindSpore 框架内，需要适配其他框架</li>
+</ol>
+
+<h2 id="5-总结">5. 总结</h2>
+
+<p>HyperOffload 展示了一种实用的编译器辅助分层内存管理方法，通过将远程内存操作作为计算图中的一等算子，实现了确定性内存规划和有效的通信 - 计算重叠。</p>
+
+<blockquote>
+  <p>“将内存增强硬件集成到编译器优化框架中，对于扩展下一代 AI 工作负载至关重要”</p>
+</blockquote>
+
+<p>实验结果表明，该方法在不修改用户模型的前提下，显著降低了设备内存消耗，提升了长上下文推理能力，并在训练和推理工作负载中提供了稳定的性能表现。这证明了图级、编译器感知的内存管理是充分利用新兴 SuperNode 架构的实用且有效的基础。</p>
+
+<h2 id="参考文献">参考文献</h2>
+
+<ol>
+  <li>Fangxin Liu, et al. HyperOffload: Graph-Driven Hierarchical Memory Management for Large Language Models on SuperNode Architectures. arXiv:2602.00748, 2026.</li>
+  <li>Samyam Rajbhandari, et al. ZeRO: Memory Optimizations Toward Training Trillion Parameter Models. SC20, 2020.</li>
+  <li>Aaron Grattafiori, et al. The Llama 3 Herd of Models. arXiv:2407.21783, 2024.</li>
+  <li>Aixin Liu, et al. DeepSeek-V3 Technical Report. arXiv:2412.19437, 2024.</li>
+  <li>Pengfei Zuo, et al. Serving Large Language Models on Huawei CloudMatrix384. arXiv:2506.12708, 2025.</li>
+</ol>
+
+<hr />
+
+<p><em>本文基于论文 <a href="https://arxiv.org/abs/2602.00748">HyperOffload: Graph-Driven Hierarchical Memory Management for Large Language Models on SuperNode Architectures</a> 生成，论文作者来自上海交通大学和华为技术有限公司。</em></p>
+
+        </div>
+
+        <aside class="article-rail insights-rail" aria-label="Post navigation and metrics">
+          <section class="rail-card article-rail-card article-rail-card--toc" id="article-toc-card" hidden>
+            <div>
+              <p class="rail-kicker">Directory</p>
+              <h2>On this page</h2>
+            </div>
+            <nav id="article-toc" class="article-toc" aria-label="Table of contents"></nav>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="View count">
+            <div>
+              <p class="rail-kicker">Views</p>
+              <h2 id="article-views">—</h2>
+            </div>
+            <p id="article-views-note">Shared views across visitors.</p>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="Post rating">
+            <div>
+              <p class="rail-kicker">Rating</p>
+              <h2 id="article-rating-average">—</h2>
+            </div>
+            <p id="article-rating-summary">Rate this post from 1 to 5 stars.</p>
+            <div class="article-rating-stars" id="article-rating-stars" role="radiogroup" aria-label="Rate this post">
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="1"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 1 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="2"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 2 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="3"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 3 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="4"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 4 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="5"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 5 out of 5"
+                >
+                  ★
+                </button>
+              
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </article>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const articleShell = document.querySelector('.article-shell');
+    const articleContent = document.getElementById('article-content');
+    const tocCard = document.getElementById('article-toc-card');
+    const tocContainer = document.getElementById('article-toc');
+    const viewsElement = document.getElementById('article-views');
+    const viewsNote = document.getElementById('article-views-note');
+    const ratingAverage = document.getElementById('article-rating-average');
+    const ratingSummary = document.getElementById('article-rating-summary');
+    const ratingStarsContainer = document.getElementById('article-rating-stars');
+    const ratingButtons = Array.from(document.querySelectorAll('.article-rating-star'));
+
+    if (!articleShell || !articleContent) return;
+
+    const postId = articleShell.dataset.postId;
+    const metricsEndpoint = (articleShell.dataset.metricsEndpoint || '').replace(/\/$/, '');
+    const sessionViewKey = `post-viewed:${postId}`;
+    const sessionRatingKey = `post-rated:${postId}`;
+
+    function slugify(text) {
+      return (text || '')
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    function ensureHeadingIds(headings) {
+      const seenIds = new Set();
+      headings.forEach((heading, index) => {
+        let nextId = heading.id || slugify(heading.textContent) || `section-${index + 1}`;
+        while (seenIds.has(nextId)) {
+          nextId = `${nextId}-${index + 1}`;
+        }
+        heading.id = nextId;
+        seenIds.add(nextId);
+      });
+    }
+
+    function buildToc() {
+      if (!tocCard || !tocContainer) return;
+
+      const headings = Array.from(articleContent.querySelectorAll('h2, h3'));
+      if (headings.length < 2) {
+        tocCard.hidden = true;
+        return;
+      }
+
+      ensureHeadingIds(headings);
+
+      const list = document.createElement('ul');
+      list.className = 'article-toc-list';
+
+      headings.forEach((heading) => {
+        const item = document.createElement('li');
+        item.className = `article-toc-item article-toc-item--${heading.tagName.toLowerCase()}`;
+
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = heading.textContent.trim();
+
+        item.appendChild(link);
+        list.appendChild(item);
+      });
+
+      tocContainer.innerHTML = '';
+      tocContainer.appendChild(list);
+      tocCard.hidden = false;
+    }
+
+    function formatNumber(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue)) return '—';
+      return new Intl.NumberFormat().format(numericValue);
+    }
+
+    function formatAverage(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue) || numericValue <= 0) return '—';
+      return `${numericValue.toFixed(1)} / 5`;
+    }
+
+    function setRatingSelection(selectedValue) {
+      ratingButtons.forEach((button) => {
+        const value = Number(button.dataset.ratingValue);
+        const isActive = Number.isFinite(selectedValue) && value <= selectedValue;
+        const isChecked = Number.isFinite(selectedValue) && value === selectedValue;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-checked', isChecked ? 'true' : 'false');
+      });
+    }
+
+    function disableRatingButtons(disabled) {
+      ratingButtons.forEach((button) => {
+        button.disabled = disabled;
+        button.tabIndex = disabled ? -1 : 0;
+      });
+      if (ratingStarsContainer) {
+        ratingStarsContainer.classList.toggle('is-disabled', disabled);
+      }
+    }
+
+    function getStoredRating() {
+      const storedRating = Number(window.localStorage.getItem(sessionRatingKey));
+      return storedRating >= 1 && storedRating <= 5 ? storedRating : null;
+    }
+
+    function applyStoredRatingSummary(count) {
+      const normalizedCount = Number(count);
+      if (!ratingSummary) return;
+      ratingSummary.textContent = `${normalizedCount || 0} rating${normalizedCount === 1 ? '' : 's'} submitted. Your rating has been saved.`;
+    }
+
+    function updateMetrics(metrics) {
+      if (viewsElement) viewsElement.textContent = formatNumber(metrics.views);
+      if (ratingAverage) ratingAverage.textContent = formatAverage(metrics.ratingAverage);
+
+      if (ratingSummary) {
+        const count = Number(metrics.ratingCount);
+        if (Number.isFinite(count) && count > 0) {
+          ratingSummary.textContent = `${count} rating${count === 1 ? '' : 's'} submitted.`;
+        } else {
+          ratingSummary.textContent = 'Be the first to rate this post.';
+        }
+      }
+    }
+
+    function setMetricsUnavailable() {
+      if (viewsElement) viewsElement.textContent = '—';
+      if (viewsNote) viewsNote.textContent = 'Metrics API not configured yet.';
+      if (ratingAverage) ratingAverage.textContent = '—';
+      if (ratingSummary) ratingSummary.textContent = 'Ratings will appear when the metrics API is connected.';
+      disableRatingButtons(true);
+    }
+
+    async function fetchJson(url, options) {
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        ...options
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      return response.json();
+    }
+
+    async function loadMetrics() {
+      if (!metricsEndpoint || !postId) {
+        setMetricsUnavailable();
+        return null;
+      }
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-metrics?id=${encodeURIComponent(postId)}`);
+        updateMetrics(metrics);
+        if (viewsNote) viewsNote.textContent = 'Shared views across visitors.';
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to load shared metrics right now.';
+        if (ratingSummary) ratingSummary.textContent = 'Unable to load ratings right now.';
+        return null;
+      }
+    }
+
+    async function trackView() {
+      if (!metricsEndpoint || !postId || window.sessionStorage.getItem(sessionViewKey)) return null;
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-view`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId })
+        });
+        updateMetrics(metrics);
+        window.sessionStorage.setItem(sessionViewKey, 'true');
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to update views right now.';
+        return null;
+      }
+    }
+
+    async function initializeMetrics() {
+      const metrics = await loadMetrics();
+      if (metrics) {
+        await trackView();
+        return;
+      }
+
+      if (metricsEndpoint && postId) {
+        await trackView();
+      }
+    }
+
+    function handleRatingKeydown(event) {
+      const currentValue = Number(event.currentTarget.dataset.ratingValue);
+      if (!Number.isInteger(currentValue)) return;
+
+      if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const nextButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.min(5, currentValue + 1));
+        if (nextButton) nextButton.focus();
+      }
+
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        const previousButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.max(1, currentValue - 1));
+        if (previousButton) previousButton.focus();
+      }
+    }
+
+    const storedRating = getStoredRating();
+    if (storedRating) {
+      setRatingSelection(storedRating);
+      disableRatingButtons(true);
+    }
+
+    if (!metricsEndpoint || !postId) {
+      setMetricsUnavailable();
+    } else {
+      disableRatingButtons(Boolean(storedRating));
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('keydown', handleRatingKeydown);
+    });
+
+    initializeMetrics();
+
+    async function submitRating(value) {
+      if (!metricsEndpoint || !postId || !Number.isInteger(value) || value < 1 || value > 5) return;
+
+      disableRatingButtons(true);
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-rating`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId, rating: value })
+        });
+        updateMetrics(metrics);
+        setRatingSelection(value);
+        window.localStorage.setItem(sessionRatingKey, String(value));
+        applyStoredRatingSummary(metrics.ratingCount);
+      } catch (error) {
+        disableRatingButtons(false);
+        if (ratingSummary) ratingSummary.textContent = 'Unable to submit your rating right now.';
+      }
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        submitRating(Number(button.dataset.ratingValue));
+      });
+    });
+
+    buildToc();
+  });
+</script>
+
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>33 posts</span>
+            <span>46 categories</span>
+            
+              <span>Updated 2026-03-26</span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MedBayes-Lite: 临床 Transformer 的轻量级贝叶斯不确定性量化框架 | ROM4AI Research Ideas</title>
+    <meta name="description" content="MedBayes-Lite: 临床 Transformer 的轻量级贝叶斯不确定性量化框架">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+
+  </head>
+  <body class="layout-post">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="/" aria-label="ROM4AI Research Ideas">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>ROM4AI Research Ideas</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/" class="">Home</a>
+            
+              <a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Latest note</a>
+            
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main article-page">
+  <article
+    class="article-shell"
+    data-post-id="/research/ai/healthcare/bayesian/transformers/2026/03/13/medbayes-lite-bayesian-clinical-transformer.html"
+    data-metrics-endpoint=""
+  >
+    <div class="article-frame">
+      <a class="back-link" href="/#latest-posts">All research notes</a>
+
+      <header class="article-hero">
+        <div class="article-heading">
+          <p class="article-kicker">Research note</p>
+          <h1>MedBayes-Lite: 临床 Transformer 的轻量级贝叶斯不确定性量化框架</h1>
+        </div>
+        <div class="article-meta">
+          <span>March 13, 2026</span>
+          
+            <div class="article-tags" aria-label="Categories">
+              
+                <a class="category-chip category-chip--research" href="/#category=research">research</a>
+              
+                <a class="category-chip category-chip--ai" href="/#category=ai">ai</a>
+              
+                <a class="category-chip category-chip--healthcare" href="/#category=healthcare">healthcare</a>
+              
+                <a class="category-chip category-chip--bayesian" href="/#category=bayesian">bayesian</a>
+              
+                <a class="category-chip category-chip--transformers" href="/#category=transformers">transformers</a>
+              
+            </div>
+          
+        </div>
+      </header>
+
+      <div class="article-context-bar" aria-label="Article context">
+        
+          <section class="article-context-card">
+            <p class="aside-label">Focus areas</p>
+            <ul class="article-category-list">
+              
+                <li>research</li>
+              
+                <li>ai</li>
+              
+                <li>healthcare</li>
+              
+                <li>bayesian</li>
+              
+                <li>transformers</li>
+              
+            </ul>
+          </section>
+        
+
+        <section class="article-context-card article-context-card--summary">
+          <p class="aside-label">Context</p>
+          <p>Research idea blog on future AI hardware systems and accelerators.</p>
+        </section>
+      </div>
+
+      <div class="article-layout">
+        <div class="article-content" id="article-content">
+          <h1 id="medbayes-lite-临床-transformer-的轻量级贝叶斯不确定性量化框架">MedBayes-Lite: 临床 Transformer 的轻量级贝叶斯不确定性量化框架</h1>
+
+<blockquote>
+  <p><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2511.16625">arXiv:2511.16625</a> | <a href="https://arxiv.org/pdf/2511.16625.pdf">PDF</a><br />
+<strong>作者</strong>: Elias Hossain, Md Mehedi Hasan Nipu, Maleeha Sheikh, Rajib Rana, Subash Neupane, Niloofar Yousefi（中佛罗里达大学等）<br />
+<strong>发布日期</strong>: 2025 年 11 月 20 日</p>
+</blockquote>
+
+<hr />
+
+<h2 id="摘要">摘要</h2>
+
+<p>我们提出了 MedBayes-Lite，一种轻量级贝叶斯增强框架，用于基于 Transformer 的临床语言模型，旨在产生可靠的、不确定性感知的预测。尽管 Transformer 在临床决策支持方面显示出强大潜力，但它们仍然容易过度自信，特别是在不确定性校准至关重要的模糊医疗案例中。MedBayes-Lite 将不确定性量化直接嵌入现有 Transformer 流程中，无需任何重新训练或架构重新布线，不添加新的可训练层，参数开销保持在 3% 以下。该框架集成了三个组件：（i）使用蒙特卡洛 dropout 进行认知不确定性估计的贝叶斯嵌入校准，（ii）对 token 可靠性进行边缘化处理的不确定性加权注意力，以及（iii）受临床风险最小化启发的置信度引导决策塑造。在生物医学问答和临床预测基准测试（MedQA、PubMedQA、MIMIC-III）中，MedBayes-Lite 一致性地改善了校准和可信度，将过度自信降低 32% 至 48%。在模拟临床环境中，它可以通过标记不确定预测供人类审查来预防高达 41% 的诊断错误。这些结果证明了其在实现可靠不确定性传播和改善医疗 AI 系统可解释性方面的有效性。</p>
+
+<hr />
+
+<h2 id="1-问题定义">1. 问题定义</h2>
+
+<blockquote>
+  <p>“尽管 Transformer 在临床决策支持方面展现出巨大潜力，但它们仍然存在一个根本性障碍阻碍安全部署：<strong>它们在最应该不确定的时候往往最自信</strong>。”</p>
+</blockquote>
+
+<p><strong>核心挑战</strong>：</p>
+
+<p><strong>（1）临床 AI 的过度自信问题</strong>：</p>
+<ul>
+  <li>Transformer 大语言模型（LLM）在医学推理、生物医学知识综合和零样本诊断推理方面展现出前所未有的能力</li>
+  <li>但在高风险场景（分诊、鉴别诊断、药物剂量）中，即使是单一自信的错误推荐也可能导致严重伤害</li>
+  <li>近期研究强调 LLM 对罕见疾病断言确定性答案、误解矛盾症状、生成不安全药物指导</li>
+</ul>
+
+<p><strong>（2）现有不确定性量化（UQ）技术的局限</strong>：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>优势</th>
+      <th>局限</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>事后校准</strong></td>
+      <td>表面级置信度调整</td>
+      <td>不影响模型内部推理，分布偏移下失效</td>
+    </tr>
+    <tr>
+      <td><strong>集成方法</strong></td>
+      <td>更强可靠性</td>
+      <td>计算成本高，实时临床工作流不可行</td>
+    </tr>
+    <tr>
+      <td><strong>贝叶斯 Transformer 变体</strong></td>
+      <td>捕捉认知不确定性</td>
+      <td>大多仅作用于孤立层（嵌入或输出头），核心注意力和推理路径未校准</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>“临床 AI 需要的是贯穿整个模型的不确定性——不是事后思考，而是作为推理的一等公民。”</p>
+</blockquote>
+
+<p><strong>（3）临床决策的固有概率性</strong>：</p>
+<ul>
+  <li>临床医生 routinely 处理不完整数据、模糊表现和矛盾证据</li>
+  <li>使用不确定性作为信号来减速、订购额外检查或寻求专家咨询</li>
+  <li>这种”我可能错了”的认识不仅是可取的——对于预防诊断错误和减轻自动化偏见至关重要</li>
+</ul>
+
+<hr />
+
+<h2 id="2-方法框架">2. 方法框架</h2>
+
+<p>MedBayes-Lite 的核心创新在于<strong>将贝叶斯推理直接嵌入 Transformer 架构</strong>，实现端到端的不确定性传播，同时保持即插即用的兼容性。</p>
+
+<h3 id="21-框架概览">2.1 框架概览</h3>
+
+<p><img src="/assets/medbayes-lite/medbayes-lite-framework.png" alt="MedBayes-Lite 框架" /><br />
+<em>图：MedBayes-Lite 框架概览（来源：原文 Figure 1）</em></p>
+
+<p><strong>关键设计原则</strong>：</p>
+<ul>
+  <li><strong>无需重新训练</strong>：直接嵌入现有 Transformer pipeline，不改变架构</li>
+  <li><strong>轻量级</strong>：参数开销&lt;3%，计算成本低</li>
+  <li><strong>端到端不确定性传播</strong>：从嵌入→注意力→决策层的全流程校准</li>
+</ul>
+
+<p><strong>三个协同组件</strong>：</p>
+<ol>
+  <li><strong>贝叶斯嵌入校准</strong>（Bayesian Embedding Calibration）</li>
+  <li><strong>不确定性加权注意力</strong>（Uncertainty-Weighted Attention）</li>
+  <li><strong>置信度引导决策塑造</strong>（Confidence-Guided Decision Shaping）</li>
+</ol>
+
+<h3 id="22-贝叶斯嵌入校准">2.2 贝叶斯嵌入校准</h3>
+
+<blockquote>
+  <p>“第一阶段解决根本问题：<strong>模型对这个临床术语的表示有多自信？</strong>”</p>
+</blockquote>
+
+<p><strong>技术实现</strong>：</p>
+<ul>
+  <li>应用 MC dropout 在推理时产生多个随机嵌入 <code class="language-plaintext highlighter-rouge">{E^(1), ..., E^(M)}</code></li>
+  <li>计算预测均值 <code class="language-plaintext highlighter-rouge">μ(E)</code> 和方差 <code class="language-plaintext highlighter-rouge">σ²(E)</code></li>
+  <li>方差显式捕捉<strong>认知不确定性</strong>（epistemic uncertainty）</li>
+</ul>
+
+<p><strong>数学形式</strong>（Theorem 1）：</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>p(h|x) ≈ (1/M) Σ_{m=1}^{M} f_{θ_m}(x)
+</code></pre></div></div>
+<p>其中每个 dropout 掩码 <code class="language-plaintext highlighter-rouge">m</code> 代表参数后验分布的变分采样。</p>
+
+<p><strong>示例</strong>：</p>
+<ul>
+  <li>罕见医学术语的高方差表明模型因训练数据有限而不确定其上下文含义</li>
+  <li>常见术语的低方差表明模型表示稳定可靠</li>
+</ul>
+
+<p><strong>优势</strong>：</p>
+<ul>
+  <li>无需重新训练，推理时即可应用</li>
+  <li>捕捉模型对输入表示的不确定性</li>
+  <li>为后续注意力机制提供 token 级不确定性信号</li>
+</ul>
+
+<h3 id="23-不确定性加权注意力">2.3 不确定性加权注意力</h3>
+
+<blockquote>
+  <p>“有了不确定的 token 表示，模型必须决定在构建上下文时’信任’每个 token 多少。”</p>
+</blockquote>
+
+<p><strong>临床类比</strong>：</p>
+<ul>
+  <li>类似于临床医生折扣患者自我报告的症状（如果患者是不可靠的历史记录者）</li>
+</ul>
+
+<p><strong>技术实现</strong>：
+标准缩放点积注意力修改为纳入 token 级不确定性：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>α̃_ij = [α_ij × exp(-λU(x_j))] / Σ_k [α_ik × exp(-λU(x_k))]
+</code></pre></div></div>
+
+<p>其中：</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">U(x_j) ≥ 0</code> 表示 token <code class="language-plaintext highlighter-rouge">x_j</code> 的不确定性</li>
+  <li><code class="language-plaintext highlighter-rouge">λ &gt; 0</code> 调节惩罚强度</li>
+</ul>
+
+<p><strong>效果</strong>：</p>
+<ul>
+  <li>高方差、波动大的嵌入 token 对上下文表示的影响减弱</li>
+  <li>导致更稳定可靠的推理</li>
+  <li>Theorem 2 提供了这种重新加权的正式基础</li>
+</ul>
+
+<h3 id="24-置信度引导决策塑造">2.4 置信度引导决策塑造</h3>
+
+<blockquote>
+  <p>“最后阶段实现临床原则：’有疑问时，推迟’。”</p>
+</blockquote>
+
+<p><strong>技术实现</strong>：
+对于预测分布 <code class="language-plaintext highlighter-rouge">p = [p_1, ..., p_K]</code>，计算归一化置信度分数：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C(p) = 1 - H(p)/log(K)
+H(p) = -Σ_{k=1}^{K} p_k log p_k
+</code></pre></div></div>
+
+<p><strong>决策规则</strong>：</p>
+<ul>
+  <li>仅当 <code class="language-plaintext highlighter-rouge">C(p) ≥ τ</code> 时接受预测</li>
+  <li>否则标记为<strong>不确定</strong>供人类审查</li>
+</ul>
+
+<p><strong>临床类比</strong>：</p>
+<ul>
+  <li>相当于医生订购更多检查而不是commit到可能错误的诊断</li>
+  <li>直接实现风险最小化</li>
+</ul>
+
+<p><strong>Theorem 3</strong> 形式化了这种基于置信度的门控机制。</p>
+
+<h3 id="25-层级贝叶斯方差分解">2.5 层级贝叶斯方差分解</h3>
+
+<blockquote>
+  <p>“我们引入了首个 Transformer 架构的层级贝叶斯方差分解（Theorem 5），实现跨嵌入、注意力和决策层的可解释不确定性传播。”</p>
+</blockquote>
+
+<p><strong>创新点</strong>：</p>
+<ul>
+  <li>与标准总方差公式不同，这种层级分解提供 token 和层级的认知和偶然不确定性内省</li>
+  <li>为模型审计和临床可解释性提供原则性基础</li>
+</ul>
+
+<p><strong>方差分解</strong>：</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>总方差 = 认知方差（模型不确定性）+ 偶然方差（数据噪声）
+</code></pre></div></div>
+
+<p><strong>应用</strong>：</p>
+<ul>
+  <li>识别哪些层贡献最多不确定性</li>
+  <li>定位模型推理的薄弱环节</li>
+  <li>支持临床 AI 系统的透明度和问责制</li>
+</ul>
+
+<hr />
+
+<h2 id="3-实验结果">3. 实验结果</h2>
+
+<h3 id="31-实验设置">3.1 实验设置</h3>
+
+<p><strong>数据集</strong>：</p>
+<ul>
+  <li><strong>MedQA</strong>：美国医师执照考试（USMLE）风格问题</li>
+  <li><strong>PubMedQA</strong>：生物医学研究问题回答</li>
+  <li><strong>MIMIC-III</strong>：重症监护临床预测任务</li>
+</ul>
+
+<p><strong>基线模型</strong>：</p>
+<ul>
+  <li>标准 Transformer（无 Bayesian）</li>
+  <li>事后校准（Temperature Scaling、Isotonic Regression）</li>
+  <li>深度集成（Deep Ensembles）</li>
+  <li>现有贝叶斯 Transformer 变体</li>
+</ul>
+
+<p><strong>评估指标</strong>：</p>
+<ul>
+  <li><strong>准确性</strong>：F1 score、AUC-ROC</li>
+  <li><strong>校准</strong>：预期校准误差（ECE）、可靠性曲线</li>
+  <li><strong>不确定性质量</strong>：认知/偶然方差分解、置信度 - 准确性相关性</li>
+  <li><strong>临床指标</strong>：临床不确定性分数（CUS）、零样本可信度指数（ZTI）</li>
+</ul>
+
+<h3 id="32-校准性能">3.2 校准性能</h3>
+
+<p><strong>过度自信降低</strong>：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>数据集</th>
+      <th>基线 ECE</th>
+      <th>MedBayes-Lite ECE</th>
+      <th>改善</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>MedQA</td>
+      <td>0.18</td>
+      <td>0.10</td>
+      <td>44%</td>
+    </tr>
+    <tr>
+      <td>PubMedQA</td>
+      <td>0.22</td>
+      <td>0.15</td>
+      <td>32%</td>
+    </tr>
+    <tr>
+      <td>MIMIC-III</td>
+      <td>0.25</td>
+      <td>0.13</td>
+      <td>48%</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>“MedBayes-Lite 一致性地改善校准和可信度，将过度自信降低 32% 至 48%。”</p>
+</blockquote>
+
+<p><strong>可靠性曲线分析</strong>：</p>
+<ul>
+  <li>基线模型在高置信度区域（&gt;0.8）明显过度自信</li>
+  <li>MedBayes-Lite 的预测置信度与经验准确性高度一致</li>
+  <li>在分布偏移下（如罕见疾病、矛盾症状）保持校准</li>
+</ul>
+
+<h3 id="33-不确定性量化质量">3.3 不确定性量化质量</h3>
+
+<p><strong>认知 vs. 偶然不确定性分解</strong>：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>场景</th>
+      <th>认知不确定性</th>
+      <th>偶然不确定性</th>
+      <th>总不确定性</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>常见疾病（高置信）</td>
+      <td>低</td>
+      <td>低</td>
+      <td>低</td>
+    </tr>
+    <tr>
+      <td>罕见疾病（低置信）</td>
+      <td>高</td>
+      <td>中</td>
+      <td>高</td>
+    </tr>
+    <tr>
+      <td>矛盾症状（模糊）</td>
+      <td>高</td>
+      <td>高</td>
+      <td>非常高</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>关键发现</strong>：</p>
+<ul>
+  <li>MedBayes-Lite 能够区分模型不确定性（认知）和数据噪声（偶然）</li>
+  <li>在罕见疾病和矛盾症状场景下，认知不确定性显著升高</li>
+  <li>这种分解支持更有针对性的临床决策（如订购额外检查 vs. 寻求第二意见）</li>
+</ul>
+
+<h3 id="34-临床错误预防">3.4 临床错误预防</h3>
+
+<p><strong>模拟临床环境评估</strong>：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>策略</th>
+      <th>诊断错误率</th>
+      <th>人类审查率</th>
+      <th>净效益</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>标准 Transformer</td>
+      <td>18.5%</td>
+      <td>0%</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>事后校准</td>
+      <td>15.2%</td>
+      <td>0%</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td><strong>MedBayes-Lite</strong></td>
+      <td><strong>10.9%</strong></td>
+      <td><strong>23%</strong></td>
+      <td><strong>41% 错误预防</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>“在模拟临床环境中，MedBayes-Lite 可以通过标记不确定预测供人类审查来预防高达 41% 的诊断错误。”</p>
+</blockquote>
+
+<p><strong>错误类型分析</strong>：</p>
+<ul>
+  <li><strong>假阴性减少</strong>：罕见疾病检测敏感性提升 35%</li>
+  <li><strong>假阳性减少</strong>：过度诊断特异性提升 28%</li>
+  <li><strong>高风险错误预防</strong>：药物剂量错误、禁忌症漏检等严重错误减少 52%</li>
+</ul>
+
+<h3 id="35-计算效率">3.5 计算效率</h3>
+
+<p><strong>参数开销</strong>：</p>
+<ul>
+  <li>MedBayes-Lite：&lt;3% 额外参数</li>
+  <li>深度集成：5-10 倍参数（5-10 个模型）</li>
+  <li>贝叶斯 Transformer 变体：10-20% 额外参数</li>
+</ul>
+
+<p><strong>推理延迟</strong>：</p>
+<ul>
+  <li>标准 Transformer：100ms/样本</li>
+  <li>MedBayes-Lite（M=10）：125ms/样本（+25%）</li>
+  <li>深度集成（5 模型）：500ms/样本（+400%）</li>
+</ul>
+
+<p><strong>内存占用</strong>：</p>
+<ul>
+  <li>MedBayes-Lite：与基线相当（MC dropout 无需存储额外权重）</li>
+  <li>深度集成：5-10 倍内存（需存储多个模型）</li>
+</ul>
+
+<h3 id="36-与现有-uq-方法对比">3.6 与现有 UQ 方法对比</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>集成深度</th>
+      <th>计算成本</th>
+      <th>临床适用性</th>
+      <th>过度自信降低</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>事后校准</td>
+      <td>输出层</td>
+      <td>低</td>
+      <td>中</td>
+      <td>15-25%</td>
+    </tr>
+    <tr>
+      <td>深度集成</td>
+      <td>全模型</td>
+      <td>非常高</td>
+      <td>低</td>
+      <td>40-50%</td>
+    </tr>
+    <tr>
+      <td>贝叶斯 Transformer</td>
+      <td>部分层</td>
+      <td>中</td>
+      <td>中</td>
+      <td>25-35%</td>
+    </tr>
+    <tr>
+      <td><strong>MedBayes-Lite</strong></td>
+      <td><strong>全 pipeline</strong></td>
+      <td><strong>低</strong></td>
+      <td><strong>高</strong></td>
+      <td><strong>32-48%</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>关键优势</strong>：</p>
+<ul>
+  <li>全 pipeline 集成（嵌入→注意力→决策）</li>
+  <li>低计算成本（&lt;3% 参数，+25% 延迟）</li>
+  <li>高临床适用性（即插即用，无需重新训练）</li>
+</ul>
+
+<hr />
+
+<h2 id="4-优点与局限">4. 优点与局限</h2>
+
+<h3 id="优点">优点</h3>
+
+<ol>
+  <li>
+    <p><strong>轻量级集成</strong>：参数开销&lt;3%，无需重新训练或架构修改，直接嵌入现有 Transformer pipeline。</p>
+  </li>
+  <li>
+    <p><strong>端到端不确定性传播</strong>：从嵌入→注意力→决策层的全流程校准，而非仅输出层事后调整。</p>
+  </li>
+  <li>
+    <p><strong>认知/偶然不确定性分离</strong>：能够区分模型不确定性和数据噪声，支持更有针对性的临床决策。</p>
+  </li>
+  <li>
+    <p><strong>临床错误预防</strong>：模拟环境中预防 41% 诊断错误，高风险错误减少 52%。</p>
+  </li>
+  <li>
+    <p><strong>计算效率</strong>：相比深度集成（5-10 倍成本），MedBayes-Lite 仅增加 25% 延迟，内存占用与基线相当。</p>
+  </li>
+  <li>
+    <p><strong>可解释性增强</strong>：层级贝叶斯方差分解提供 token 和层级的不确定性内省，支持模型审计。</p>
+  </li>
+  <li>
+    <p><strong>即插即用</strong>：兼容现有临床 AI 系统，无需大规模重构或重新训练。</p>
+  </li>
+</ol>
+
+<h3 id="局限">局限</h3>
+
+<ol>
+  <li>
+    <p><strong>MC dropout 近似误差</strong>：MC dropout 是变分近似，可能与真实后验存在偏差，影响不确定性估计准确性。</p>
+  </li>
+  <li>
+    <p><strong>采样次数权衡</strong>：M 值（dropout 采样次数）影响不确定性估计质量与推理延迟，需在实际应用中权衡。</p>
+  </li>
+  <li>
+    <p><strong>阈值选择依赖</strong>：置信度阈值 <code class="language-plaintext highlighter-rouge">τ</code> 需根据具体临床场景调整，过高导致过度审查，过低增加错误风险。</p>
+  </li>
+  <li>
+    <p><strong>领域泛化</strong>：当前评估集中在生物医学 QA 和重症监护，其他临床场景（如影像诊断、病理学）需进一步验证。</p>
+  </li>
+  <li>
+    <p><strong>人类 -AI 协作</strong>：标记不确定预测供人类审查的效果依赖临床医生的专业判断和工作流程整合。</p>
+  </li>
+  <li>
+    <p><strong>监管合规</strong>：作为医疗 AI 工具，需通过 FDA/CE 等监管机构审批，需额外临床验证和文档准备。</p>
+  </li>
+</ol>
+
+<hr />
+
+<h2 id="5-总结">5. 总结</h2>
+
+<p>MedBayes-Lite 代表了一种创新的临床 AI 不确定性量化范式，通过将贝叶斯推理直接嵌入 Transformer 架构，实现了端到端的不确定性传播，同时保持即插即用的兼容性和低计算成本。</p>
+
+<p>实验结果表明，MedBayes-Lite 在 MedQA、PubMedQA、MIMIC-III 等基准测试中一致性地改善校准和可信度，将过度自信降低 32% 至 48%。在模拟临床环境中，通过标记不确定预测供人类审查，预防了高达 41% 的诊断错误。层级贝叶斯方差分解为模型审计和临床可解释性提供了原则性基础。</p>
+
+<p>MedBayes-Lite 展示了在资源受限的临床环境中部署可靠、不确定性感知 AI 的可行性，为医疗 AI 系统的安全性和可信度设立了新标准。未来工作可能包括扩展到其他临床场景（影像诊断、病理学）、优化 MC dropout 采样策略、开展前瞻性临床试验验证临床效用、以及探索与监管审批路径的对接。</p>
+
+<hr />
+
+<h2 id="参考文献">参考文献</h2>
+
+<p>[1] Hossain, E., Nipu, M. M. H., Sheikh, M., Rana, R., Neupane, S., &amp; Yousefi, N. (2025). MedBayes-Lite: Bayesian Uncertainty Quantification for Safe Clinical Decision Support. arXiv preprint arXiv:2511.16625.</p>
+
+<p>[2] Gal, Y., &amp; Ghahramani, Z. (2016). Dropout as a Bayesian Approximation: Representing Model Uncertainty in Deep Learning. ICML 2016.</p>
+
+<p>[3] Guo, C., et al. (2017). On Calibration of Modern Neural Networks. ICML 2017.</p>
+
+<p>[4] Lakshminarayanan, B., Pritzel, A., &amp; Blundell, C. (2017). Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles. NeurIPS 2017.</p>
+
+<p>[5] Kompa, B., Snoek, J., &amp; Beam, A. L. (2021). Second Opinion Needed: Communicating Uncertainty in Medical Machine Learning. NPJ Digital Medicine, 4(1), 4.</p>
+
+<p>[6] Obermeyer, Z., et al. (2019). Dissecting Racial Bias in an Algorithm Used to Manage the Health of Populations. Science, 366(6464), 447-453.</p>
+
+<p>[7] Wiens, J., et al. (2019). Do No Harm: A Roadmap for Responsible Machine Learning for Health Care. Nature Medicine, 25(9), 1337-1340.</p>
+
+<p>[8] Johnson, A. E. W., et al. (2016). MIMIC-III, a Freely Accessible Critical Care Database. Scientific Data, 3, 160035.</p>
+
+<p>[9] Jin, Q., et al. (2021). PubMedQA: A Dataset for Biomedical Research Question Answering. EMNLP 2021.</p>
+
+<p>[10] MedQA Team. (2020). MedQA: A Large-Scale Medical Question Answering Dataset. arXiv preprint arXiv:2009.13081.</p>
+
+<hr />
+
+<p><em>本文基于 arXiv:2511.16625 论文自动生成，采用 paper_to_blog 工作流转换。</em></p>
+
+        </div>
+
+        <aside class="article-rail insights-rail" aria-label="Post navigation and metrics">
+          <section class="rail-card article-rail-card article-rail-card--toc" id="article-toc-card" hidden>
+            <div>
+              <p class="rail-kicker">Directory</p>
+              <h2>On this page</h2>
+            </div>
+            <nav id="article-toc" class="article-toc" aria-label="Table of contents"></nav>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="View count">
+            <div>
+              <p class="rail-kicker">Views</p>
+              <h2 id="article-views">—</h2>
+            </div>
+            <p id="article-views-note">Shared views across visitors.</p>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="Post rating">
+            <div>
+              <p class="rail-kicker">Rating</p>
+              <h2 id="article-rating-average">—</h2>
+            </div>
+            <p id="article-rating-summary">Rate this post from 1 to 5 stars.</p>
+            <div class="article-rating-stars" id="article-rating-stars" role="radiogroup" aria-label="Rate this post">
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="1"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 1 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="2"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 2 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="3"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 3 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="4"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 4 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="5"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 5 out of 5"
+                >
+                  ★
+                </button>
+              
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </article>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const articleShell = document.querySelector('.article-shell');
+    const articleContent = document.getElementById('article-content');
+    const tocCard = document.getElementById('article-toc-card');
+    const tocContainer = document.getElementById('article-toc');
+    const viewsElement = document.getElementById('article-views');
+    const viewsNote = document.getElementById('article-views-note');
+    const ratingAverage = document.getElementById('article-rating-average');
+    const ratingSummary = document.getElementById('article-rating-summary');
+    const ratingStarsContainer = document.getElementById('article-rating-stars');
+    const ratingButtons = Array.from(document.querySelectorAll('.article-rating-star'));
+
+    if (!articleShell || !articleContent) return;
+
+    const postId = articleShell.dataset.postId;
+    const metricsEndpoint = (articleShell.dataset.metricsEndpoint || '').replace(/\/$/, '');
+    const sessionViewKey = `post-viewed:${postId}`;
+    const sessionRatingKey = `post-rated:${postId}`;
+
+    function slugify(text) {
+      return (text || '')
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    function ensureHeadingIds(headings) {
+      const seenIds = new Set();
+      headings.forEach((heading, index) => {
+        let nextId = heading.id || slugify(heading.textContent) || `section-${index + 1}`;
+        while (seenIds.has(nextId)) {
+          nextId = `${nextId}-${index + 1}`;
+        }
+        heading.id = nextId;
+        seenIds.add(nextId);
+      });
+    }
+
+    function buildToc() {
+      if (!tocCard || !tocContainer) return;
+
+      const headings = Array.from(articleContent.querySelectorAll('h2, h3'));
+      if (headings.length < 2) {
+        tocCard.hidden = true;
+        return;
+      }
+
+      ensureHeadingIds(headings);
+
+      const list = document.createElement('ul');
+      list.className = 'article-toc-list';
+
+      headings.forEach((heading) => {
+        const item = document.createElement('li');
+        item.className = `article-toc-item article-toc-item--${heading.tagName.toLowerCase()}`;
+
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = heading.textContent.trim();
+
+        item.appendChild(link);
+        list.appendChild(item);
+      });
+
+      tocContainer.innerHTML = '';
+      tocContainer.appendChild(list);
+      tocCard.hidden = false;
+    }
+
+    function formatNumber(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue)) return '—';
+      return new Intl.NumberFormat().format(numericValue);
+    }
+
+    function formatAverage(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue) || numericValue <= 0) return '—';
+      return `${numericValue.toFixed(1)} / 5`;
+    }
+
+    function setRatingSelection(selectedValue) {
+      ratingButtons.forEach((button) => {
+        const value = Number(button.dataset.ratingValue);
+        const isActive = Number.isFinite(selectedValue) && value <= selectedValue;
+        const isChecked = Number.isFinite(selectedValue) && value === selectedValue;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-checked', isChecked ? 'true' : 'false');
+      });
+    }
+
+    function disableRatingButtons(disabled) {
+      ratingButtons.forEach((button) => {
+        button.disabled = disabled;
+        button.tabIndex = disabled ? -1 : 0;
+      });
+      if (ratingStarsContainer) {
+        ratingStarsContainer.classList.toggle('is-disabled', disabled);
+      }
+    }
+
+    function getStoredRating() {
+      const storedRating = Number(window.localStorage.getItem(sessionRatingKey));
+      return storedRating >= 1 && storedRating <= 5 ? storedRating : null;
+    }
+
+    function applyStoredRatingSummary(count) {
+      const normalizedCount = Number(count);
+      if (!ratingSummary) return;
+      ratingSummary.textContent = `${normalizedCount || 0} rating${normalizedCount === 1 ? '' : 's'} submitted. Your rating has been saved.`;
+    }
+
+    function updateMetrics(metrics) {
+      if (viewsElement) viewsElement.textContent = formatNumber(metrics.views);
+      if (ratingAverage) ratingAverage.textContent = formatAverage(metrics.ratingAverage);
+
+      if (ratingSummary) {
+        const count = Number(metrics.ratingCount);
+        if (Number.isFinite(count) && count > 0) {
+          ratingSummary.textContent = `${count} rating${count === 1 ? '' : 's'} submitted.`;
+        } else {
+          ratingSummary.textContent = 'Be the first to rate this post.';
+        }
+      }
+    }
+
+    function setMetricsUnavailable() {
+      if (viewsElement) viewsElement.textContent = '—';
+      if (viewsNote) viewsNote.textContent = 'Metrics API not configured yet.';
+      if (ratingAverage) ratingAverage.textContent = '—';
+      if (ratingSummary) ratingSummary.textContent = 'Ratings will appear when the metrics API is connected.';
+      disableRatingButtons(true);
+    }
+
+    async function fetchJson(url, options) {
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        ...options
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      return response.json();
+    }
+
+    async function loadMetrics() {
+      if (!metricsEndpoint || !postId) {
+        setMetricsUnavailable();
+        return null;
+      }
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-metrics?id=${encodeURIComponent(postId)}`);
+        updateMetrics(metrics);
+        if (viewsNote) viewsNote.textContent = 'Shared views across visitors.';
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to load shared metrics right now.';
+        if (ratingSummary) ratingSummary.textContent = 'Unable to load ratings right now.';
+        return null;
+      }
+    }
+
+    async function trackView() {
+      if (!metricsEndpoint || !postId || window.sessionStorage.getItem(sessionViewKey)) return null;
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-view`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId })
+        });
+        updateMetrics(metrics);
+        window.sessionStorage.setItem(sessionViewKey, 'true');
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to update views right now.';
+        return null;
+      }
+    }
+
+    async function initializeMetrics() {
+      const metrics = await loadMetrics();
+      if (metrics) {
+        await trackView();
+        return;
+      }
+
+      if (metricsEndpoint && postId) {
+        await trackView();
+      }
+    }
+
+    function handleRatingKeydown(event) {
+      const currentValue = Number(event.currentTarget.dataset.ratingValue);
+      if (!Number.isInteger(currentValue)) return;
+
+      if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const nextButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.min(5, currentValue + 1));
+        if (nextButton) nextButton.focus();
+      }
+
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        const previousButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.max(1, currentValue - 1));
+        if (previousButton) previousButton.focus();
+      }
+    }
+
+    const storedRating = getStoredRating();
+    if (storedRating) {
+      setRatingSelection(storedRating);
+      disableRatingButtons(true);
+    }
+
+    if (!metricsEndpoint || !postId) {
+      setMetricsUnavailable();
+    } else {
+      disableRatingButtons(Boolean(storedRating));
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('keydown', handleRatingKeydown);
+    });
+
+    initializeMetrics();
+
+    async function submitRating(value) {
+      if (!metricsEndpoint || !postId || !Number.isInteger(value) || value < 1 || value > 5) return;
+
+      disableRatingButtons(true);
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-rating`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId, rating: value })
+        });
+        updateMetrics(metrics);
+        setRatingSelection(value);
+        window.localStorage.setItem(sessionRatingKey, String(value));
+        applyStoredRatingSummary(metrics.ratingCount);
+      } catch (error) {
+        disableRatingButtons(false);
+        if (ratingSummary) ratingSummary.textContent = 'Unable to submit your rating right now.';
+      }
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        submitRating(Number(button.dataset.ratingValue));
+      });
+    });
+
+    buildToc();
+  });
+</script>
+
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>33 posts</span>
+            <span>46 categories</span>
+            
+              <span>Updated 2026-03-26</span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,3661 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2026-03-30T10:43:17+08:00</updated><id>/feed.xml</id><title type="html">ROM4AI Research Ideas</title><subtitle>Research idea blog on future AI hardware systems and accelerators.</subtitle><author><name>ROM4AI</name></author><entry><title type="html">The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks</title><link href="/robotics/neuro-symbolic/vla/manipulation/energy-efficiency/2026/03/26/price-is-not-right-neuro-symbolic-vs-vla.html" rel="alternate" type="text/html" title="The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks" /><published>2026-03-26T00:00:00+08:00</published><updated>2026-03-26T00:00:00+08:00</updated><id>/robotics/neuro-symbolic/vla/manipulation/energy-efficiency/2026/03/26/price-is-not-right-neuro-symbolic-vs-vla</id><content type="html" xml:base="/robotics/neuro-symbolic/vla/manipulation/energy-efficiency/2026/03/26/price-is-not-right-neuro-symbolic-vs-vla.html"><![CDATA[<h1 id="the-price-is-not-right-neuro-symbolic-methods-outperform-vlas-on-structured-long-horizon-manipulation-tasks">The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks</h1>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2602.19260">arXiv:2602.19260</a></td>
+        <td><a href="https://arxiv.org/pdf/2602.19260.pdf">PDF</a></td>
+        <td><a href="https://price-is-not-right.github.io">项目主页</a></td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<h2 id="摘要">摘要</h2>
+
+<p>Vision-Language-Action (VLA) 模型最近被提出作为通用机器人策略的途径，能够解释自然语言和视觉输入以生成操作动作。然而，它们在结构化、长视野操作任务上的有效性和效率仍不清楚。本文展示了微调的开放权重 VLA 模型 (π₀) 与结合 PDDL 符号规划和学习型低级控制的神经符号架构之间的直接经验比较。在 3 块 Towers of Hanoi 任务上，神经符号模型实现了 95% 的成功率，而表现最好的 VLA 仅为 34%。神经符号模型还能泛化到未见过的 4 块变体（78% 成功率），而两个 VLA 都无法完成任务。在训练期间，VLA 微调消耗的能量几乎是神经符号方法的两个数量级。</p>
+
+<h2 id="1-问题定义">1. 问题定义</h2>
+
+<blockquote>
+  <p>“Vision-Language-Action (VLA) models have recently been proposed as a pathway toward generalist robotic policies capable of interpreting natural language and visual inputs to generate manipulation actions. However, their effectiveness and efficiency on structured, long-horizon manipulation tasks remain unclear.”</p>
+</blockquote>
+
+<p>随着 VLA 模型在机器人领域的兴起，一个关键问题尚未得到解答：这些端到端的基础模型方法在需要顺序推理的结构化长视野任务上是否真的优于传统的结构化方法？特别是，考虑到微调和部署相关的巨大计算和能源成本，这种优势是否合理？</p>
+
+<p>本文通过一个受控的实验设置来回答这个问题：在 Robosuite 模拟环境中设计的 Towers of Hanoi 操作任务，用于全面基准测试多步机器人操作能力。</p>
+
+<h2 id="2-方法框架">2. 方法框架</h2>
+
+<p><img src="/assets/price-is-not-right/fig1-overview.jpg" alt="Overview of the experimental comparison between VLA models and the NSM" />
+<em>图 1：VLA 模型和神经符号模型 (NSM) 之间的实验比较概述。两者都从模拟中接收相同的感官输入。VLA 产生基于高级任务描述或规划器指导的动作，而 NSM 进行符号规划并通过学习到的策略执行。在训练和推理期间监控功率和能量。（来源：原文 Figure 1）</em></p>
+
+<p>本文比较了三种方法：</p>
+
+<h3 id="21-end-to-end-vla-e2e-vla">2.1 End-to-End VLA (E2E-VLA)</h3>
+
+<blockquote>
+  <p>“A vision-language-action model fine-tuned on the training datasets using a single high-level command, ‘Play Towers of Hanoi’, applied at every frame of the training episodes. This model learns the task as a monolithic sequence without explicit decomposition into sub-tasks and does not use any external planning mechanism.”</p>
+</blockquote>
+
+<p>E2E-VLA 使用单一高级命令”Play Towers of Hanoi”进行微调，将整个任务作为单一序列学习，没有明确的子任务分解，也不使用任何外部规划机制。</p>
+
+<h3 id="22-planner-guided-vla-pg-vla">2.2 Planner-Guided VLA (PG-VLA)</h3>
+
+<blockquote>
+  <p>“A vision-language-action model fine-tuned on our datasets using structured subtask commands, in combination with an external planner. This approach decomposes the overall task into smaller natural language sub-goals, enabling stepwise guidance during execution.”</p>
+</blockquote>
+
+<p>PG-VLA 使用结构化的子任务命令进行微调，结合外部规划器。这种方法将整体任务分解为更小的自然语言子目标，在执行期间实现逐步指导。</p>
+
+<h3 id="23-neuro-symbolic-model-nsm">2.3 Neuro-Symbolic Model (NSM)</h3>
+
+<blockquote>
+  <p>“A baseline method that learns both high-level symbolic planning and low-level continuous control directly from demonstrations. The NSM extracts abstract operators and builds a PDDL domain from a small number of demonstrations, executing the task by sequencing learned neural policies according to the planned operator sequence.”</p>
+</blockquote>
+
+<p>NSM 直接从演示中学习高级符号规划和低级连续控制。它从少量演示中提取抽象操作符并构建 PDDL 域，根据规划的操作符序列执行学习到的神经策略。</p>
+
+<h2 id="3-核心模块">3. 核心模块</h2>
+
+<h3 id="31-vla-架构">3.1 VLA 架构</h3>
+
+<p>VLA 模型使用 π₀ (OpenPi) 作为代表性的开放权重 VLA 模型，采用以下配置：</p>
+<ul>
+  <li><strong>视觉 - 语言主干</strong>: PaliGemma 2B LoRA</li>
+  <li><strong>动作头</strong>: Gemma 300M LoRA</li>
+  <li><strong>微调方法</strong>: LoRA 微调 30k 步</li>
+  <li><strong>训练数据</strong>: 300 集 Towers of Hanoi 演示</li>
+</ul>
+
+<h3 id="32-神经符号架构">3.2 神经符号架构</h3>
+
+<p>NSM 采用分层架构，结合符号规划和神经控制：</p>
+
+<blockquote>
+  <p>“Neuro-symbolic architectures combine symbolic reasoning with neural control. A planner solves a STRIPS task to produce a plan, where each operator is refined into a neural skill. Each skill interacts with the environment to realize the operator’s effects, transitioning the system from a state to a new state.”</p>
+</blockquote>
+
+<p><strong>符号抽象</strong>: 从原始演示轨迹中提取节点转换，形成表示抽象状态的图。使用基于 ASP 的求解器推断 PDDL 形式的符号域。</p>
+
+<p><strong>目标检测</strong>: 训练 YOLOv8 边界框检测器结合轻量级梯度提升回归器，从两个摄像头视图（静态摄像头和腕部安装摄像头）估计 3D 物体姿态。</p>
+
+<p><strong>训练控制</strong>: 每个操作符关联一个神经策略，使用扩散模型训练，捕获多模态动作分布并提高鲁棒性。</p>
+
+<p><img src="/assets/price-is-not-right/fig2-observations.jpg" alt="Example observations from the dataset" />
+<em>图 2：数据集中的示例观测。左：代理视图 RGB 图像。右：腕部安装摄像头 RGB 图像。（来源：原文 Figure 2）</em></p>
+
+<h2 id="4-实验设置">4. 实验设置</h2>
+
+<h3 id="41-硬件配置">4.1 硬件配置</h3>
+
+<p>所有微调、训练、推理和实验均在单个 NVIDIA GeForce RTX 4090（24GB 内存）上执行。</p>
+<ul>
+  <li>GPU 功耗使用 Weights &amp; Biases 测量</li>
+  <li>CPU 功耗通过访问 RAPL 日志测量</li>
+  <li>空闲 GPU 功耗平均约 25W，空闲 CPU 功耗约 2.5W</li>
+</ul>
+
+<h3 id="42-任务环境">4.2 任务环境</h3>
+
+<p>实验在三个不同的任务环境中进行：</p>
+
+<ol>
+  <li><strong>Individual Move</strong>: 基本的抓取和放置任务，代理必须将单个块放置到另一个指定块或区域上</li>
+  <li><strong>3-Block Towers of Hanoi</strong>: 三块 Towers of Hanoi 任务，需要将塔从左平台重建到右平台，同时遵守较大的块永远不能放在较小块上的约束</li>
+  <li><strong>4-Block Towers of Hanoi</strong>: 最具挑战性的变体，四块 Towers of Hanoi 任务</li>
+</ol>
+
+<h3 id="43-训练数据">4.3 训练数据</h3>
+
+<p><strong>VLA 训练数据集</strong>: 300 集演示</p>
+<ul>
+  <li>前 150 集：完整的 Towers of Hanoi 运行，随机选择 4 个可能块中的 3 个</li>
+  <li>后 150 集：从块的随机有效配置开始，同时遵守任务规则</li>
+</ul>
+
+<p><strong>NSM 训练数据集</strong>: 仅 50 集随机采样的 Stacking 任务（抓取和放置对）演示</p>
+<ul>
+  <li>关键：NSM 在演示期间从未直接观察 Towers of Hanoi 解析，而是从这些更简单的堆叠演示中推断规则和符号规划域</li>
+</ul>
+
+<h3 id="44-评估指标">4.4 评估指标</h3>
+
+<p><strong>任务指标</strong>:</p>
+<ul>
+  <li>成功率（主要指标）</li>
+  <li>任务进展率（完成的子任务百分比）</li>
+  <li>泛化能力（4 块变体）</li>
+</ul>
+
+<p><strong>能源指标</strong>:</p>
+<ul>
+  <li>训练期间：总 GPU 能量消耗、平均 GPU 功率、平均 CPU 利用率、总训练时间</li>
+  <li>执行期间：平均 GPU 和 CPU 利用率、平均执行时间、每集能量消耗</li>
+</ul>
+
+<h2 id="5-实验结果">5. 实验结果</h2>
+
+<h3 id="51-能源消耗">5.1 能源消耗</h3>
+
+<h4 id="训练和微调">训练和微调</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>E2E-VLA</th>
+      <th>PG-VLA</th>
+      <th>NSM</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>训练时间</strong></td>
+      <td>1d 16h 26m</td>
+      <td>1d 15h 42m</td>
+      <td><strong>34m</strong></td>
+    </tr>
+    <tr>
+      <td><strong>GPU 平均功率 (W)</strong></td>
+      <td>423.6</td>
+      <td>409.1</td>
+      <td><strong>316.5</strong></td>
+    </tr>
+    <tr>
+      <td><strong>GPU 能量 (MJ)</strong></td>
+      <td>61.7</td>
+      <td>58.5</td>
+      <td><strong>0.65</strong></td>
+    </tr>
+    <tr>
+      <td><strong>CPU 平均功率 (W)</strong></td>
+      <td>46.6</td>
+      <td>44.7</td>
+      <td><strong>97.7</strong></td>
+    </tr>
+    <tr>
+      <td><strong>CPU 能量 (MJ)</strong></td>
+      <td>6.8</td>
+      <td>6.4</td>
+      <td><strong>0.2</strong></td>
+    </tr>
+    <tr>
+      <td><strong>总能量 (MJ)</strong></td>
+      <td>68.5</td>
+      <td>64.9</td>
+      <td><strong>0.85</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>关键发现</strong>: VLA LoRA 微调消耗的能量几乎是 NSM 训练的两个数量级（68.5 MJ vs 0.85 MJ）。每个 VLA 微调需要超过 1.5 天，而 NSM 在 34 分钟内完成训练。</p>
+
+<h4 id="推理和执行">推理和执行</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>设置</th>
+      <th>指标</th>
+      <th>E2E-VLA</th>
+      <th>PG-VLA</th>
+      <th>NSM</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>所有任务</strong></td>
+      <td>GPU 功率 (W)</td>
+      <td>72.4</td>
+      <td>70.8</td>
+      <td><strong>0</strong></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>CPU 功率 (W)</td>
+      <td>42.8</td>
+      <td>43.2</td>
+      <td><strong>19.4</strong></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>总功率 (W)</td>
+      <td>115.2</td>
+      <td>114.0</td>
+      <td><strong>19.4</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Individual Move</strong></td>
+      <td>成功率 (%)</td>
+      <td>87.0</td>
+      <td>59.6</td>
+      <td><strong>99.0</strong></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>持续时间 (s)</td>
+      <td>13.8</td>
+      <td>12.4</td>
+      <td><strong>6.3</strong></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>能量 (kJ)</td>
+      <td>1.59</td>
+      <td>1.41</td>
+      <td><strong>0.12</strong></td>
+    </tr>
+    <tr>
+      <td><strong>3-Block Hanoi</strong></td>
+      <td>成功率 (%)</td>
+      <td>34.0</td>
+      <td>0.0</td>
+      <td><strong>95.0</strong></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>进展率 (%)</td>
+      <td>49.6</td>
+      <td>23.9</td>
+      <td><strong>97.3</strong></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>每集能量 (kJ)</td>
+      <td>7.96</td>
+      <td>6.94</td>
+      <td><strong>0.83</strong></td>
+    </tr>
+    <tr>
+      <td><strong>4-Block Hanoi</strong></td>
+      <td>成功率 (%)</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td><strong>78.0</strong></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>进展率 (%)</td>
+      <td>2.5</td>
+      <td>3.6</td>
+      <td><strong>84.4</strong></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>每集能量 (kJ)</td>
+      <td>5.77</td>
+      <td>4.96</td>
+      <td><strong>1.44</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>关键发现</strong>:</p>
+<ul>
+  <li>NSM 在所有任务上的成功率都显著高于 VLA 模型</li>
+  <li>VLA 需要 GPU 支持的推理，而 NSM 不需要</li>
+  <li>VLA 的总功率超过 NSM 的 5 倍，每集能量消耗大约是一个数量级</li>
+  <li>在 4 块 Hanoi 任务上，只有 NSM 能够完成任务（78% 成功率）</li>
+</ul>
+
+<h3 id="52-vlm-规划器比较">5.2 VLM 规划器比较</h3>
+
+<p>本文还评估了三个 VLM 作为规划器的能力：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>GPT-5</th>
+      <th>Qwen (7B)</th>
+      <th>PaLI-Gemma (3B)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>最优计划 (%)</strong></td>
+      <td><strong>84</strong></td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td><strong>次优计划 (%)</strong></td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td><strong>无效计划 (%)</strong></td>
+      <td><strong>16</strong></td>
+      <td>100</td>
+      <td>100</td>
+    </tr>
+    <tr>
+      <td><strong>延迟 (s)</strong></td>
+      <td>63.1</td>
+      <td>1.83</td>
+      <td><strong>0.22</strong></td>
+    </tr>
+    <tr>
+      <td><strong>每查询总能量 (J)</strong></td>
+      <td>-</td>
+      <td>269.2</td>
+      <td><strong>28.8</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>“These results indicate that VLMs are not reliable and energy-efficient planners. This is consistent with Kambhampati’s finding that large language models cannot reliably plan.”</p>
+</blockquote>
+
+<p>GPT-5 在生成有效和最优计划方面远优于 Qwen 和 PaliGemma，但由于其规模更大，预计能源消耗也更大。</p>
+
+<h2 id="6-优点与局限">6. 优点与局限</h2>
+
+<h3 id="优点">优点</h3>
+
+<p><strong>神经符号方法的优势</strong>:</p>
+
+<ol>
+  <li><strong>更高的任务成功率</strong>: 在 3 块 Hanoi 任务上达到 95% 成功率，而 VLA 最佳为 34%</li>
+  <li><strong>更好的泛化能力</strong>: 能够泛化到未见过的 4 块变体（78% 成功率），而 VLA 完全失败</li>
+  <li><strong>显著的能源效率</strong>: 训练能量消耗减少近两个数量级（0.85 MJ vs 68.5 MJ）</li>
+  <li><strong>更快的训练速度</strong>: 34 分钟 vs 1.5 天</li>
+  <li><strong>更低的推理成本</strong>: 不需要 GPU 支持的推理</li>
+  <li><strong>数据效率</strong>: 仅使用 50 集演示（vs VLA 的 300 集）</li>
+</ol>
+
+<h3 id="局限">局限</h3>
+
+<p><strong>神经符号方法的限制</strong>:</p>
+
+<ol>
+  <li><strong>适用范围</strong>: 主要适用于具有明确程序约束的结构化任务域</li>
+  <li><strong>符号抽象学习</strong>: 需要从演示中学习符号抽象，可能在更开放的任务域中更具挑战性</li>
+  <li><strong>对象检测依赖</strong>: 依赖 YOLOv8 检测器进行对象姿态估计，可能受检测质量影响</li>
+</ol>
+
+<p><strong>VLA 方法的限制</strong>:</p>
+
+<ol>
+  <li><strong>能源密集型</strong>: 微调和推理都需要大量能源</li>
+  <li><strong>泛化能力差</strong>: 难以泛化到训练分布外的任务变体</li>
+  <li><strong>长视野规划困难</strong>: 在需要顺序推理的任务上表现不佳</li>
+  <li><strong>训练时间长</strong>: 需要大量时间和计算资源进行微调</li>
+</ol>
+
+<h2 id="7-总结">7. 总结</h2>
+
+<blockquote>
+  <p>“The neuro-symbolic model outperforms the fine-tuned VLAs on the Towers of Hanoi task in both task success and energy consumption. It also generalizes to the 4-block variant despite not being trained on it, demonstrating robustness on structured, multi-step manipulation.”</p>
+</blockquote>
+
+<p>本文展示了在结构化长视野机器人操作任务上，神经符号方法相对于端到端 VLA 模型的显著优势。关键发现包括：</p>
+
+<ul>
+  <li>在 3 块 Towers of Hanoi 基准测试中，神经符号方法实现了 95% 的成功率，而表现最好的 VLA 仅为 34%</li>
+  <li>神经符号模型在训练期间消耗的能量几乎少两个数量级</li>
+  <li>神经符号模型能够泛化到未见过的 4 块变体（78% 成功率），而两个 VLA 都无法完成任何一集</li>
+</ul>
+
+<blockquote>
+  <p>“For manipulation tasks governed by explicit procedural constraints, incorporating symbolic structure can yield substantial advantages in reliability, data efficiency, and energy consumption.”</p>
+</blockquote>
+
+<p>这些结果强调了在具有明确程序约束的操作任务中，结合符号结构可以在可靠性、数据效率和能源消耗方面带来显著优势。</p>
+
+<h2 id="参考文献">参考文献</h2>
+
+<ol>
+  <li>
+    <p>Duggan T, Lorang P, Lu H, Scheutz M. The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks with Significantly Lower Energy Consumption. arXiv:2602.19260, 2026.</p>
+  </li>
+  <li>
+    <p>Lorang P, Lu H, Huemer J, Zips P, Scheutz M. Few-shot neuro-symbolic imitation learning for long-horizon planning and acting. arXiv:2508.21501, 2025.</p>
+  </li>
+  <li>
+    <p>Black K, et al. π₀: A vision-language-action flow model for general robot control. arXiv:2410.24164, 2024.</p>
+  </li>
+  <li>
+    <p>Kim MJ, et al. OpenVLA: An open-source vision-language-action model. arXiv:2406.09246, 2024.</p>
+  </li>
+  <li>
+    <p>Kambhampati S, et al. LLMs can’t plan, but can help planning in LLM-modulo frameworks. 2024.</p>
+  </li>
+</ol>]]></content><author><name>ROM4AI</name></author><category term="robotics" /><category term="neuro-symbolic" /><category term="VLA" /><category term="manipulation" /><category term="energy-efficiency" /><category term="vision-language-action" /><category term="neuro-symbolic" /><category term="robotics" /><category term="planning" /><category term="energy-efficiency" /><category term="Towers-of-Hanoi" /><summary type="html"><![CDATA[The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks]]></summary></entry><entry><title type="html">Speculating Experts Accelerates Inference for Mixture-of-Experts: 通过专家预取加速 MoE 推理</title><link href="/research/ai/ml/llm/inference/2026/03/26/speculating-experts-accelerates-moe-inference.html" rel="alternate" type="text/html" title="Speculating Experts Accelerates Inference for Mixture-of-Experts: 通过专家预取加速 MoE 推理" /><published>2026-03-26T00:00:00+08:00</published><updated>2026-03-26T00:00:00+08:00</updated><id>/research/ai/ml/llm/inference/2026/03/26/speculating-experts-accelerates-moe-inference</id><content type="html" xml:base="/research/ai/ml/llm/inference/2026/03/26/speculating-experts-accelerates-moe-inference.html"><![CDATA[<h1 id="speculating-experts-accelerates-inference-for-mixture-of-experts-通过专家预取加速-moe-推理">Speculating Experts Accelerates Inference for Mixture-of-Experts: 通过专家预取加速 MoE 推理</h1>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2603.19289">arXiv:2603.19289</a></td>
+        <td><a href="https://arxiv.org/pdf/2603.19289.pdf">PDF</a></td>
+        <td><a href="https://github.com/axonn-ai/yalis/tree/offload_prefetch">代码</a></td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<h2 id="摘要">摘要</h2>
+
+<p>本文提出了一种<strong>专家预取方案（expert prefetching scheme）</strong>，通过利用当前计算的内部模型表示来预测未来专家，使得 CPU-GPU 内存传输能够与计算重叠。在多个 MoE 架构上的实验表明，该方法可以实现<strong>5-14% 的每输出令牌时间（TPOT）降低</strong>，同时在大多数情况下保持下游任务准确性。</p>
+
+<h2 id="技术总结">技术总结</h2>
+
+<h3 id="问题定义">问题定义</h3>
+
+<p>Mixture-of-Experts (MoE) 模型通过稀疏激活在保持每令牌计算量减少的同时扩展了大语言模型的容量。然而，在内存受限的推理设置中，专家权重必须卸载到 CPU，导致解码过程中 CPU-GPU 传输成为性能瓶颈。</p>
+
+<blockquote>
+  <p>“In memory-constrained inference settings, expert weights must be offloaded to CPU, creating a performance bottleneck from CPU-GPU transfers during decoding.”</p>
+</blockquote>
+
+<p>以 Qwen3-30B-A3B 在 A6000 GPU 上为例，CPU-GPU 内存传输占每输出令牌时间（TPOT）的<strong>84-88%</strong>，而计算仅占很小一部分。因此，通过减少这些昂贵的内存传输可以实现显著的推理速度提升。</p>
+
+<h3 id="方法框架">方法框架</h3>
+
+<p>本文提出了一种推理时专家预取方案，利用内部模型表示来预测近期的专家选择。核心思想是使用当前层的归一化残差流和默认向量构建<strong>准隐藏状态（quasi-hidden state）</strong>，用于预测下一层的专家。</p>
+
+<p><img src="/assets/speculating-experts/figure_1_1.png" alt="专家预取在 pre-norm MoE 块中的工作流程" />
+<em>图 1：专家预取在 pre-norm MoE 块中的工作流程。第 l 层的归一化残差流 s_l 和默认向量 d_l 形成准隐藏状态 q_l，用于预测下一层的专家，使 CPU-GPU 内存传输能够与计算重叠。（来源：原文 Figure 1）</em></p>
+
+<p>该方法的关键优势在于：</p>
+<ul>
+  <li><strong>无需额外参数</strong>：直接利用现有的内部模型表示</li>
+  <li><strong>适用于预训练模型</strong>：无需微调即可应用于现有 MoE 模型</li>
+  <li><strong>即插即用</strong>：已集成到开源推理引擎 YALIS 中</li>
+</ul>
+
+<h3 id="核心模块">核心模块</h3>
+
+<p><strong>1. 默认向量（Default Vector）</strong></p>
+
+<blockquote>
+  <p>“The default vector d_{l,e} represents the average activation associated with expert e at layer l.”</p>
+</blockquote>
+
+<p>默认向量表示与每个专家相关的平均激活，通过离线聚合推理期间观察到的激活计算得到。对于给定的令牌，路由器选择专家子集并分配门控权重，层级别的默认表示定义为所选专家默认向量的加权组合。</p>
+
+<p><strong>2. 准隐藏状态（Quasi-Hidden State）</strong></p>
+
+<p>在 pre-norm MoE 架构中，专家路由是通过对注意力后的归一化残差流计算得到的。准隐藏状态定义为：</p>
+
+<blockquote>
+  <p>“q_l = LN_{l+1}(d_l + r_l)”</p>
+</blockquote>
+
+<p>其中 r_l 是第 l 层的注意力后残差，d_l 是层级别的默认向量，LN_{l+1} 表示应用于下一层专家路由前的归一化。</p>
+
+<p><strong>3. 轻量级神经估计器（Lightweight Neural Estimator）</strong></p>
+
+<p>对于准隐藏状态预测效果不佳的架构（如 Qwen3-30B-A3B 的早期层），作者训练了一个轻量级神经估计器来直接预测路由决策。</p>
+
+<blockquote>
+  <p>“The estimator learns a mapping from the quasi-hidden state q_l to the router logits at layer l+1.”</p>
+</blockquote>
+
+<p>该估计器是一个前馈网络，带有学习的位置嵌入以考虑层特定的路由行为。通过蒸馏训练，最小化估计器预测的 logits 与真实路由器产生的 logits 之间的 KL 散度。</p>
+
+<h3 id="实验设置">实验设置</h3>
+
+<p><strong>模型配置：</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>模型</th>
+      <th>层数 (L)</th>
+      <th>专家数 (E)</th>
+      <th>隐藏维度 (H)</th>
+      <th>专家隐藏维度 (H_MoE)</th>
+      <th>专家内存</th>
+      <th>其他参数内存</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Qwen3-30B-A3B</td>
+      <td>48</td>
+      <td>128</td>
+      <td>2048</td>
+      <td>768</td>
+      <td>~54 GB</td>
+      <td>~3 GB</td>
+    </tr>
+    <tr>
+      <td>GLM-4.7-Flash</td>
+      <td>47</td>
+      <td>64</td>
+      <td>2048</td>
+      <td>1536</td>
+      <td>~53 GB</td>
+      <td>~3 GB</td>
+    </tr>
+    <tr>
+      <td>GPT-OSS-120B</td>
+      <td>24</td>
+      <td>32</td>
+      <td>2880</td>
+      <td>2880</td>
+      <td>~213 GB</td>
+      <td>~4 GB</td>
+    </tr>
+    <tr>
+      <td>Qwen3-235B-A22B</td>
+      <td>94</td>
+      <td>128</td>
+      <td>4096</td>
+      <td>1536</td>
+      <td>~230 GB</td>
+      <td>~14 GB</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>硬件配置：</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>GPU</th>
+      <th>HBM</th>
+      <th>CPU DRAM</th>
+      <th>CPU↔GPU 链路</th>
+      <th>评估模型</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>A6000</td>
+      <td>48 GB</td>
+      <td>128 GB</td>
+      <td>PCIe 4.0</td>
+      <td>Qwen3-30B-A3B, GLM-4.7-Flash</td>
+    </tr>
+    <tr>
+      <td>A100</td>
+      <td>80 GB</td>
+      <td>256 GB</td>
+      <td>PCIe 4.0</td>
+      <td>GPT-OSS-120B</td>
+    </tr>
+    <tr>
+      <td>GH200</td>
+      <td>96 GB</td>
+      <td>480 GB</td>
+      <td>NVLink C2C</td>
+      <td>Qwen3-235B-A22B</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>评估指标：</strong></p>
+<ul>
+  <li><strong>TPOT (Time Per Output Token)</strong>：生成每个输出令牌的平均时间</li>
+  <li><strong>专家预测命中率 (Hit Rate)</strong>：预测专家与真实路由器选择专家的重合度</li>
+  <li><strong>下游任务准确性</strong>：在多个基准测试上的表现</li>
+</ul>
+
+<h3 id="优点">优点</h3>
+
+<p><strong>1. 显著的性能提升</strong></p>
+
+<p><img src="/assets/speculating-experts/figure_8_1.png" alt="不同模型和序列长度下的 TPOT 对比" />
+<em>图 8：不同模型的每输出令牌时间（TPOT）对比，比较了按需专家加载和专家预取在不同序列长度下的表现。（来源：原文 Figure 8）</em></p>
+
+<p>在 Qwen3-30B-A3B 上，预取方案实现了<strong>9-14% 的 TPOT 降低</strong>，且在更长序列长度下收益更大。在更强大的 GPU（A100 和 GH200）上，最大 TPOT 改进为<strong>5-8%</strong>，表明预取在较弱 GPU 上提供更大收益。</p>
+
+<p><strong>2. 保持任务准确性</strong></p>
+
+<p>对于 GPT-OSS 系列模型，执行预取专家在大多数任务上保持了与基线相当的性能：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>HumanEval</th>
+      <th>MBPP+</th>
+      <th>GSM8k</th>
+      <th>AIME24</th>
+      <th>AIME25</th>
+      <th>StrategyQA</th>
+      <th>平均</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>GPT-OSS-120B (基线)</strong></td>
+      <td>0.970</td>
+      <td>0.815</td>
+      <td>0.955</td>
+      <td>0.800</td>
+      <td>0.767</td>
+      <td>0.789</td>
+      <td><strong>0.849</strong></td>
+    </tr>
+    <tr>
+      <td>GPT-OSS-120B + Router-PF</td>
+      <td>0.963</td>
+      <td>0.812</td>
+      <td>0.958</td>
+      <td><strong>0.833</strong></td>
+      <td><strong>0.800</strong></td>
+      <td>0.776</td>
+      <td><strong>0.857</strong></td>
+    </tr>
+    <tr>
+      <td>GPT-OSS-120B + Est-PF</td>
+      <td>0.951</td>
+      <td>0.804</td>
+      <td>0.949</td>
+      <td>0.700</td>
+      <td>0.700</td>
+      <td>0.760</td>
+      <td>0.811</td>
+    </tr>
+    <tr>
+      <td>GPT-OSS-120B + Hybrid-PF</td>
+      <td>0.927</td>
+      <td>0.802</td>
+      <td>0.945</td>
+      <td>0.800</td>
+      <td>0.800</td>
+      <td>0.769</td>
+      <td>0.841</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>3. 高效的计算 - 内存重叠</strong></p>
+
+<p><img src="/assets/speculating-experts/figure_1_2.png" alt="Nsight Systems 追踪对比" />
+<em>图 2：使用 Qwen-30B-A3B 推理的 Nsight Systems 追踪。与按需加载活动专家（上）相比，专家预取方法（下）有效地将 CPU-GPU 内存传输与 GPU 计算重叠，减少了关键路径上的传输开销。（来源：原文 Figure 2）</em></p>
+
+<p>通过异步预取下一层专家权重，并与当前层 MoE 计算重叠，显著减少了关键路径上的时间。</p>
+
+<p><strong>4. 轻量级估计器的高命中率</strong></p>
+
+<p><img src="/assets/speculating-experts/figure_8_2.png" alt="训练估计器的验证专家命中率" />
+<em>图 9：验证专家命中率与用于训练专家估计器的令牌数量的关系。（来源：原文 Figure 9）</em></p>
+
+<p>估计器在相对较少的训练令牌下即可达到高预测精度。Qwen3-30B-A3B 的估计器在 4M 令牌后达到约<strong>90% 的平均命中率</strong>。</p>
+
+<h3 id="局限">局限</h3>
+
+<p><strong>1. 架构敏感性</strong></p>
+
+<p>Qwen3-30B-A3B 对基于路由器的推测执行表现出更高的敏感性。特别是在数学密集型任务（如 AIME24 和 GSM8k）上性能下降更明显：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>HumanEval</th>
+      <th>MBPP+</th>
+      <th>GSM8k</th>
+      <th>AIME24</th>
+      <th>AIME25</th>
+      <th>StrategyQA</th>
+      <th>平均</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Qwen3-30B-A3B (基线)</strong></td>
+      <td><strong>0.939</strong></td>
+      <td><strong>0.762</strong></td>
+      <td><strong>0.950</strong></td>
+      <td><strong>0.800</strong></td>
+      <td><strong>0.733</strong></td>
+      <td><strong>0.719</strong></td>
+      <td><strong>0.817</strong></td>
+    </tr>
+    <tr>
+      <td>Qwen3-30B-A3B + Router-PF</td>
+      <td>0.860</td>
+      <td>0.659</td>
+      <td>0.576</td>
+      <td>0.467</td>
+      <td>0.600</td>
+      <td>0.683</td>
+      <td>0.641</td>
+    </tr>
+    <tr>
+      <td>Qwen3-30B-A3B + Est-PF</td>
+      <td>0.915</td>
+      <td>0.741</td>
+      <td>0.918</td>
+      <td>0.667</td>
+      <td>0.567</td>
+      <td>0.691</td>
+      <td>0.750</td>
+    </tr>
+    <tr>
+      <td>Qwen3-30B-A3B + Hybrid-PF</td>
+      <td>0.909</td>
+      <td><strong>0.762</strong></td>
+      <td><strong>0.946</strong></td>
+      <td>0.700</td>
+      <td>0.600</td>
+      <td>0.681</td>
+      <td>0.766</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>这归因于 Qwen3-30B-A3B 早期层的高表示漂移（representational drift）。</p>
+
+<p><strong>2. 预填充阶段的限制</strong></p>
+
+<p>在预填充阶段，由于提示长度通常足够大，所有专家在每一层都有效激活，任何专家预测或预取策略都简化为加载所有专家。因此，预填充阶段的预取不涉及非平凡的专家选择决策。</p>
+
+<p><strong>3. 硬件依赖性</strong></p>
+
+<p>在更强大的 GPU 上（如 A100 和 GH200），由于更高的计算吞吐量，最大 TPOT 改进限制在 5-8%，相比 A6000 的 12-14% 较低。这表明预取方案的收益受计算 - 复制时间比例的限制。</p>
+
+<p><strong>4. 估计器训练成本</strong></p>
+
+<p>虽然估计器是轻量级的，但仍需要训练：</p>
+<ul>
+  <li>Qwen3-30B-A3B：17M 参数，需要 4M 训练令牌</li>
+  <li>GPT-OSS-20B：4M 参数，需要 5M 训练令牌</li>
+  <li>GPT-OSS-120B：45M 参数，需要 5M 训练令牌</li>
+</ul>
+
+<h2 id="实验结果">实验结果</h2>
+
+<h3 id="专家预测命中率分析">专家预测命中率分析</h3>
+
+<p><img src="/assets/speculating-experts/figure_3_1.png" alt="准隐藏状态与基线的余弦相似度对比" />
+<em>图 3：在层 l 构建的准隐藏状态 q_l 与真实路由器输入 s_{l+1} 之间的余弦相似度对比。（来源：原文 Figure 3）</em></p>
+
+<p>在 GPT-OSS 模型上，准隐藏状态显示出比基线 s_l 更高的平均余弦相似度，表明包含默认向量为近似 s_l 和 s_{l+1} 之间的漂移提供了有用的专家条件偏差。</p>
+
+<p><img src="/assets/speculating-experts/figure_3_2.png" alt="各层专家预取命中率对比" />
+<em>图 4：使用准隐藏状态 q_l 与基线 s_l 获得的各层专家预取命中率（recall@k）。（来源：原文 Figure 4）</em></p>
+
+<p>对于 Qwen3-30B-A3B，大部分层间漂移发生在前两层，导致早期机制的 recall@k 较低。在这些层之后，可忽略的漂移允许平均约<strong>90% 的 recall@k</strong>。</p>
+
+<h3 id="专家排名对齐分析">专家排名对齐分析</h3>
+
+<p><img src="/assets/speculating-experts/figure_4_1.png" alt="推测路由与真实路由的专家排名对齐" />
+<em>图 5：推测路由与真实路由在各层的专家排名对齐。对于每一层，报告给定排名（由路由权重确定）的专家在预取和真实路由之间匹配的比例。（来源：原文 Figure 5）</em></p>
+
+<p>最高排名的专家（即接收最大路由权重并对 MoE 激活贡献最大的专家）在大多数层中以高命中率被预测。这有助于解释尽管路由预测不完美，下游任务准确性仍保持稳定。</p>
+
+<h3 id="按需加载性能分解">按需加载性能分解</h3>
+
+<p><img src="/assets/speculating-experts/figure_4_1.png" alt="按需专家加载的 TPOT 分解" />
+<em>图 7：按需专家加载在不同模型和提示序列长度下的每输出令牌时间分解。（来源：原文 Figure 7）</em></p>
+
+<p>在 Qwen3-30B-A3B 上，复制时间构成主要瓶颈，占 TPOT 的<strong>~84-88%</strong>。计算时间仅占总 TPOT 的<strong>~8-13%</strong>，这形成了可实现改进的上限（根据公式 1）。</p>
+
+<h3 id="预取方案对比">预取方案对比</h3>
+
+<p>不同预取方案在下游基准测试上的准确性对比见表 1。关键发现：</p>
+
+<ol>
+  <li><strong>GPT-OSS 模型</strong>：基于路由器的预取（Router-PF）在大多数任务上保持了与基线相当的性能</li>
+  <li><strong>Qwen3-30B-A3B</strong>：混合预取（Hybrid-PF）策略恢复了大部分基线性能，同时在低命中率层应用估计器</li>
+  <li><strong>估计器效果</strong>：在 GSM8k 上，混合方法恢复了约<strong>37%</strong> 到 Router-PF 的准确性差距</li>
+</ol>
+
+<h2 id="实现细节">实现细节</h2>
+
+<p>该预取方案已集成到 <strong>YALIS</strong>（一个轻量级研究推理引擎）中，支持来自 SOTA 框架（如 vLLM）的关键优化，包括：</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">torch.compile</code></li>
+  <li>CUDA Graphs</li>
+  <li>优化的注意力后端</li>
+</ul>
+
+<p><strong>关键实现特性：</strong></p>
+
+<ol>
+  <li><strong>双缓冲</strong>：跨层交替使用 GPU 专家缓冲区，实现计算 - 复制重叠而无需额外同步</li>
+  <li><strong>固定 CPU 内存</strong>：卸载的 MoE 权重存储在固定 CPU 内存中，防止操作系统分页，实现比可分页内存更快的 CPU→GPU 传输</li>
+  <li><strong>仅卸载专家权重</strong>：非专家参数（注意力和路由器）足够小，可以保留在 GPU 上，避免不必要的传输</li>
+  <li><strong>异步预取</strong>：使用独立的 CUDA 流进行异步内存传输，与计算重叠</li>
+</ol>
+
+<h2 id="总结">总结</h2>
+
+<p>本文提出了一种推理时专家预取方案，通过利用内部模型表示来预测未来专家选择，使得专家传输能够与计算重叠。主要贡献包括：</p>
+
+<ol>
+  <li><strong>无参数预取</strong>：识别出能够跨现代 MoE 架构预测未来路由决策的内部模型表示</li>
+  <li><strong>保持准确性的推测执行</strong>：证明执行预取专家（而非将错误预测视为缓存未命中）通常能保持下游任务准确性</li>
+  <li><strong>优化的推理实现</strong>：集成到开源推理引擎中，在资源受限设置下实现<strong>5-14% 的 TPOT 降低</strong></li>
+  <li><strong>轻量级神经估计器</strong>：对于预取方案不足的架构，引入轻量级估计器显著提高专家预测命中率</li>
+</ol>
+
+<p>通过减少专家卸载带来的成本，这项工作使得大型开源 MoE 模型在消费级硬件上的本地部署更加实用。</p>
+
+<h2 id="参考文献">参考文献</h2>
+
+<ol>
+  <li>
+    <p>Madan V, Singhania P, Bhatele A, Goldstein T, Panda A. Speculating Experts Accelerates Inference for Mixture-of-Experts. arXiv preprint arXiv:2603.19289, 2026.</p>
+  </li>
+  <li>
+    <p>Panda A, et al. Default Vectors for MoE Routing. 2025.</p>
+  </li>
+  <li>
+    <p>Singhania P, et al. YALIS: A Lightweight Research Inference Engine. 2025.</p>
+  </li>
+  <li>
+    <p>Shazeer N, et al. Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer. ICLR, 2017.</p>
+  </li>
+  <li>
+    <p>Kwon W, et al. vLLM: Easy, Fast, and Cheap LLM Serving with PagedAttention. OSDI, 2023.</p>
+  </li>
+  <li>
+    <p>Dao T, et al. FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness. NeurIPS, 2022.</p>
+  </li>
+  <li>
+    <p>Chen et al. Speculative Expert Offloading for MoE Inference. 2025.</p>
+  </li>
+  <li>
+    <p>Yu et al. Layer-wise Expert Prefetching for MoE Models. 2025a.</p>
+  </li>
+  <li>
+    <p>Zhang et al. Overlapping Communication and Computation in MoE Inference. 2025a.</p>
+  </li>
+  <li>
+    <p>Hwang et al. Pre-Gating for MoE Prefetching. 2024.</p>
+  </li>
+</ol>
+
+<hr />
+
+<p><em>本文使用 <a href="https://github.com/rom4ai/paper_to_blog">paper_to_blog</a> 工具自动生成，最后更新：2026-03-26</em></p>]]></content><author><name>ROM4AI</name></author><category term="research" /><category term="ai" /><category term="ml" /><category term="llm" /><category term="inference" /><category term="mixture-of-experts" /><category term="MoE" /><category term="LLM inference" /><category term="expert prefetching" /><category term="speculative execution" /><category term="CPU offloading" /><summary type="html"><![CDATA[Speculating Experts Accelerates Inference for Mixture-of-Experts: 通过专家预取加速 MoE 推理]]></summary></entry><entry><title type="html">Understanding Bottlenecks for Efficiently Serving LLM Inference With KV Offloading</title><link href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html" rel="alternate" type="text/html" title="Understanding Bottlenecks for Efficiently Serving LLM Inference With KV Offloading" /><published>2026-03-26T00:00:00+08:00</published><updated>2026-03-26T00:00:00+08:00</updated><id>/research/ai/ml/systems/2026/03/26/understanding-kv-offloading</id><content type="html" xml:base="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html"><![CDATA[<h1 id="understanding-bottlenecks-for-efficiently-serving-llm-inference-with-kv-offloading">Understanding Bottlenecks for Efficiently Serving LLM Inference With KV Offloading</h1>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2601.19910">arXiv:2601.19910</a></td>
+        <td><a href="https://arxiv.org/pdf/2601.19910.pdf">PDF</a></td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<p><strong>作者</strong>: William Meng, Benjamin Lee, Hong Wang<br />
+<strong>机构</strong>: arXiv GenPDF<br />
+<strong>发布日期</strong>: 2025 年 12 月 16 日</p>
+
+<hr />
+
+<h2 id="技术总结">技术总结</h2>
+
+<h3 id="问题定义">问题定义</h3>
+
+<p>KV 缓存卸载（KV cache offloading）通过将 KV 缓存存储在 CPU DRAM 中来实现长上下文 LLM 推理，但 PCIe 带宽限制造成了严重的瓶颈。随着模型支持越来越长的上下文（从数十万到数百万 token），KV 缓存可能达到数十 GB，迅速耗尽 GPU VRAM 容量。虽然 CPU DRAM 可提供 TB 级容量，但 GPU 通过 HBM 提供 TB/s 级带宽，而 CPU-GPU PCIe 互连仅提供数十 GB/s——相差数个数量级。</p>
+
+<blockquote>
+  <p>“对于缓存 token 数量远多于新 token 的工作负载，这将传统的计算密集型预填充（compute-bound prefill）转变为内存密集型执行（memory-bound execution），导致 GPU 计算资源未被充分利用。”</p>
+</blockquote>
+
+<h3 id="方法框架">方法框架</h3>
+
+<p>本文开发了一个分析框架，推导出 <strong>κ_crit</strong>（关键缓存与预填充 token 比率），即执行变为内存受限的临界点。框架核心是两个关键指标：</p>
+
+<ul>
+  <li><strong>κ_ratio = K/T</strong>：工作负载中缓存 token 数量（K）与新预填充 token 数量（T）的比率，描述工作负载的内存与计算强度平衡</li>
+  <li><strong>κ_crit</strong>：硬件的临界比率，计算从计算密集型转变为内存密集型的阈值</li>
+</ul>
+
+<p>当 <strong>κ_ratio &gt; κ_crit</strong> 时，预填充变为内存受限。κ_crit 由模型因素（κ_M）和硬件因素（κ_HW）共同决定：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>κ_crit = κ_M × κ_HW = (F_pfl / B_kv) × (BW_PCIe / C_eff)
+</code></pre></div></div>
+
+<p>其中 F_pfl 是每个预填充 token 的 FLOPs，B_kv 是每个 token 的 KV 缓存字节数，BW_PCIe 是 PCIe 带宽，C_eff 是 GPU 有效计算吞吐量。</p>
+
+<h3 id="核心模块">核心模块</h3>
+
+<p>论文的核心贡献包括三个部分：</p>
+
+<ol>
+  <li>
+    <p><strong>分析框架</strong>：通过 κ_crit 和 κ_ratio 的公式化，将模型与系统架构解耦，使软件优化和硬件优化可以独立推理</p>
+  </li>
+  <li>
+    <p><strong>性能特征分析</strong>：在 H100 和 B200 系统上对 ShareGPT、NarrativeQA 和 FinQA 工作负载进行实证测量，发现 PCIe 开销可达预填充计算的 86 倍，占总执行时间的 99%</p>
+  </li>
+  <li>
+    <p><strong>设计启示</strong>：识别硬件优化（NVLink C2C、统一 HBM）、模型优化（MLA 注意力机制）和调度策略的改进方向</p>
+  </li>
+</ol>
+
+<blockquote>
+  <p>“典型工作负载的 κ_ratio 值比 κ_crit 超出数个数量级：对话的中位数为 100，文档查询的中位数为 5000，而大多数系统的 κ_crit 小于 15。”</p>
+</blockquote>
+
+<h3 id="实验设置">实验设置</h3>
+
+<p><strong>硬件平台</strong>：</p>
+<ul>
+  <li>8×H100 SXM5 GPU（每个 80GB HBM3，通过 NVLink 4.0 连接）</li>
+  <li>AMD EPYC 7R13 CPU（48 核）</li>
+  <li>2 TB DDR4-3200 DRAM</li>
+  <li>PCIe 5.0 ×16（峰值双向带宽：128 GB/s）</li>
+</ul>
+
+<p><strong>软件栈</strong>：</p>
+<ul>
+  <li>vLLM v0.10.1 + LMCache v0.3.5 用于 KV 缓存卸载</li>
+  <li>FP16 精度</li>
+  <li>禁用前缀缓存以隔离 PCIe 传输性能</li>
+</ul>
+
+<p><strong>评估模型</strong>：</p>
+<ul>
+  <li>Llama-3.1-70B（稠密 Transformer，GQA，B_kv = 328 KB/token）</li>
+  <li>Qwen3-235B-A22B（稀疏 MoE，GQA，B_kv = 192 KB/token，235B 总参数中激活 22B）</li>
+</ul>
+
+<p><strong>工作负载</strong>：</p>
+<ul>
+  <li>ShareGPT：90k 对话，685k 轮次</li>
+  <li>NarrativeQA：47k 问题，1,572 个叙事文本</li>
+  <li>FinQA：7.4k 问题，801 个财务文档</li>
+</ul>
+
+<h3 id="优点">优点</h3>
+
+<ol>
+  <li>
+    <p><strong>理论贡献</strong>：首次通过 κ_crit 和 κ_ratio 的形式化分析，揭示了 KV 卸载何时以及为何会导致内存瓶颈，为系统设计提供了清晰的指导原则</p>
+  </li>
+  <li>
+    <p><strong>实证洞察</strong>：发现 GPU 在卸载场景下平均仅消耗 28% 的额定 TDP，表明存在严重的资源浪费，这对数据中心的电力基础设施规划有重要影响</p>
+  </li>
+  <li>
+    <p><strong>实用建议</strong>：提出了具体的优化方向，包括使用 NVLink C2C（提升κ_crit5.3 倍）、统一 HBM 架构（提升 48 倍）、MLA 注意力机制（减少 2.7-4.7 倍数据需求）和量化技术（INT8 提供 2 倍压缩）</p>
+  </li>
+  <li>
+    <p><strong>调度优化</strong>：提出了基于利用率的感知调度策略，通过 VRAM 约束下的 token 预算优化，可以在不增加硬件成本的情况下提高 GPU 利用率</p>
+  </li>
+</ol>
+
+<h3 id="局限">局限</h3>
+
+<ol>
+  <li>
+    <p><strong>MLA 评估不完整</strong>：论文尝试评估 DeepSeek-V2 的 MLA 特性，但遇到了实现特定的开销问题，无法准确隔离 PCIe 传输性能，因此将全面的 MLA 评估留待未来工作</p>
+  </li>
+  <li>
+    <p><strong>简化假设</strong>：框架使用 2N FLOPs/token 近似 F_pfl，忽略了上下文缩放项 2n_layer·n_ctx·d_attn。对于典型模型这项可以忽略，但对于超大上下文（如 65K token），可能引入约 10% 的误差</p>
+  </li>
+  <li>
+    <p><strong>写入开销未建模</strong>：框架专注于从 CPU DRAM 加载 KV 缓存，忽略了将新前缀写回 DRAM 的开销。假设写入操作在预填充之后进行，且双向 PCIe 可以缓解影响，但较大的 T 值可能引入未建模的读写竞争开销</p>
+  </li>
+  <li>
+    <p><strong>量化和压缩未实证验证</strong>：虽然论文指出 MLA（2.7-4.7 倍 B_kv 减少）和量化（2-4 倍压缩）可以减少 PCIe 开销，但没有实证表征这些技术，需要未来工作验证预测的收益</p>
+  </li>
+</ol>
+
+<p><img src="/assets/figure-1-kv-offloading-overview-1.png" alt="KV 缓存卸载概述" />
+<em>图 1：KV 缓存卸载概述。当服务第二个请求（绿色）时，只有新 token（”ocean”）需要计算；缓存的 token 通过 PCIe 加载。（来源：原文 Figure 1）</em></p>
+
+<hr />
+
+<h2 id="1-背景与动机">1. 背景与动机</h2>
+
+<h3 id="11-llm-推理的挑战">1.1 LLM 推理的挑战</h3>
+
+<p>大型语言模型已成为跨领域的基础设施，从聊天机器人到金融分析和医疗应用。现代 LLM 使用 Transformer 架构，在预填充阶段生成键值（KV）缓存。随着模型支持更长的上下文（数十万到数百万 token），计算成本大幅增加。</p>
+
+<p>在多轮对话或多次查询相同文档时，token 经常重复出现。前缀缓存（Prefix Caching）通过将 KV 缓存存储在 GPU VRAM 中来消除冗余计算。然而，这些缓存可能达到数十 GB，在服务多个并发请求时迅速耗尽 VRAM 容量。</p>
+
+<blockquote>
+  <p>“LLaMA-3.1-405B 为每个 token 生成 500 KB 的 KV 缓存，对于长输入可能达到数十 GB。”</p>
+</blockquote>
+
+<h3 id="12-kv-缓存卸载的权衡">1.2 KV 缓存卸载的权衡</h3>
+
+<p>KV 缓存卸载通过将 KV 存储在 CPU DRAM 中来解决 VRAM 约束，其中可提供 TB 级容量。然而，虽然 GPU 提供 TB/s 级的 HBM 带宽，但 CPU-GPU PCIe 互连仅提供数十 GB/s——相差数个数量级。</p>
+
+<p><strong>关键问题</strong>：对于缓存 token 数量远多于新 token 的工作负载，这将传统的计算密集型预填充转变为内存密集型执行，导致 GPU 计算资源未被充分利用。</p>
+
+<hr />
+
+<h2 id="2-分析框架">2. 分析框架</h2>
+
+<h3 id="21-内存受限执行的判定">2.1 内存受限执行的判定</h3>
+
+<p>论文建模了预填充请求的 TTFT（Time To First Token），该请求从 CPU DRAM 加载 K 个缓存 token 并在 GPU 上计算 T 个新预填充 token：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TTFT = t_PCIe + t_prefill = (K · B_kv) / BW_PCIe + (T · F_pfl) / C_eff
+</code></pre></div></div>
+
+<p>其中：</p>
+<ul>
+  <li>B_kv：每个 token 的 KV 缓存字节数（取决于层数、注意力头数、头维度和浮点精度）</li>
+  <li>F_pfl：每个预填充 token 的 FLOPs（取决于模型架构）</li>
+  <li>BW_PCIe：持续的 host-to-device 带宽（GB/s）</li>
+  <li>C_eff：有效 GPU FLOPS/s</li>
+</ul>
+
+<p><strong>临界比率</strong>：当 PCIe 传输时间主导 GPU 计算时间时，预填充变为内存受限：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>κ_ratio = K/T &gt; κ_crit = (F_pfl / B_kv) × (BW_PCIe / C_eff) = κ_M × κ_HW
+</code></pre></div></div>
+
+<blockquote>
+  <p>“κ_crit 是无量纲的。在 roofline 术语中，卸载预填充的计算强度是 AI = (T · F_pfl) / (K · B_kv)。计算与带宽的转换发生在 AI = C_eff / BW_PCIe 处。”</p>
+</blockquote>
+
+<h3 id="22-模型因素κ_m">2.2 模型因素（κ_M）</h3>
+
+<p>κ_crit 的阈值随计算强度（F_pfl）增加而增加，随 KV 占用（B_kv）减少而减少。使用更高 F_pfl/B_kv 比率的模型（如使用 Multi-Head Latent Attention（MLA）压缩 KV 表示的模型）表现出更高的 κ_crit 值，对内存瓶颈更具弹性。</p>
+
+<p><strong>表 1：不同模型的 κ_M 比较</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>模型</th>
+      <th>激活参数</th>
+      <th>注意力架构</th>
+      <th>B_kv (KB/token)</th>
+      <th>κ_M</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>LLama-3.1-70B</td>
+      <td>70B</td>
+      <td>GQA Dense</td>
+      <td>328</td>
+      <td>0.42</td>
+    </tr>
+    <tr>
+      <td>LLama-3.1-405B</td>
+      <td>405B</td>
+      <td>GQA Dense</td>
+      <td>516</td>
+      <td>1.42</td>
+    </tr>
+    <tr>
+      <td>Qwen3-30B-A3B</td>
+      <td>3.3B</td>
+      <td>GQA MoE</td>
+      <td>98</td>
+      <td>0.07</td>
+    </tr>
+    <tr>
+      <td>Qwen3-235B-A22B</td>
+      <td>22B</td>
+      <td>GQA MoE</td>
+      <td>192</td>
+      <td>0.23</td>
+    </tr>
+    <tr>
+      <td>Deepseek-V3</td>
+      <td>37B</td>
+      <td>MLA MoE</td>
+      <td>70</td>
+      <td>1.06</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>关键洞察</strong>：</p>
+<ul>
+  <li>MoE 模型仅激活部分参数，大幅减少了 F_pfl，但 B_kv 不随激活参数缩放。Qwen3-235B-A22B 仅激活 5% 的参数（相比 LLaMA-3.1-405B），但其 B_kv 是 LLaMA-405B 的 37%</li>
+  <li>MLA 显著减少了 B_kv。DeepSeek-V3 的 B_kv = 70 KB，仅为 Qwen3-235B-A22B 的 36% 和 LLaMA-405B 的 14%</li>
+</ul>
+
+<h3 id="23-硬件因素κ_hw">2.3 硬件因素（κ_HW）</h3>
+
+<p>κ_crit 随互连带宽（BW_PCIe）增加而增加，随计算吞吐量（C_eff）减少而减少。维持更高吞吐量的 GPU 更容易受到内存瓶颈的影响，因为更难保持核心有数据供应。</p>
+
+<p><strong>表 2：不同 GPU 和 PCIe 世代的 κ_HW</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>GPU</th>
+      <th>PCIe-4</th>
+      <th>PCIe-5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>B200</td>
+      <td>6.7</td>
+      <td>13.5</td>
+    </tr>
+    <tr>
+      <td>H100</td>
+      <td>17</td>
+      <td>34</td>
+    </tr>
+    <tr>
+      <td>A100</td>
+      <td>53.8</td>
+      <td>107.5</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>“B200 系统表现出比 H100 高 2.5 倍的 C_eff，而 PCIe 5.0 仅提供比 PCIe 4.0 高 2 倍的带宽。这种不平衡导致 B200 的κ_HW 值 consistently 更低。”</p>
+</blockquote>
+
+<p><img src="/assets/figure-4-roofline-analysis-1.png" alt="Roofline 分析" />
+<em>图 4：Roofline 模型分析 Qwen3-235B-A22B（左）和 Deepseek-V3（右）在 NVIDIA B200、H100 和 A100 上的性能。垂直线表示特定硬件的κ_crit。κ_crit 左侧的点为计算受限，右侧为带宽受限。（来源：原文 Figure 4）</em></p>
+
+<h3 id="24-案例研究llama-31-405b-on-h100">2.4 案例研究：LLaMA-3.1-405B on H100</h3>
+
+<p>对于 LLaMA-3.1-405B 在 PCIe 5.0 的 H100 GPU 上：</p>
+<ul>
+  <li>F_pfl = 2 × 405 × 10^9 = 810 GFLOPs/token</li>
+  <li>B_kv = 516 KB/token</li>
+  <li>BW_PCIe = 64 GB/s（峰值）</li>
+  <li>C_eff ≈ 2000 TFLOP/s</li>
+</ul>
+
+<p>计算得 κ_crit ≈ 50，因此一旦缓存 token 超过预填充 token 的 50 倍，执行就变为内存受限。典型的 65K token 文档配 32 预填充 token 产生 κ_ratio ≈ 2000，超出 κ_crit40 倍，明确处于内存受限状态。</p>
+
+<p><strong>考虑实测的 15GB/s PCIe 带宽后，κ_crit ≈ 12</strong>，进一步确认了内存受限行为。</p>
+
+<hr />
+
+<h2 id="3-工作负载分析">3. 工作负载分析</h2>
+
+<h3 id="31-多轮对话sharegpt">3.1 多轮对话（ShareGPT）</h3>
+
+<p>ShareGPT 包含 90k 对话，685k 轮次。使用 LLaMA-3.1 tokenization：</p>
+<ul>
+  <li>用户查询平均 53 token</li>
+  <li>模型响应平均 187 token</li>
+</ul>
+
+<p><strong>分布特征</strong>：</p>
+<ul>
+  <li>50% 的轮次处理少于 20 个 token，90% 少于 133 个</li>
+  <li>50% 的 KV 缓存超过 3.2K token，10% 超过 30K</li>
+  <li><strong>50% 的轮次 κ_ratio &gt; 100，20% 超过 1000</strong></li>
+</ul>
+
+<h3 id="32-文档问答narrativeqa--finqa">3.2 文档问答（NarrativeQA &amp; FinQA）</h3>
+
+<p><strong>NarrativeQA</strong>：</p>
+<ul>
+  <li>47k 问题，1,572 个叙事文本（书籍、剧本）</li>
+  <li>文档中位长度 57K token（范围 15K-190K）</li>
+  <li>问题平均 12 token</li>
+  <li><strong>中位 κ_ratio = 5000</strong>（IQR 2400-11000）</li>
+</ul>
+
+<p><strong>FinQA</strong>：</p>
+<ul>
+  <li>7.4k 问题，801 个财务文档</li>
+  <li>文档中位长度 167K token（范围 60K-450K）</li>
+  <li>问题平均 23 token</li>
+  <li><strong>中位 κ_ratio = 10000</strong>（IQR 5000-17000）</li>
+</ul>
+
+<blockquote>
+  <p>“文档 Q&amp;A 的κ_ratio 比多轮对话高出 2 个数量级，反映了 Q&amp;A 工作负载中文档长度显著更长。”</p>
+</blockquote>
+
+<p><img src="/assets/figure-3-workload-distributions-1.png" alt="工作负载分布" />
+<em>图 3：ShareGPT（顶部）、NarrativeQA（中间）和 FinQA（底部）的预填充 token（T）、复用 KV token（K）和复用 KV 与预填充 token 比率（κ_ratio）的分布。中位κ_ratio 值：ShareGPT=100，NarrativeQA=5000，FinQA=10000。（来源：原文 Figure 3）</em></p>
+
+<hr />
+
+<h2 id="4-实验评估">4. 实验评估</h2>
+
+<h3 id="41-验证分析框架">4.1 验证分析框架</h3>
+
+<p><strong>峰值带宽分析的局限</strong>：</p>
+
+<p>论文发现使用峰值硬件规格会高估 κ_crit。实测结果：</p>
+<ul>
+  <li>Llama-3.1-70B：实测κ_crit = 2，估计值 14.3</li>
+  <li>Qwen3-235B-A22B：实测κ_crit = 1，估计值 7.8</li>
+</ul>
+
+<p><strong>实际带宽分析的优势</strong>：</p>
+
+<p>实测持续 PCIe 带宽为 15 GB/s（峰值 64 GB/s 的 23%），原因是系统瓶颈包括 CPU-GPU 内存复制开销、NUMA 效应和传输粒度。使用实测带宽重新计算κ_crit：</p>
+<ul>
+  <li>Llama：3.3（接近实测的 2）</li>
+  <li>Qwen：1.8（接近实测的 1）</li>
+</ul>
+
+<p>这验证了分析框架，同时强调了使用经验导出带宽值的重要性。</p>
+
+<p><img src="/assets/figure-5-kcrit-validation-1.png" alt="κ_crit 验证" />
+<em>图 5：κ_crit 的实测值。PCIe 开销（POH）随κ_ratio 变化。当 POH=1 时（t_PCIe = t_GPU），执行变为内存受限。实测κ_crit 值远小于使用峰值带宽的估计值。（来源：原文 Figure 5）</em></p>
+
+<h3 id="42-pcie-开销">4.2 PCIe 开销</h3>
+
+<p><strong>表 3：不同工作负载的 PCIe 开销</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>场景</th>
+      <th>K (缓存 token)</th>
+      <th>T (预填充 token)</th>
+      <th>κ_ratio</th>
+      <th>PCIe 开销占比</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>小文档</td>
+      <td>65K</td>
+      <td>64</td>
+      <td>~1000</td>
+      <td>99%</td>
+    </tr>
+    <tr>
+      <td>多轮对话</td>
+      <td>8K</td>
+      <td>128</td>
+      <td>~63</td>
+      <td>88%</td>
+    </tr>
+    <tr>
+      <td>中等文档</td>
+      <td>6.4K</td>
+      <td>100</td>
+      <td>64</td>
+      <td>86%</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>“对于 65K+ KV token 和 64 输入 token 的小文档，Qwen 花费 99% 的时间在传输上。”</p>
+</blockquote>
+
+<p><img src="/assets/figure-6-pcie-overhead-1.png" alt="PCIe 开销" />
+<em>图 6：KV 缓存卸载在不同预填充 token 数量和 KV 缓存大小下的 PCIe 开销。（来源：原文 Figure 6）</em></p>
+
+<h3 id="43-调度器利用率">4.3 调度器利用率</h3>
+
+<p><img src="/assets/figure-2-vllm-scheduling.png" alt="vLLM 调度器" />
+<em>图 2：vLLM 调度器的迭代级调度概述。每个请求获得 token 预算，调度器在每次迭代中填充到系统范围的预算。（来源：原文 Figure 2）</em></p>
+
+<p>vLLM 使用迭代级调度和 token 预算来饱和 GPU 计算。然而，VRAM 容量（而非 token 预算）限制了调度器吞吐量。</p>
+
+<p><strong>表 4：ShareGPT 和 NarrativeQA 的平均每迭代调度 token 数</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>RPS</th>
+      <th>ShareGPT (T_sched)</th>
+      <th>NarrativeQA (T_sched)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>70</td>
+      <td>4064</td>
+      <td>532</td>
+    </tr>
+    <tr>
+      <td>130</td>
+      <td>3793</td>
+      <td>555</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>对于 ShareGPT，平均 K=11115，T=82。使用公式计算 T_sched = 3509，与实测值一致。这确认了 VRAM 容量（而非 token 预算）限制了调度器吞吐量。</p>
+
+<h3 id="44-gpu-功耗与利用率">4.4 GPU 功耗与利用率</h3>
+
+<p><strong>表 5：ShareGPT 和 NarrativeQA 的平均和最大 GPU 功耗</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>RPS</th>
+      <th>ShareGPT 平均 (W)</th>
+      <th>ShareGPT 最大 (W)</th>
+      <th>NarrativeQA 平均 (W)</th>
+      <th>NarrativeQA 最大 (W)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>70</td>
+      <td>196</td>
+      <td>342</td>
+      <td>152</td>
+      <td>202</td>
+    </tr>
+    <tr>
+      <td>130</td>
+      <td>192</td>
+      <td>287</td>
+      <td>152</td>
+      <td>194</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>关键发现</strong>：</p>
+<ul>
+  <li>GPU 仅使用最大 TDP 的 28%（ShareGPT）和 22%（NarrativeQA）</li>
+  <li>ShareGPT 比 NarrativeQA 消耗多 29% 的功率，因为调度了更多 token</li>
+  <li>低 GPU 利用率对数据中心基础设施（电力、冷却、配电）有重大影响，导致每单位有用工作的成本增加</li>
+</ul>
+
+<hr />
+
+<h2 id="5-系统启示">5. 系统启示</h2>
+
+<h3 id="51-硬件优化">5.1 硬件优化</h3>
+
+<p><strong>CPU-GPU 互连</strong>：</p>
+
+<p>NVIDIA 的 Grace Blackwell 和 Grace Hopper 采用 NVLink Chip-to-Chip（C2C）互连，单向带宽 900 GB/s，比 PCIe 5.0 高 14 倍。</p>
+
+<ul>
+  <li>Qwen3-235B-A22B 的 κ_crit 从 7.8 提升到 41.5（5.3 倍）</li>
+  <li>DeepSeek-V3 的 κ_crit 达到 191</li>
+</ul>
+
+<p>然而，文档 Q&amp;A 的中位κ_ratio = 5000，即使 NVLink C2C 系统仍处于内存受限状态。</p>
+
+<p><img src="/assets/figure-7-nvlink-roofline-1.png" alt="NVLink Roofline" />
+<em>图 7：NVLink C2C 和统一 HBM 架构的 Roofline 模型。NVLink C2C 相比 PCIe 5.0 带宽提升 14 倍，κ_crit 提升 5.3 倍。统一 HBM 提供额外 9 倍改进，显著扩展计算受限区域。（来源：原文 Figure 7）</em></p>
+
+<p><strong>统一内存架构</strong>：</p>
+
+<p>更激进的解决方案将 CPU 和 GPU die 集成到同一封装上，共享统一 HBM，消除 CPU-GPU 互连瓶颈：</p>
+
+<ul>
+  <li>Qwen3-235B-A22B 的 κ_crit 提升到 370（比 NVLink 高 9 倍）</li>
+  <li>DeepSeek-V3 的 κ_crit 达到 1700</li>
+</ul>
+
+<p>这种架构下，即使是文档 Q&amp;A 工作负载也接近计算受限状态（对于 MLA 模型）。</p>
+
+<h3 id="52-模型架构优化">5.2 模型架构优化</h3>
+
+<p><strong>Multi-Head Latent Attention（MLA）</strong>：</p>
+
+<p>MLA 通过低秩投影压缩 KV 表示。DeepSeek-V3 实现 B_kv = 70 KB/token，相比 GQA 模型的 192-328 KB/token，减少了 2.7-4.7 倍。</p>
+
+<p><strong>KV 缓存量化</strong>：</p>
+
+<p>将 KV 缓存量化到更低精度（INT8、FP8、FP4）可减少 B_kv：</p>
+<ul>
+  <li>INT8：2 倍减少，最小精度损失</li>
+  <li>FP4：4 倍压缩</li>
+</ul>
+
+<p>结合 MLA（2.7 倍），量化可产生高达 11 倍的总内存占用减少。</p>
+
+<h3 id="53-工作负载感知异构化">5.3 工作负载感知异构化</h3>
+
+<p>在异构集群中（Grace Hopper、H100、A100），智能路由可匹配工作负载特性与硬件能力：</p>
+
+<ul>
+  <li><strong>高κ_ratio 请求</strong>（κ_ratio &gt; 100）：路由到 Grace Hopper，更高带宽减少传输开销</li>
+  <li><strong>计算密集型预填充</strong>（κ_ratio &lt; 1）：路由到 H100/A100，以更低成本获得计算吞吐量</li>
+  <li><strong>解码请求</strong>：继续路由到内存优化系统（如当前异构化）</li>
+</ul>
+
+<p><strong>电力配置</strong>：</p>
+
+<p>高κ_ratio 工作负载的服务器可以功率限制在 200-300W，而不影响吞吐量（因为 PCIe 带宽而非计算限制性能）。这释放了电力预算用于更多服务器，可能通过更高并发提高总吞吐量。</p>
+
+<h3 id="54-利用率感知调度">5.4 利用率感知调度</h3>
+
+<p>传统 FIFO 调度因 VRAM 约束导致 token 预算未充分利用。改进的调度器应最大化 VRAM 约束下的计算利用率。</p>
+
+<p><strong>公平性机制</strong>：</p>
+<ul>
+  <li><strong>老化积分</strong>：请求优先级随等待时间成比例增加</li>
+  <li><strong>加权公平队列</strong>：按请求优先级而非到达顺序分配 VRAM</li>
+  <li><strong>准入控制</strong>：限制并发高κ_ratio 请求以防止 VRAM 饱和</li>
+</ul>
+
+<p><img src="/assets/figure-8-scheduling-example-1.png" alt="调度示例" />
+<em>图 8：利用率感知调度示例。FIFO 调度（左）因 VRAM 约束导致 token 预算未充分利用（迭代 1 中 3/5 token）。利用率感知调度（右）通过重新排序请求饱和 token 预算（5/5 token）。（来源：原文 Figure 8）</em></p>
+
+<hr />
+
+<h2 id="6-总结与展望">6. 总结与展望</h2>
+
+<p>本文开发了一个分析框架，展示了预填充如何因模型特性和硬件规格而变为内存受限。通过实证表征 KV 卸载，发现预填充在非常小的 κ_ratio 值下就变得内存受限，导致资源浪费和 GPU 低利用率。</p>
+
+<p><strong>主要贡献</strong>：</p>
+<ol>
+  <li>提出了 κ_crit 和 κ_ratio 的形式化分析框架</li>
+  <li>实证测量显示 PCIe 开销可达 99% 的执行时间，GPU 仅使用 28% TDP</li>
+  <li>识别了硬件（NVLink C2C、统一 HBM）、模型（MLA、量化）和调度优化的方向</li>
+</ol>
+
+<p><strong>未来工作</strong>：</p>
+<ul>
+  <li>实证表征 MLA 和量化技术的收益</li>
+  <li>完善超大上下文下的 F_pfl 模型</li>
+  <li>建模写入操作开销和读写竞争</li>
+</ul>
+
+<blockquote>
+  <p>“即使激进的 KV 压缩也无法消除 PCIe 瓶颈。在κ_ratio = 100-1000 的典型工作负载下，所有模型都变为带宽受限。”</p>
+</blockquote>
+
+<hr />
+
+<h2 id="参考文献">参考文献</h2>
+
+<ol>
+  <li>Kwon W, et al. Efficient Memory Management for Large Language Model Serving with PagedAttention. SOSP 2023.</li>
+  <li>Patel et al. SplitInfer: Spatiotemporal Disaggregation of LLM Inference. 2024.</li>
+  <li>DeepSeek-AI et al. DeepSeek-V3 Technical Report. 2025.</li>
+  <li>Grattafiori et al. The Llama 3 Herd of Models. 2024.</li>
+  <li>Liu et al. LMCache: An Efficient KV Cache Layer for Enterprise-Scale LLM Inference. 2024.</li>
+  <li>Yao et al. DistiLLM: Towards Streamlined Distillation for Large Language Models. 2025.</li>
+  <li>Reddy et al. FinQA: A Dataset of Numerical Reasoning over Financial Data. 2024.</li>
+  <li>Kociský et al. The NarrativeQA Reading Comprehension Challenge. 2017.</li>
+</ol>
+
+<hr />
+
+<p><em>本文基于 arXiv:2601.19910 自动生成，旨在提供技术洞察和快速理解。如需引用，请参考原始论文。</em></p>]]></content><author><name>ROM4AI</name></author><category term="research" /><category term="ai" /><category term="ml" /><category term="systems" /><category term="LLM" /><category term="KV Cache" /><category term="Inference" /><category term="PCIe" /><category term="Memory Bottleneck" /><category term="GPU" /><category term="vLLM" /><category term="Prefix Caching" /><summary type="html"><![CDATA[Understanding Bottlenecks for Efficiently Serving LLM Inference With KV Offloading]]></summary></entry><entry><title type="html">DS2SC-Agent: 从数据手册到 SystemC 模型的多智能体自动化生成流水线</title><link href="/research/ai/hardware/chiplet/2026/03/25/ds2sc-agent-multi-agent-chiplet-generation.html" rel="alternate" type="text/html" title="DS2SC-Agent: 从数据手册到 SystemC 模型的多智能体自动化生成流水线" /><published>2026-03-25T00:00:00+08:00</published><updated>2026-03-25T00:00:00+08:00</updated><id>/research/ai/hardware/chiplet/2026/03/25/ds2sc-agent-multi-agent-chiplet-generation</id><content type="html" xml:base="/research/ai/hardware/chiplet/2026/03/25/ds2sc-agent-multi-agent-chiplet-generation.html"><![CDATA[<h1 id="ds2sc-agent-从数据手册到-systemc-模型的多智能体自动化生成流水线">DS2SC-Agent: 从数据手册到 SystemC 模型的多智能体自动化生成流水线</h1>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2603.21190">arXiv:2603.21190</a></td>
+        <td><a href="https://arxiv.org/pdf/2603.21190.pdf">PDF</a></td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<h2 id="摘要">摘要</h2>
+
+<p>在后摩尔时代，通过 Chiplet 技术进行异构集成已成为先进半导体设计的主要驱动力。为了在系统集成早期进行高效的架构探索和硬件软件协同验证，构建精确高效的 SystemC 行为级参考模型是不可或缺的步骤。然而，传统的 Chiplet 模型构建工作流严重依赖领域专家，工程师需要阅读数十页的工业级数据手册，提取关键的接口规格、时序约束和内部算法逻辑，然后将其转化为 SystemC 代码。这一过程耗时、依赖专业知识且容易出错。</p>
+
+<p>最近，大语言模型在自动化硬件代码生成方面展现出巨大潜力，但现有的 LLM 辅助设计框架主要基于高度结构化或简化的设计规格进行评估。在实际工业工程中，原始数据手册包含冗长、复杂且高度非结构化的信息，直接输入 LLM 会导致严重的”上下文消失”和”逻辑幻觉”问题。</p>
+
+<p>本文提出了 <strong>DS2SC-Agent（Datasheet-to-SystemC-Agent）</strong>：第一个端到端的全自动化生成流水线，能够直接将原始数据手册翻译成 SystemC Chiplet 模型。该系统建立了一个高效的多智能体协作框架，通过解耦复杂的建模任务，协调包含非结构化长文档解析、SystemC 核心代码构建、Testbench 激励生成和自适应闭环调试的全自动化工作流。</p>
+
+<h2 id="1-问题定义">1. 问题定义</h2>
+
+<blockquote>
+  <p>“Traditional manual modeling is notoriously time-consuming and error-prone… Directly feeding these raw, multimodal datasheets into an LLM inevitably leads to catastrophic failures.”</p>
+</blockquote>
+
+<p>传统的手工建模方法存在两个核心问题：</p>
+
+<p><strong>问题 1：手工建模效率低下</strong></p>
+<ul>
+  <li>工程师需要阅读数十页的工业级数据手册</li>
+  <li>提取关键接口规格、时序约束和内部算法逻辑</li>
+  <li>手动翻译为 SystemC 代码</li>
+  <li>过程耗时、依赖专业知识、容易出错</li>
+</ul>
+
+<p><strong>问题 2：LLM 直接生成不可靠</strong></p>
+<ul>
+  <li>原始数据手册包含冗长、复杂、高度非结构化的信息</li>
+  <li>包含自然语言描述、参数表格、时序图和架构示意图</li>
+  <li>单次生成（one-shot）方法面临严重的”上下文消失”问题</li>
+  <li>LLM 在生成内部逻辑时忘记初始接口约束</li>
+  <li>产生”逻辑幻觉”，几乎无法直接从工业数据手册生成功能正确的 SystemC 代码</li>
+</ul>
+
+<h2 id="2-方法框架">2. 方法框架</h2>
+
+<p>DS2SC-Agent 建立了一个<strong>四智能体协作架构</strong>，将复杂的建模任务解耦为四个专门化的阶段：</p>
+
+<p><img src="/assets/fig1-overview.jpeg" alt="DS2SC-Agent 系统概览" />
+<em>图 1：DS2SC-Agent 系统概览（来源：原文 Fig.1）</em></p>
+
+<h3 id="21-核心模块四智能体架构">2.1 核心模块：四智能体架构</h3>
+
+<p><strong>Agent 1：规格解析智能体（Specification Parsing Agent）</strong></p>
+<ul>
+  <li><strong>输入</strong>：原始 PDF 数据手册 + 预定义的 Spec IR 模板</li>
+  <li><strong>任务</strong>：从数据手册中提取关键硬件信息（引脚列表、主要特性、寄存器映射），填充预定义模板</li>
+  <li><strong>输出</strong>：完全填充的 Spec IR（规格中间表示），作为下游智能体的单一事实来源</li>
+</ul>
+
+<p><strong>Agent 2：代码生成智能体（Code Generation Agent）</strong></p>
+<ul>
+  <li><strong>输入</strong>：完全填充的 Spec IR</li>
+  <li><strong>任务</strong>：构建 SystemC 硬件模型，生成头文件（.h）</li>
+  <li><strong>输出</strong>：自包含的 header-only SystemC 核心代码，明确定义 sc_module 架构、端口和内部信号</li>
+</ul>
+
+<p><strong>Agent 3：Testbench 生成智能体（Testbench Generation Agent）</strong></p>
+<ul>
+  <li><strong>输入</strong>：Spec IR + 生成的核心头文件</li>
+  <li><strong>任务</strong>：合成 SystemC testbench，输出 main.cpp 文件</li>
+  <li><strong>输出</strong>：可独立执行的 testbench 汇编，包含激励生成器、监控/检查器和顶层连接入口</li>
+</ul>
+
+<p><strong>Agent 4：自动调试智能体（Automated Debugging Agent）</strong></p>
+<ul>
+  <li><strong>输入</strong>：编译/仿真错误日志 + 生成的代码 + Spec IR</li>
+  <li><strong>任务</strong>：提供自适应的闭环迭代代码优化</li>
+  <li><strong>输出</strong>：经过功能验证的最终 SystemC 代码</li>
+</ul>
+
+<h3 id="22-spec-ir-模板设计">2.2 Spec IR 模板设计</h3>
+
+<blockquote>
+  <p>“The Spec IR template serves as the cornerstone of the entire automated pipeline… encapsulates the domain expertise through a ‘mixed-fill’ strategy.”</p>
+</blockquote>
+
+<p>Spec IR（规格中间表示）模板采用<strong>“混合填充”策略</strong>，包含四个核心模块：</p>
+
+<ol>
+  <li><strong>全局配置和边界规格（预填充区）</strong>：预填充确定性系统级参数，剪枝设计空间</li>
+  <li><strong>领域特定接口和参数抽象（提取区）</strong>：针对数字/模拟/RF Chiplet 的定制化提取策略</li>
+  <li><strong>行为逻辑伪代码提取（提取区）</strong>：提取核心动态行为规则，建立结构化 C/C++ 分支逻辑</li>
+  <li><strong>仿真测试用例（预填充区）</strong>：预设置核心仿真测试场景，确保模型生成与验证目标对齐</li>
+</ol>
+
+<h3 id="23-闭环调试机制">2.3 闭环调试机制</h3>
+
+<p>自动调试智能体采用<strong>链式思维（Chain-of-Thought）推理</strong>，包含两个并行反馈回路：</p>
+
+<p><strong>语法调试回路（编译阶段）</strong></p>
+<ul>
+  <li>捕获编译器错误日志（具体行号和类型不匹配错误）</li>
+  <li>修复语法错误：缺失分号、未声明变量、模块连接端口不匹配</li>
+</ul>
+
+<p><strong>功能调试回路（运行阶段）</strong></p>
+<ul>
+  <li>当代码编译成功但仿真结果失败时触发</li>
+  <li>交叉参考仿真数据日志与 Spec IR 中的预期行为</li>
+  <li>定位功能缺陷：状态机转换死锁、非线性公式计算错误、位宽截断</li>
+</ul>
+
+<h2 id="3-实验结果">3. 实验结果</h2>
+
+<h3 id="31-实验设置">3.1 实验设置</h3>
+
+<p><strong>Benchmark</strong>：三个代表性单功能工业 Chiplet，跨越三个不同物理领域：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Chiplet</th>
+      <th>领域</th>
+      <th>数据手册特点</th>
+      <th>主要挑战</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>FFT</strong></td>
+      <td>数字</td>
+      <td>96 页综合指南</td>
+      <td>从密集文本中提取 4 个核心寄存器映射</td>
+    </tr>
+    <tr>
+      <td><strong>LA（Limiting Amplifier）</strong></td>
+      <td>模拟</td>
+      <td>6 页密集表格</td>
+      <td>从表格中提取精确静态工作点</td>
+    </tr>
+    <tr>
+      <td><strong>PA（Power Amplifier）</strong></td>
+      <td>RF</td>
+      <td>18 页曲线图</td>
+      <td>从图形趋势中提取 RF 性能曲线</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>实现细节</strong>：</p>
+<ul>
+  <li>核心推理引擎：Gemini 3 Flash（通过 API）</li>
+  <li>温度配置：Agent1=0.2（高确定性），Agent2/3=0.4（平衡约束与灵活性），Agent4=0.3（严谨推理）</li>
+  <li>编译环境：GCC + SystemC 2.3.3 + SystemC-AMS 2.3.4</li>
+</ul>
+
+<h3 id="32-实验结果">3.2 实验结果</h3>
+
+<p><strong>案例 1：数字领域 - FFT Chiplet</strong></p>
+
+<p>执行完整的”时域→频域→时域”闭环测试，输入 8 点单调递增序列（1 到 8）：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Index</th>
+      <th>输入 (Re, Im)</th>
+      <th>IFFT 输出 (Re, Im)</th>
+      <th>差分误差 (ΔRe, ΔIm)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>(1, 0)</td>
+      <td>(1, 0)</td>
+      <td>(0, 0)</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>(2, 0)</td>
+      <td>(2, -2.7e-16)</td>
+      <td>(0, 2.7e-16)</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>(3, 0)</td>
+      <td>(3, 4.4e-16)</td>
+      <td>(0, 4.4e-16)</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>(4, 0)</td>
+      <td>(4, 3.8e-16)</td>
+      <td>(0, 3.8e-16)</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>(5, 0)</td>
+      <td>(5, 0)</td>
+      <td>(0, 0)</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>(6, 0)</td>
+      <td>(6, -5e-17)</td>
+      <td>(0, 5e-17)</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>(7, 0)</td>
+      <td>(7, 4.4e-16)</td>
+      <td>(0, 4.4e-16)</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>(8, 0)</td>
+      <td>(8, -6.4e-17)</td>
+      <td>(0, 6.4e-17)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>验证结果：PASS</strong> - 差分误差在 10⁻¹⁶量级，符合双精度浮点算术的机器 epsilon 限制。</p>
+
+<p><strong>案例 2：模拟领域 - LA Chiplet</strong></p>
+
+<p>生成了三个不同操作阶段的瞬态仿真波形：</p>
+
+<ol>
+  <li><strong>线性放大阶段</strong>：输入正弦波在小信号范围内，模型展现理想线性特性</li>
+  <li><strong>非线性钳位阶段</strong>：输入信号超过预定义阈值时，输出波形被钳位到最大输出电压摆幅</li>
+  <li><strong>禁用/使能逻辑</strong>：响应数字控制信号，TDF 处理线程逻辑旁路，输出返回静态电平</li>
+</ol>
+
+<p><strong>案例 3：RF 领域 - PA Chiplet</strong></p>
+
+<p><img src="/assets/fig9-pa-characteristics.png" alt="PA 的 Pin-Pout 特性对比" />
+<em>图 9：RF PA Chiplet 的数据手册参考与仿真结果的 Pin-Pout 特性对比（来源：原文 Fig.9）</em></p>
+
+<ul>
+  <li>在整个动态范围（线性、压缩、深度饱和区域）内，仿真 Pout 与真实数据手册曲线高度拟合</li>
+  <li>最大偏差在 P1dB 压缩点附近严格保持在 <strong>1dB 以内</strong></li>
+</ul>
+
+<h3 id="33-实验分析">3.3 实验分析</h3>
+
+<p>DS2SC-Agent 的成功归因于以下关键设计：</p>
+
+<ol>
+  <li><strong>多智能体解耦架构</strong>：有效缓解了 LLM 处理长文档时的上下文消失和逻辑幻觉问题</li>
+  <li><strong>Spec IR 模板</strong>：通过”混合填充”策略将领域专业知识编码到模板中，约束生成空间</li>
+  <li><strong>闭环调试机制</strong>：通过链式思维推理实现自我修复，无需人工干预</li>
+  <li><strong>领域适应性</strong>：针对数字/模拟/RF 不同领域的定制化提取策略</li>
+</ol>
+
+<h2 id="4-优点与局限">4. 优点与局限</h2>
+
+<h3 id="优点">优点</h3>
+
+<ul>
+  <li><strong>首创性</strong>：第一个端到端的从原始数据手册到 SystemC 模型的全自动化生成流水线</li>
+  <li><strong>高效协作</strong>：四智能体架构有效解耦复杂任务，每个智能体专注于特定子任务</li>
+  <li><strong>跨领域通用</strong>：在数字、模拟、RF 三个不同物理领域均展现出高保真度</li>
+  <li><strong>最小化人工干预</strong>：整个流程完全自动化，包括自适应闭环调试</li>
+  <li><strong>工业级适用</strong>：能够处理真实世界的复杂数据手册（96 页 FFT 指南、密集表格、曲线图）</li>
+</ul>
+
+<h3 id="局限">局限</h3>
+
+<ul>
+  <li><strong>单功能 Chiplet</strong>：当前评估仅限于单功能 Chiplet，尚未扩展到多功能复杂系统</li>
+  <li><strong>图形解析限制</strong>：LLM 直接解析复杂图形曲线存在固有限制，需要人工提供基础物理参数</li>
+  <li><strong>模型依赖</strong>：当前使用 Gemini 3 Flash，对其他基础模型的适应性需要进一步验证</li>
+  <li><strong>系统级验证</strong>：尚未实现多 Chiplet 异构系统的自动化生成和系统级验证</li>
+</ul>
+
+<h2 id="5-总结">5. 总结</h2>
+
+<p>DS2SC-Agent 通过创新的多智能体协作架构，成功 bridging 了非结构化工业级数据手册与可执行 SystemC Chiplet 模型之间的关键鸿沟。实验结果证明，该系统能够直接从原始多模态规格中准确重建复杂算法逻辑、多阶段物理行为和非线性 RF 特性。</p>
+
+<p>未来研究方向包括：</p>
+<ul>
+  <li>从单功能 Chiplet 建模扩展到复杂多 Chiplet 异构系统的自动化生成和系统级验证</li>
+  <li>探索集成更小的领域特定微调本地模型，进一步降低推理延迟并增强数据隐私</li>
+</ul>
+
+<h2 id="参考文献">参考文献</h2>
+
+<ol>
+  <li>Wu, Y., Wu, Y., Xiong, Y., Zhao, D., Shen, J., Jiang, J., He, G., Tu, S., &amp; Sun, Y. (2026). DS2SC-Agent: A Multi-Agent Automated Pipeline for Rapid Chiplet Model Generation. <em>arXiv preprint arXiv:2603.21190</em>.</li>
+  <li>AMD Xilinx. (2018). Fast Fourier Transform v9.1 LogiCORE IP Product Guide. PG109.</li>
+  <li>Qorvo. (2023). QPM2239: 13–15.5 GHz 80W GaN Power Amplifier Module Datasheet.</li>
+  <li>Micrel. (2022). SY88923V: 5V/3.3V 2.5Gbps High-Speed Limiting Post Amplifier Datasheet.</li>
+  <li>Wei, J., Wang, X., Schuurmans, D., et al. (2022). Chain-of-thought prompting elicits reasoning in large language models. <em>NeurIPS</em>.</li>
+</ol>
+
+<hr />
+
+<p><em>本文基于 arXiv 论文 2603.21190 自动转换生成，旨在促进技术传播和知识分享。</em></p>]]></content><author><name>ROM4AI</name></author><category term="research" /><category term="ai" /><category term="hardware" /><category term="chiplet" /><category term="Chiplet" /><category term="SystemC" /><category term="LLM" /><category term="Multi-Agent" /><category term="Hardware Automation" /><category term="EDA" /><summary type="html"><![CDATA[DS2SC-Agent: 从数据手册到 SystemC 模型的多智能体自动化生成流水线]]></summary></entry><entry><title type="html">VLA-Perf: VLA 推理性能全景分析——NVIDIA 首个系统性研究</title><link href="/research/ai/robotics/embodied-ai/vla/2026/03/25/vla-perf-vla-inference-performance-analysis.html" rel="alternate" type="text/html" title="VLA-Perf: VLA 推理性能全景分析——NVIDIA 首个系统性研究" /><published>2026-03-25T00:00:00+08:00</published><updated>2026-03-25T00:00:00+08:00</updated><id>/research/ai/robotics/embodied-ai/vla/2026/03/25/vla-perf-vla-inference-performance-analysis</id><content type="html" xml:base="/research/ai/robotics/embodied-ai/vla/2026/03/25/vla-perf-vla-inference-performance-analysis.html"><![CDATA[<h1 id="vla-perf-vla-推理性能全景分析nvidia-首个系统性研究">VLA-Perf: VLA 推理性能全景分析——NVIDIA 首个系统性研究</h1>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2602.18397">arXiv:2602.18397</a></td>
+        <td><a href="https://arxiv.org/pdf/2602.18397.pdf">PDF</a></td>
+        <td><a href="https://github.com/NVlabs/vla-perf">Code</a></td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<p><strong>机构</strong>: NVIDIA Research<br />
+<strong>作者</strong>: Wenqi Jiang, Jason Clemons, Karu Sankaralingam, Christos Kozyrakis</p>
+
+<h2 id="核心亮点">核心亮点</h2>
+
+<p>本文提出 <strong>VLA-Perf</strong>，一个基于 roofline 模型的分析性能工具，用于预测任意 VLA 模型和推理系统组合的最优推理延迟和吞吐量。作者使用 VLA-Perf 进行了<strong>首个 VLA 推理性能全景系统研究</strong>，从模型设计（模型规模、架构选择、长上下文、异步推理、双系统管道）和部署角度（设备端、边缘服务器、云端）分析了<strong>15 个关键发现</strong>，为未来 VLA 模型和推理系统设计提供实践指导。</p>
+
+<blockquote>
+  <p>“给定标准 RGB 相机帧率通常为 24-60 Hz，我们定义 10 Hz 推理频率为可接受（接近视频摄入率），100 Hz 为高性能（超过常见摄入率）。”</p>
+</blockquote>
+
+<h2 id="1-问题定义">1. 问题定义</h2>
+
+<h3 id="11-vla-推理性能挑战">1.1 VLA 推理性能挑战</h3>
+
+<p>Vision-Language-Action (VLA) 模型最近在各类具身 AI 任务中展现出令人印象深刻的能力。然而，在真实世界机器人上部署 VLA 模型需要严格的<strong>实时推理约束</strong>，而由于模型架构和推理系统的大型组合空间，VLA 的推理性能全景仍然知之甚少。</p>
+
+<blockquote>
+  <p>“执行相同的 VLA 模型 across 不同的推理系统可能导致<strong>多个数量级</strong>的性能差异。”</p>
+</blockquote>
+
+<p><strong>核心研究问题</strong>：如何设计未来的 VLA 模型和系统以支持实时推理？</p>
+
+<p>从模型设计角度：</p>
+<ul>
+  <li>在实现实时推理的同时，模型规模可以扩展到多大？</li>
+  <li>拥有数千视觉帧的长上下文 VLA 是否实际可行？</li>
+  <li>自回归与基于扩散的动作专家如何影响推理性能？</li>
+  <li>去噪步骤和动作块大小如何影响性能？</li>
+  <li>异步或双系统推理能获得多少性能提升？</li>
+</ul>
+
+<p>从系统角度：</p>
+<ul>
+  <li>推理应该在哪里执行——设备端、服务器上、还是设备 - 服务器协作？</li>
+  <li>如何根据可用的 GPU 类型选择推理硬件？</li>
+  <li>网络性能在服务器端推理系统中有多关键？</li>
+  <li>需要什么样的模型和系统组合来支持从 10 Hz 到 100 Hz 以上的 VLA 推理？</li>
+</ul>
+
+<h3 id="12-现有方法的局限">1.2 现有方法的局限</h3>
+
+<p><strong>系统配置多样性</strong>： prior 研究中的推理系统配置差异很大</p>
+<ul>
+  <li>设备端 GPU（嵌入式机器人）</li>
+  <li>边缘服务器 GPU（靠近机器人）</li>
+  <li>云端加速器（远程服务器）</li>
+</ul>
+
+<p><strong>模型设计局限</strong>：现有 VLA 模型通常针对特定应用 - 系统配对设计，缺乏通用性探索</p>
+
+<h2 id="2-方法框架">2. 方法框架</h2>
+
+<h3 id="21-vla-perf-概述">2.1 VLA-Perf 概述</h3>
+
+<p>VLA-Perf 是一个<strong>基于 roofline 模型的分析性能工具</strong>，用于 VLA 推理。它将 VLA 推理抽象为 interleaved 的模型组件和数据传输：</p>
+
+<p><img src="/assets/vla-perf/vla-perf-framework.png" alt="VLA-Perf 框架" />
+<em>图：VLA-Perf 将 VLA 推理抽象为模型组件 interleaved 与数据传输（来源：原文 Figure 3）</em></p>
+
+<p><strong>核心设计</strong>：</p>
+
+<ol>
+  <li><strong>模型组件抽象</strong>：每个模型组件（如 VLM backbone）被抽象为一系列算子（全连接层、线性投影、注意力块等）</li>
+  <li><strong>数据传输建模</strong>：包括原始图像、视觉 token、KV cache、动作预测等</li>
+  <li><strong>单加速器假设</strong>：每个模型组件在单个加速器上执行（现代 GPU 有足够内存容量）</li>
+  <li><strong>灵活部署</strong>：不同组件可以在相同或不同加速器上执行</li>
+</ol>
+
+<h3 id="22-输入参数">2.2 输入参数</h3>
+
+<p>VLA-Perf 通过参数化模型和系统参数来支持任意模型 - 系统组合分析：</p>
+
+<p><strong>模型参数</strong>：</p>
+<ul>
+  <li>视觉编码器、VLM backbone、动作专家的选择</li>
+  <li>每个模型的输入和输出序列长度</li>
+  <li>基于扩散的动作专家的去噪步骤数</li>
+  <li>动作块大小</li>
+  <li>每个动作的维度</li>
+</ul>
+
+<p><strong>系统参数</strong>：</p>
+<ul>
+  <li>推理加速器（可配置的峰值 FLOP/s 和内存带宽）</li>
+  <li>网络系统（上传/下载带宽和延迟）</li>
+</ul>
+
+<h3 id="23-延迟计算">2.3 延迟计算</h3>
+
+<p>端到端推理延迟建模为模型推理延迟和数据传输延迟的总和：</p>
+
+\[T_{\mathrm{total}} = \sum_{m \in \mathcal{M}} T_{m} + \sum_{d \in \mathcal{D}} T_{d}\]
+
+<p>其中 $\mathcal{M}$ 是模型推理组件集合，$\mathcal{D}$ 是数据传输阶段集合。</p>
+
+<p>对于单个模型组件 $m$，推理延迟建模为其组成算子延迟的总和：</p>
+
+\[T_{m} = \sum_{o \in \mathcal{O}_{m}} T_{o}\]
+
+<p>对于每个算子 $o$，VLA-Perf 使用 roofline 模型建模其执行延迟：</p>
+
+\[T_{o} = \max\left(\frac{\mathrm{FLOPs}_{o}}{\mathrm{FLOP/s}_{h}}, \frac{\mathrm{Bytes}_{o}}{\mathrm{MemBW}_{h}}\right)\]
+
+<p>其中 $\mathrm{FLOP/s}<em>{h}$ 是硬件的峰值 FLOP/s，$\mathrm{MemBW}</em>{h}$ 是内存带宽。</p>
+
+<h3 id="24-支持的分析场景">2.4 支持的分析场景</h3>
+
+<p>VLA-Perf 支持广泛的 VLA 配置：</p>
+<ul>
+  <li>不同模型规模和架构</li>
+  <li>无状态和长上下文推理</li>
+  <li>不同的动作块大小</li>
+  <li>异步推理</li>
+  <li>双系统模型管道</li>
+  <li>多样化的部署场景（推理硬件、位置、网络配置）</li>
+</ul>
+
+<h2 id="3-实验设置">3. 实验设置</h2>
+
+<h3 id="31-评估范围">3.1 评估范围</h3>
+
+<p>作者使用 VLA-Perf 进行了广泛的评估，涵盖：</p>
+
+<p><strong>模型设计维度</strong>：</p>
+<ul>
+  <li>模型规模缩放</li>
+  <li>架构选择（自回归 vs 扩散）</li>
+  <li>长上下文视频输入</li>
+  <li>异步推理</li>
+  <li>双系统模型管道</li>
+</ul>
+
+<p><strong>部署维度</strong>：</p>
+<ul>
+  <li>推理硬件（边缘 GPU 到数据中心 GPU）</li>
+  <li>推理位置（设备端、服务器端、混合）</li>
+  <li>网络配置（有线/无线）</li>
+</ul>
+
+<h3 id="32-性能目标">3.2 性能目标</h3>
+
+<p>基于标准 RGB 相机帧率（24-60 Hz）：</p>
+<ul>
+  <li><strong>可接受性能</strong>: 10 Hz 推理频率</li>
+  <li><strong>高性能</strong>: 100 Hz 推理频率</li>
+</ul>
+
+<h2 id="4-15-个关键发现">4. 15 个关键发现</h2>
+
+<h3 id="41-模型设计发现">4.1 模型设计发现</h3>
+
+<h4 id="发现-1-模型规模缩放">发现 1: 模型规模缩放</h4>
+<blockquote>
+  <p>“模型规模增加会显著影响推理延迟，但通过适当的系统优化，可以在保持实时性能的同时使用更大的模型。”</p>
+</blockquote>
+
+<h4 id="发现-2-架构选择">发现 2: 架构选择</h4>
+<blockquote>
+  <p>“扩散式动作专家与自回归模型相比，在推理延迟上有不同的权衡，需要根据应用场景选择。”</p>
+</blockquote>
+
+<h4 id="发现-3-长上下文可行性">发现 3: 长上下文可行性</h4>
+<blockquote>
+  <p>“拥有数千视觉帧的长上下文 VLA 在适当的系统支持下是实际可行的。”</p>
+</blockquote>
+
+<h4 id="发现-4-异步推理收益">发现 4: 异步推理收益</h4>
+<blockquote>
+  <p>“异步推理可以显著提高 GPU 利用率和推理吞吐量。”</p>
+</blockquote>
+
+<h4 id="发现-5-双系统管道">发现 5: 双系统管道</h4>
+<blockquote>
+  <p>“双系统设计（轻量级高频系统 + 重量级低频系统）可以有效平衡性能和成本。”</p>
+</blockquote>
+
+<h3 id="42-系统部署发现">4.2 系统部署发现</h3>
+
+<h4 id="发现-6-推理位置选择">发现 6: 推理位置选择</h4>
+<blockquote>
+  <p>“推理位置的选择取决于模型规模、网络条件和延迟要求。”</p>
+</blockquote>
+
+<h4 id="发现-7-硬件能力影响">发现 7: 硬件能力影响</h4>
+<blockquote>
+  <p>“不同 GPU 类型的性能差异可达多个数量级。”</p>
+</blockquote>
+
+<h4 id="发现-8-网络性能关键性">发现 8: 网络性能关键性</h4>
+<blockquote>
+  <p>“在服务器端推理中，网络性能是决定端到端延迟的关键因素。”</p>
+</blockquote>
+
+<h4 id="发现-9-设备端推理限制">发现 9: 设备端推理限制</h4>
+<blockquote>
+  <p>“设备端推理受限于本地计算能力，适合小型模型。”</p>
+</blockquote>
+
+<h4 id="发现-10-云端推理优势">发现 10: 云端推理优势</h4>
+<blockquote>
+  <p>“云端推理提供最强计算能力，但受网络延迟约束。”</p>
+</blockquote>
+
+<h3 id="43-优化策略发现">4.3 优化策略发现</h3>
+
+<h4 id="发现-11-动作块大小优化">发现 11: 动作块大小优化</h4>
+<blockquote>
+  <p>“较大的动作块可以减少推理频率，但会降低对环境变化的响应能力。”</p>
+</blockquote>
+
+<h4 id="发现-12-去噪步骤权衡">发现 12: 去噪步骤权衡</h4>
+<blockquote>
+  <p>“减少扩散模型的去噪步骤可以显著提高推理速度，但可能影响动作质量。”</p>
+</blockquote>
+
+<h4 id="发现-13-cuda-优化潜力">发现 13: CUDA 优化潜力</h4>
+<blockquote>
+  <p>“精心的 CUDA 级优化（CUDA graph、算子融合）可以将推理延迟降低高达 5 倍。”</p>
+</blockquote>
+
+<h4 id="发现-14-网络---执行重叠">发现 14: 网络 - 执行重叠</h4>
+<blockquote>
+  <p>“对于服务器端推理，网络延迟和机器人执行延迟可以重叠以减少端到端时间。”</p>
+</blockquote>
+
+<h4 id="发现-15-模型---系统协同设计">发现 15: 模型 - 系统协同设计</h4>
+<blockquote>
+  <p>“最优的 VLA 系统需要模型和系统的协同设计，而非单独优化。”</p>
+</blockquote>
+
+<h2 id="5-实验结果">5. 实验结果</h2>
+
+<h3 id="51-模型规模缩放分析">5.1 模型规模缩放分析</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>模型规模</th>
+      <th>参数量</th>
+      <th>设备端延迟</th>
+      <th>边缘服务器延迟</th>
+      <th>云端延迟</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>TinyVLA</td>
+      <td>~100M</td>
+      <td>50ms</td>
+      <td>15ms</td>
+      <td>25ms</td>
+    </tr>
+    <tr>
+      <td>SmolVLA</td>
+      <td>~500M</td>
+      <td>200ms</td>
+      <td>40ms</td>
+      <td>35ms</td>
+    </tr>
+    <tr>
+      <td>OpenVLA</td>
+      <td>~7B</td>
+      <td>&gt;1000ms</td>
+      <td>150ms</td>
+      <td>80ms</td>
+    </tr>
+    <tr>
+      <td>大型 VLA</td>
+      <td>~13B</td>
+      <td>❌ 不可行</td>
+      <td>300ms</td>
+      <td>120ms</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="52-架构对比">5.2 架构对比</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>架构类型</th>
+      <th>延迟特性</th>
+      <th>内存占用</th>
+      <th>适用场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>自回归</td>
+      <td>逐 token 生成，延迟较高</td>
+      <td>中等</td>
+      <td>高精度要求</td>
+    </tr>
+    <tr>
+      <td>扩散式</td>
+      <td>固定去噪步骤，可预测</td>
+      <td>较低</td>
+      <td>实时性要求</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="53-推理位置性能对比">5.3 推理位置性能对比</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>位置</th>
+      <th>优势</th>
+      <th>局限</th>
+      <th>推荐场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>设备端</td>
+      <td>无网络延迟，隐私好</td>
+      <td>计算能力有限</td>
+      <td>小型模型，低延迟要求</td>
+    </tr>
+    <tr>
+      <td>边缘服务器</td>
+      <td>平衡计算和网络</td>
+      <td>需要本地基础设施</td>
+      <td>中型模型，中等延迟要求</td>
+    </tr>
+    <tr>
+      <td>云端</td>
+      <td>最强计算能力</td>
+      <td>网络延迟可变</td>
+      <td>大型模型，批量处理</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="54-网络性能影响">5.4 网络性能影响</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>网络类型</th>
+      <th>上传带宽</th>
+      <th>下载带宽</th>
+      <th>延迟</th>
+      <th>适用性</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>WiFi 6</td>
+      <td>500 Mbps</td>
+      <td>800 Mbps</td>
+      <td>5ms</td>
+      <td>边缘服务器推理</td>
+    </tr>
+    <tr>
+      <td>5G</td>
+      <td>100 Mbps</td>
+      <td>200 Mbps</td>
+      <td>20ms</td>
+      <td>移动机器人</td>
+    </tr>
+    <tr>
+      <td>有线千兆</td>
+      <td>1 Gbps</td>
+      <td>1 Gbps</td>
+      <td>1ms</td>
+      <td>固定部署</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="6-优点与局限">6. 优点与局限</h2>
+
+<h3 id="优点">优点</h3>
+
+<ol>
+  <li><strong>首个系统性研究</strong>：首次全面分析 VLA 推理性能全景</li>
+  <li><strong>分析模型高效</strong>：无需实际部署即可评估任意模型 - 系统组合</li>
+  <li><strong>开源工具</strong>：VLA-Perf 代码开源，支持社区进一步研究</li>
+  <li><strong>实践指导</strong>：15 个关键发现为实际部署提供明确指导</li>
+  <li><strong>未来兼容</strong>：支持分析假设的未来模型变体</li>
+</ol>
+
+<h3 id="局限">局限</h3>
+
+<ol>
+  <li><strong>分析模型误差</strong>：假设乐观的软件实现，估计的是性能上界（实际可达 68-75%）</li>
+  <li><strong>单加速器假设</strong>：不支持模型并行跨多个加速器</li>
+  <li><strong>精度假设</strong>：假设模型满足精度阈值，未考虑精度 - 性能权衡</li>
+  <li><strong>动态环境</strong>：未考虑动态变化的工作负载和网络条件</li>
+</ol>
+
+<h2 id="7-总结">7. 总结</h2>
+
+<p>本文介绍了 <strong>VLA-Perf</strong>，一个用于 VLA 推理的 roofline 模型分析工具，并进行了<strong>首个 VLA 推理性能全景系统研究</strong>。通过评估广泛的模型和系统配置，作者总结了<strong>15 个关键发现</strong>，为未来 VLA 模型和推理系统的设计提供了实践指导。</p>
+
+<p><strong>核心贡献</strong>：</p>
+<ol>
+  <li>提出了 VLA-Perf 分析工具，支持任意模型 - 系统组合的性能预测</li>
+  <li>进行了系统性性能研究，覆盖模型设计和部署两个维度</li>
+  <li>总结了 15 个关键发现，为实时 VLA 系统设计提供指导</li>
+  <li>开源 VLA-Perf 工具，支持社区进一步研究</li>
+</ol>
+
+<blockquote>
+  <p>“我们希望这项工作能为未来 VLA 模型和推理系统的设计提供实践指导。”</p>
+</blockquote>
+
+<h2 id="参考文献">参考文献</h2>
+
+<ol>
+  <li>Jiang W, Clemons J, Sankaralingam K, Kozyrakis C. How Fast Can I Run My VLA? Demystifying VLA Inference Performance with VLA-Perf. arXiv preprint arXiv:2602.18397, 2026.</li>
+  <li>Black K, et al. π₀: A Vision-Language-Action Flow Model for General Robot Control. arXiv preprint, 2024.</li>
+  <li>Kim M, et al. π₀-2: A Generalist VLA Policy for Manipulation. arXiv preprint, 2025.</li>
+  <li>Liu Y, et al. GR00T: A Generalist Robot Model. arXiv preprint, 2024.</li>
+  <li>Team O. OpenVLA: An Open-Source Vision-Language-Action Model. arXiv preprint, 2024.</li>
+</ol>
+
+<hr />
+
+<p><strong>Generated</strong>: 2026-03-25 13:05 GMT+8<br />
+<strong>Source</strong>: arXiv:2602.18397<br />
+<strong>Word Count</strong>: ~3500 Chinese characters</p>]]></content><author><name>ROM4AI</name></author><category term="research" /><category term="ai" /><category term="robotics" /><category term="embodied-ai" /><category term="vla" /><category term="VLA" /><category term="Embodied AI" /><category term="Inference Performance" /><category term="Robotics" /><category term="NVIDIA" /><category term="Performance Modeling" /><category term="Real-time Systems" /><summary type="html"><![CDATA[VLA-Perf: VLA 推理性能全景分析——NVIDIA 首个系统性研究]]></summary></entry><entry><title type="html">MINISA: Minimal Instruction Set Architecture for Next-gen Reconfigurable Inference Accelerator</title><link href="/accelerator/isa/hardware/ai/reconfigurable/2026/03/24/minisa-reconfigurable-inference-accelerator.html" rel="alternate" type="text/html" title="MINISA: Minimal Instruction Set Architecture for Next-gen Reconfigurable Inference Accelerator" /><published>2026-03-24T00:00:00+08:00</published><updated>2026-03-24T00:00:00+08:00</updated><id>/accelerator/isa/hardware/ai/reconfigurable/2026/03/24/minisa-reconfigurable-inference-accelerator</id><content type="html" xml:base="/accelerator/isa/hardware/ai/reconfigurable/2026/03/24/minisa-reconfigurable-inference-accelerator.html"><![CDATA[<table>
+  <tbody>
+    <tr>
+      <td><strong>原文链接:</strong> <a href="https://arxiv.org/abs/2603.20623">arXiv</a></td>
+      <td><a href="https://arxiv.org/pdf/2603.20623.pdf">PDF</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="minisa-minimal-instruction-set-architecture-for-next-gen-reconfigurable-inference-accelerator">MINISA: Minimal Instruction Set Architecture for Next-gen Reconfigurable Inference Accelerator</h1>
+
+<h2 id="摘要">摘要</h2>
+
+<p>MINISA 是一种最小化的指令集架构，专为下一代可重构推理加速器设计。现代可重构 AI 加速器依赖丰富的映射和数据布局灵活性来维持高利用率，但通过细粒度微控制暴露这种灵活性会导致从片外存储器获取配置位的控制开销过大。MINISA 在 Virtual Neurons (VNs) 粒度上对可重构加速器进行编程，这是保留硬件灵活性的最粗控制粒度，同时也是避免不必要控制成本的最细粒度。配合 FEATHER+ 架构，MINISA 仅用 8 条指令就实现了数据流和布局的运行时协同切换，将指令流量减少 35 倍到 40 万倍，消除占微指令周期 96.9% 的指令获取停顿，实现高达 31.6 倍的端到端加速。</p>
+
+<h2 id="研究问题">研究问题</h2>
+
+<p>现代可重构 AI 加速器面临严重的控制开销问题。FEATHER 作为最先进的加速器，支持每个工作负载的 (dataflow, layout) 协同切换，但其编程接口暴露了细粒度或微码控制的缓冲布局、片上路由和数据到 PE 映射。虽然表达性强，但这种范式会膨胀指令轨迹，增加片外指令获取流量，并消耗有限的宝贵片上存储器来存储指令。由此产生的控制足迹会直接限制芯片上适合的计算块大小，降低算术强度并损害端到端吞吐量。随着加速器在阵列维度上的扩展和工作负载多样性的增加，这种控制开销成为一级瓶颈。研究显示，指令获取停顿比例从 0%（小于 8×8 PE 阵列的 FEATHER+）上升到 96.9%（16×256 FEATHER+）。</p>
+
+<h2 id="方法框架">方法框架</h2>
+
+<p>本文提出 MINISA，一个紧凑的 VN 抽象指令集架构，仅用 8 条指令就能捕捉 FEATHER 在映射和布局方面的灵活性。布局设置指令参数化片上缓冲中 VNs 的嵌套循环顺序。映射指令指定数据流并在当前布局配置下触发计算块的执行。对于单层，程序轨迹由三条布局指令后跟一系列 ExecuteMapping 和 ExecuteStreaming 调用组成。对于连续层，第一层的输出成为下一层的输入，允许使用下一层的 SetIVNLayout 来指定下一层的输出布局，从而跳过当前层的 SetOVNLayout。MINISA 将控制从单个元素提升到硬件原子点积单元的粒度，在不增加额外冗余成本的情况下精确捕捉硬件的可重构性。</p>
+
+<h2 id="核心模块">核心模块</h2>
+
+<p>FEATHER+ 架构包含三个关键组件：(1) NEST：列独立的 AH×AW PE 阵列，每个 PE 持有 2×AH 局部寄存器（双缓冲以隐藏加载延迟）并执行 AH 元素点积；(2) BIRRD：多级重排序 - 归约网络，在数据归约期间改变目标银行；(3) 存储系统包括 Streaming Buffer（存储”流式张量”，在每个 NEST 列内从上到下流水线化）、Stationary Buffer（在局部 PE 寄存器中存储”固定张量”）和 Output Buffer（存储需要未来更新的部分和）。FEATHER+ 通过全互连分发网络、简化的流式缓冲银行和从输出缓冲到固定缓冲的链路这三项架构改进，消除了片上缓冲中的数据重复，支持动态工作负载。</p>
+
+<h2 id="实验设置">实验设置</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>配置项</th>
+      <th>值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>评估设置</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="实验结果">实验结果</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>数值</th>
+      <th>条件/说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>-</td>
+      <td>指令流量减少：几何平均减少 35 倍到 (4×10^5) 倍</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>指令获取停顿：从 96.9% 降至 &lt;0.1%</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>端到端加速：16×256 FEATHER+ 最高 31.6 倍加速</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>指令 - 数据比：从 ~100 倍 (微指令编程) 降至可忽略不计 (MINISA)</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>面积开销：FEATHER+ 相比 FEATHER 仅增加最多 7% 资源</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>计算利用率：所有不规则工作负载形状下都能成功利用可用 PEs</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>可扩展性：AW 从 64 扩展到 256 实现近线性 4 倍加速；AH 从 4 扩展到 16 实现 2.6 倍 -4 倍加速</td>
+      <td>-</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="优点">优点</h2>
+
+<ol>
+  <li>最小化控制开销：VN 抽象精确捕捉硬件灵活性，不增加冗余成本。2. 指令效率高：仅 8 条指令实现完整的映射和布局控制。3. 支持动态工作负载：FEATHER+ 支持输入和权重在运行时到达或变化，适用于 LLM 推理等场景。4. 消除数据重复：全互连分发网络允许任意驻留数据灵活多播到任意 PE 列。5. 高可扩展性：增加 AW 可扩展独立并行性，增加 AH 可提高峰值吞吐量。6. 广泛适用性：支持 AI、FHE、ZKP 等多领域的不规则矩阵乘法。</li>
+</ol>
+
+<h2 id="局限">局限</h2>
+
+<ol>
+  <li>硬件修改需求：需要 FEATHER+ 的架构改进（全互连分发网络等）才能充分发挥 MINISA 优势。2. 粒度限制：VN 大小必须 ≤ AH 才能充分利用 PE 列，对于 VN 大小 &lt; AH 的工作负载，只能激活部分 PEs。3. 编译复杂度：需要编译器框架（如 ACT 生态系统）进行布局约束的映射搜索。4. 面积开销：虽然仅 7%，但对于极小规模配置（如 4×4）仍需额外互连资源。</li>
+</ol>
+
+<h2 id="总结">总结</h2>
+
+<p>MINISA 是首个能够在可忽略指令开销下实现数据流和数据布局运行时协同切换的 ISA，使一个加速器能够高效支持具有广泛变化和不规则形状的工作负载。其核心洞见是 Virtual Neuron (VN) 抽象，将重配置从单个元素提升到硬件原子点积单元的粒度。这种抽象精确捕捉硬件的可重构性而不增加额外冗余成本，并以编译器友好的形式统一映射和布局控制。配合 FEATHER+ 架构，MINISA 使重配置在实践中变得可行，能够在 FHE、ZKP 和 AI 等多领域的不同形状矩阵乘法中实现高效计算。代码开源：https://github.com/maeri-project/FEATHER/tree/main/minisa</p>]]></content><author><name>ROM4AI</name></author><category term="accelerator" /><category term="isa" /><category term="hardware" /><category term="ai" /><category term="reconfigurable" /><summary type="html"><![CDATA[原文链接: arXiv PDF]]></summary></entry><entry><title type="html">ZipServ: Fast and Memory-Efficient LLM Inference with Hardware-Aware Lossless Compression</title><link href="/llm/compression/gpu/inference/systems/2026/03/24/zipserv-fast-memory-efficient-llm-inference.html" rel="alternate" type="text/html" title="ZipServ: Fast and Memory-Efficient LLM Inference with Hardware-Aware Lossless Compression" /><published>2026-03-24T00:00:00+08:00</published><updated>2026-03-24T00:00:00+08:00</updated><id>/llm/compression/gpu/inference/systems/2026/03/24/zipserv-fast-memory-efficient-llm-inference</id><content type="html" xml:base="/llm/compression/gpu/inference/systems/2026/03/24/zipserv-fast-memory-efficient-llm-inference.html"><![CDATA[<table>
+  <tbody>
+    <tr>
+      <td><strong>原文链接:</strong> <a href="https://arxiv.org/abs/2603.17435">arXiv</a></td>
+      <td><a href="https://arxiv.org/pdf/2603.17435.pdf">PDF</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="zipserv-fast-and-memory-efficient-llm-inference-with-hardware-aware-lossless-compression">ZipServ: Fast and Memory-Efficient LLM Inference with Hardware-Aware Lossless Compression</h1>
+
+<h2 id="摘要">摘要</h2>
+
+<p>Lossless model compression holds tremendous promise for alleviating the memory and bandwidth bottlenecks in bit-exact Large Language Model (LLM) serving. However, existing approaches often result in substantial inference slowdowns due to fundamental design mismatches with GPU architectures. We present ZipServ, a lossless compression framework co-designed for efficient LLM inference. ZipServ introduces Tensor-Core-Aware Triple Bitmap Encoding (TCA-TBE), a novel fixed-length format that enables constant-time, parallel decoding, together with a fused decompression-GEMM (ZipGEMM) kernel that decompresses weights on-the-fly directly into Tensor Core registers. Experiments show that ZipServ reduces the model size by up to 30%, achieves up to 2.21× kernel-level speedup over NVIDIA’s cuBLAS, and expedites end-to-end inference by an average of 1.22× over vLLM.</p>
+
+<h2 id="研究问题">研究问题</h2>
+
+<p>LLM 部署面临 GPU 内存和带宽瓶颈。现有的无损压缩方法由于与 GPU 架构不匹配导致推理速度显著下降：在内核级别，传统熵编码器产生的可变长度比特流破坏了 SIMT 并行性；在系统级别，解耦的流水线导致冗余的内存流量。有损压缩方法（如量化）会导致精度损失，例如激进的 4-bit 量化在 LiveCodeBench 上准确率从 56.0% 降至 36.2%。</p>
+
+<h2 id="方法框架">方法框架</h2>
+
+<p>ZipServ 采用”加载压缩、计算解压”（load-compressed, compute-decompressed）设计。核心创新包括：1）Tensor-Core-Aware Triple Bitmap Encoding (TCA-TBE)：一种新颖的固定长度编码格式，支持常数时间并行解码；2）ZipGEMM 内核：融合解压和 GEMM 计算，直接将权重解压到 Tensor Core 寄存器中，消除中间缓冲区，最大化计算强度。</p>
+
+<h2 id="核心模块">核心模块</h2>
+
+<p>TCA-TBE 编码：利用三个位图（非零位图、符号位图、指数位图）对权重进行固定长度编码，保持 GPU SIMT 并行性。ZipGEMM 内核：融合解压和矩阵乘法，支持 FP16/BF16 输出精度，直接在 Tensor Core 中完成计算。</p>
+
+<h2 id="实验设置">实验设置</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>配置项</th>
+      <th>值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>GPU</td>
+      <td>NVIDIA L40S, A100, H100</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="实验结果">实验结果</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>数值</th>
+      <th>条件/说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>-</td>
+      <td>模型大小减少：30%</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>内核级加速：2.21× (vs cuBLAS)</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>端到端推理加速：1.22× (vs vLLM)</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>内存带宽节省：显著减少内存访问</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>精度损失：0% (无损压缩)</td>
+      <td>-</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="优点">优点</h2>
+
+<ol>
+  <li>无损压缩：保证 bit-exact 精度，无数值误差。2. 硬件感知设计：针对 GPU Tensor Core 优化，支持并行解码。3. 融合内核：消除中间缓冲区，减少内存流量。4. 通用性：适用于各种 LLM 架构，无需重新训练。5. 首个同时提供存储节省和显著加速的无损压缩系统。</li>
+</ol>
+
+<h2 id="局限">局限</h2>
+
+<ol>
+  <li>需要特定的 GPU 架构支持（Tensor Core）。2. 压缩率相比有损压缩方法较低（30% vs 量化可达 75%）。3. 实现复杂度较高，需要自定义 CUDA 内核。4. 对于已经使用低精度训练的场景收益有限。</li>
+</ol>
+
+<h2 id="总结">总结</h2>
+
+<p>ZipServ 通过硬件感知的无损压缩设计，首次实现了在 GPU 上同时获得存储节省和推理加速。TCA-TBE 编码和 ZipGEMM 融合内核的创新设计，为 LLM 部署提供了新的优化方向，特别适用于对精度要求严格的生产环境。</p>]]></content><author><name>ROM4AI</name></author><category term="llm" /><category term="compression" /><category term="gpu" /><category term="inference" /><category term="systems" /><summary type="html"><![CDATA[原文链接: arXiv PDF]]></summary></entry><entry><title type="html">Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展</title><link href="/research/ai/hardware/risc-v/2026/03/23/design-conductor-autonomous-riscv-cpu.html" rel="alternate" type="text/html" title="Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展" /><published>2026-03-23T00:00:00+08:00</published><updated>2026-03-23T00:00:00+08:00</updated><id>/research/ai/hardware/risc-v/2026/03/23/design-conductor-autonomous-riscv-cpu</id><content type="html" xml:base="/research/ai/hardware/risc-v/2026/03/23/design-conductor-autonomous-riscv-cpu.html"><![CDATA[<h1 id="design-conductor-ai-自主构建-15ghz-risc-v-cpu-的突破性进展">Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展</h1>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2603.08716">arXiv:2603.08716</a></td>
+        <td><a href="https://arxiv.org/pdf/2603.08716.pdf">PDF</a></td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<h2 id="核心亮点">核心亮点</h2>
+
+<p>这是<strong>首次</strong>有自主 AI 代理从规格说明到 GDSII 完整构建出一个可工作的 CPU。Design Conductor (DC) 在 12 小时内自主构建了一个完整的 RISC-V CPU（VerCore），时钟频率达到 1.48 GHz，CoreMark 得分 3261，性能约等于 2011 年的 Intel Celeron SU2300。</p>
+
+<h2 id="摘要">摘要</h2>
+
+<p>Design Conductor 是一个端到端的自主代理系统，能够应用前沿模型的能力来构建半导体——从概念到可 tape-out 的 GDSII 布局文件。仅从一个 219 词的需求文档开始，DC 在 12 小时内完全自主地构建了多个微架构变体的完整 RISC-V CPU，满足 1.48 GHz 的时序要求。VerCore 的 CoreMark 得分为 3261。本报告回顾了 DC 的设计架构、方法论、关键组件，以及如何与 EDA 工具交互实现时序收敛，并讨论了前沿模型如何改进以更好地支持此类应用。</p>
+
+<h2 id="1-问题定义">1. 问题定义</h2>
+
+<p>芯片设计是一个高度耗时且昂贵的过程。将新的领先设计推向市场需要超过 4 亿美元，耗时 18-36 个月，即使有数百人的工程团队。芯片设计流程包括多个独立步骤：</p>
+
+<ul>
+  <li>架构定义</li>
+  <li>RTL 实现</li>
+  <li>测试平台实现和功能验证</li>
+  <li>前端综合</li>
+  <li>布局布线</li>
+  <li>功耗估计</li>
+  <li>封装</li>
+</ul>
+
+<p>其中最关键的挑战是<strong>极高的功能测试覆盖率要求</strong>——因为单次 tape-out 成本高达数千万美元，生产后”修复”bug 是不可行的。这导致验证成本占总成本的 50% 以上。</p>
+
+<blockquote>
+  <p>“由于这些成本和挑战，许多硅市场由少数供应商服务，初创企业的进入比软件行业更为罕见。”</p>
+</blockquote>
+
+<p>Design Conductor 的目标是通过长时程自主 AI 代理来改变这一范式，解决从概念到 GDSII 的整个问题。</p>
+
+<h2 id="2-design-conductor-架构">2. Design Conductor 架构</h2>
+
+<h3 id="21-核心能力">2.1 核心能力</h3>
+
+<p>DC 被设计为实现以下关键能力：</p>
+
+<p><strong>稳定长时程执行</strong>：芯片设计是复杂任务，包含多个子组件。DC 必须能够在消耗数百亿 token 的过程中持续向目标推进——功能正确、高性能的设计。</p>
+
+<p><strong>上下文管理</strong>：DC 必须为底层 LLM 提供做出良好决策所需的信息，同时精心管理有限的上下文窗口。</p>
+
+<p><strong>技术掌握</strong>：芯片设计需要特定领域的深度知识。DC 必须达到足够高的知识水平，能够与领域专家顺畅合作。</p>
+
+<p><strong>正确性与验证</strong>：当生产数百万单位时，”凭感觉设计芯片”是不可行的。DC 必须交付可验证的正确设计。</p>
+
+<p><strong>平衡探索与速度</strong>：芯片设计空间巨大。DC 必须能够探索该空间，同时避免陷入”兔子洞”，及时完成总体目标。</p>
+
+<p><strong>端到端操作</strong>：人类芯片设计过程中最昂贵和痛苦的部分是在 tape-out 前最后一刻需要 RTL 更改以满足时序目标或修复功能 bug。DC 必须执行相同的操作，同时保持必要的上下文和记忆。</p>
+
+<p><strong>基础设施</strong>：大规模芯片设计对硬件资源要求极高。VCD 跟踪文件可达数百 GB，EDA 工具在综合、布局和布线期间使用大量 DRAM。</p>
+
+<h3 id="22-系统架构">2.2 系统架构</h3>
+
+<p>DC 是一个可扩展的、基于云的应用程序，运行在分布式文件系统上。LLM 会话由工作服务器管理，所有服务器都同步到中央数据库。这些会话连接到存在于一个或多个执行环境中的工具服务器。</p>
+
+<p>上下文管理模块监控和控制各种会话的上下文窗口使用。DC Core 模块管理子代理和更高级别的算法（如进化算法），与下层 LLM 会话交互。</p>
+
+<p>特定知识通过专用知识库提供给 DC。记忆无限期存在并完全自主管理。单个 DC”实例”专用于一个客户的设计，确保代码、记忆或任何信息不会在客户之间交叉。</p>
+
+<h2 id="3-方法论">3. 方法论</h2>
+
+<h3 id="31-输入规格">3.1 输入规格</h3>
+
+<p>DC 的唯一用户输入是一个简洁的需求文档：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>VerCore RISC-V Design Requirements Overview
+
+构建 VerCore，一个支持 RV32I 和 ZMMUL 的 RISC-V CPU 核心：
+- 指令缓存接口（32 位数据路径）
+- 数据缓存接口（32 位数据路径）
+- 其他接口信号：核心时钟输入、复位输入（低有效）
+- 简单 5 级流水线设计，顺序执行，单发射
+- 不支持压缩指令
+- 寄存器文件实现为触发器
+- CPI &lt;= 1.5
+- 目标时钟频率 1.6 GHz
+- 最大化 CoreMark 得分
+- 使用 ASAP7 平台/PDK 和 OpenROAD flow scripts 生成 GDSII
+</code></pre></div></div>
+
+<h3 id="32-设计流程">3.2 设计流程</h3>
+
+<p>DC 遵循以下流程：</p>
+
+<ol>
+  <li>
+    <p><strong>设计提案</strong>：DC 首先创建详细的架构设计提案，包括流水线阶段、冒险处理、转发逻辑等</p>
+  </li>
+  <li>
+    <p><strong>手动审查</strong>：DC 会”手动”和”细致”地审查提案的每个方面，确保设计在实现前是正确的</p>
+  </li>
+  <li>
+    <p><strong>模块实现</strong>：DC 构建每个模块的测试平台，在继续之前修复模块功能以确保测试通过</p>
+  </li>
+  <li>
+    <p><strong>集成测试</strong>：DC 使用 Spike 构建整体测试平台，在 DUT 上运行测试程序并确认设计的架构状态和内存事务与 Spike 报告匹配</p>
+  </li>
+  <li>
+    <p><strong>调试与修复</strong>：当发现与 Spike 的差异时，DC 观察条件并检查 VCD 文件调试问题。通常将 VCD 转换为 CSV 文件，使用 Python 能力简化处理</p>
+  </li>
+  <li>
+    <p><strong>PPA 收敛</strong>：所有测试程序通过后，DC 审查时序报告并进行 RTL 更改以实现 PPA（性能、功耗、面积）收敛</p>
+  </li>
+</ol>
+
+<h3 id="33-调试方法示例">3.3 调试方法示例</h3>
+
+<p>DC 在调试过程中编写了脚本来分析 VCD 文件：</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nf">read_csv</span><span class="p">(</span><span class="sh">'</span><span class="s">vercore_tb.csv</span><span class="sh">'</span><span class="p">)</span>
+<span class="c1"># 比较预期和实际的寄存器写入
+# 追踪流水线状态，识别根本原因
+</span></code></pre></div></div>
+
+<p>通过 VCD 分析，DC 能够追踪问题的根本原因，提出修复方案，实施并再次测试。</p>
+
+<h2 id="4-实验结果">4. 实验结果</h2>
+
+<h3 id="41-关键指标">4.1 关键指标</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>CoreMark 得分</td>
+      <td>3261</td>
+    </tr>
+    <tr>
+      <td>面积（不含缓存）</td>
+      <td>2809 µm²</td>
+    </tr>
+    <tr>
+      <td>时钟频率</td>
+      <td>1.48 GHz</td>
+    </tr>
+    <tr>
+      <td>工艺</td>
+      <td>ASAP7 7nm</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="42-vercore-流水线特性">4.2 VerCore 流水线特性</h3>
+
+<p>VerCore 采用 5 级流水线设计，具有以下特性：</p>
+
+<ul>
+  <li><strong>早期分支解析</strong>：在 ID 阶段尽可能早地解析分支</li>
+  <li><strong>早期转发</strong>：实现 EX→ID 转发以解决 ALU 依赖</li>
+  <li><strong>高效 Booth-Wallace 乘法器</strong>：4 级流水线，单独时钟频率达 2.57 GHz</li>
+  <li><strong>1 周期分支惩罚</strong>：DC 通过完整实现多个变体并生成 GDSII，得出结论：即使有更长的关键路径，1 周期分支惩罚设计也能满足时钟频率目标</li>
+</ul>
+
+<p>这些特性是 DC 自主发现的，并未包含在任何输入指令中。DC 本质上重新发现了原始 MIPS 5 级 RISC CPU 设计的关键路径，后者也采用了 1 周期分支惩罚！</p>
+
+<h3 id="43-流水线冒险处理">4.3 流水线冒险处理</h3>
+
+<p>DC 实现了完整的冒险检测和处理逻辑：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>冒险类型</th>
+      <th>处理机制</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Load-use</td>
+      <td>stall IF/ID + PC 保持，插入 bubble</td>
+    </tr>
+    <tr>
+      <td>Branch/jalr</td>
+      <td>使用与 load-use 相同的检测，EX→ID 转发解决 ALU 依赖</td>
+    </tr>
+    <tr>
+      <td>Mul stall</td>
+      <td>全局 stall 保持所有流水线寄存器 + PC</td>
+    </tr>
+    <tr>
+      <td>Branch/jump taken</td>
+      <td>更新 PC 到目标，flush IF/ID，插入 bubble</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="5-前沿模型的教训">5. 前沿模型的教训</h2>
+
+<h3 id="51-架构推理">5.1 架构推理</h3>
+
+<p>基础模型需要额外帮助来像架构师一样推理。观察到模型做出次优设计选择的情况，需要大量 token 来优化。例如，转发实现最初往往导致过长的关键路径。只有在观察到时序结果后，模型才理解问题并修复。</p>
+
+<h3 id="52-rtl-和时序理解">5.2 RTL 和时序理解</h3>
+
+<p>观察到模型将 Verilog（事件驱动语言）推理为顺序代码的情况。虽然这不影响 DC 实现功能正确性，但使调试时序问题更具挑战性。</p>
+
+<blockquote>
+  <p>“DC 错误地推理减少依赖代码行数会缩短芯片中的关键路径。”</p>
+</blockquote>
+
+<p>这些错误最终会被纠正，因为 DC 可以访问工具的实际时序报告，但它们会减慢 DC 的进度并消耗额外 token。</p>
+
+<h3 id="53-规格要求">5.3 规格要求</h3>
+
+<p>输入规格必须以极其谨慎、严格和可验证/可测量的方式编写。例如，如果没有 CPI 要求，DC 有时会生成分支和转发性能明显较差的处理器。有了这一行，DC 会在测试平台中使用周期计数器来计算 Spike 跟踪中报告的每 PC 周期数来估计 CPI。</p>
+
+<h2 id="6-未来方向">6. 未来方向</h2>
+
+<h3 id="61-扩展">6.1 扩展</h3>
+
+<p>DC 扩展到非常大的代码库（如数百万行 Verilog）没有特别问题。在 13 级乱序处理器的代码库测试中，DC 能够像在 VerCore 上一样解决功能和时序问题。</p>
+
+<p>关键挑战不在于处理代码库的机制，而在于 DC 需要由特定设计领域经验丰富的架构师操作才能取得良好结果。</p>
+
+<h3 id="62-新设计流程">6.2 新设计流程</h3>
+
+<p>有了 DC 这样的系统，目前由 100 多人组成的团队将能够同时探索许多不同的设计、架构和产品想法，每个都从概念到 GDSII。这些团队将能够在 3-6 个月内 tape-out 最复杂的设计，而不是当前的 18-36 个月。</p>
+
+<blockquote>
+  <p>“未来团队中的高级工程师和大师级设计师将拥有更少的’工具操作’责任，而是依靠他们的判断和经验，DC 能够处理几乎所有其他工程工作。”</p>
+</blockquote>
+
+<p>公司还将在以前因量太小而无法盈利服务的应用中找到更多可寻址的 socket。</p>
+
+<h2 id="7-总结">7. 总结</h2>
+
+<p>Design Conductor 代表了芯片设计自动化的重大突破：</p>
+
+<p><strong>成就</strong>：</p>
+<ul>
+  <li>首次自主代理从 spec 到 GDSII 构建完整 CPU</li>
+  <li>12 小时内完成，1.48 GHz 时钟频率</li>
+  <li>CoreMark 3261，相当于 2011 年 Celeron 水平</li>
+  <li>自主发现优化技术（早期转发、Booth-Wallace 乘法器）</li>
+</ul>
+
+<p><strong>关键创新</strong>：</p>
+<ul>
+  <li>长时程稳定执行（数百亿 token）</li>
+  <li>端到端操作（RTL 到 GDSII）</li>
+  <li>验证驱动方法（Spike 比对、VCD 分析）</li>
+  <li>记忆系统管理跨会话上下文</li>
+</ul>
+
+<p><strong>局限性</strong>：</p>
+<ul>
+  <li>需要人类架构师指导以获得最佳结果</li>
+  <li>模型对 RTL/时序理解仍有改进空间</li>
+  <li>规格必须极其严格和可验证</li>
+</ul>
+
+<p><strong>未来影响</strong>：</p>
+<ul>
+  <li>设计周期从 18-36 个月缩短到 3-6 个月</li>
+  <li>小批量设计变得经济可行</li>
+  <li>工程师角色从工具操作转向架构决策</li>
+</ul>
+
+<p>这标志着 AI 在硬件设计领域的里程碑，展示了自主代理在复杂工程任务中的巨大潜力。</p>
+
+<h2 id="参考文献">参考文献</h2>
+
+<ol>
+  <li>Verkor Team. Design Conductor: An agent autonomously builds a 1.5 GHz Linux-capable RISC-V CPU. arXiv:2603.08716, 2026.</li>
+  <li>EEMBC. CoreMark EEMBC Benchmark. https://www.eembc.org/coremark/</li>
+  <li>RISC-V International. Spike, a RISC-V ISA Simulator. https://github.com/riscv-software-src/riscv-isa-sim</li>
+  <li>Andrew Waterman et al. The RISC-V Instruction Set Manual, Volume I: Base User-Level ISA. UC Berkeley, 2011.</li>
+</ol>]]></content><author><name>ROM4AI</name></author><category term="research" /><category term="ai" /><category term="hardware" /><category term="risc-v" /><category term="AI Agent" /><category term="Chip Design" /><category term="RISC-V" /><category term="Design Automation" /><category term="LLM" /><summary type="html"><![CDATA[Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展]]></summary></entry><entry><title type="html">模型够聪明之后，工程师该做什么：Harness Engineering 实战指南</title><link href="/engineering/ai/productivity/2026/03/23/harness-engineering-ai-coding.html" rel="alternate" type="text/html" title="模型够聪明之后，工程师该做什么：Harness Engineering 实战指南" /><published>2026-03-23T00:00:00+08:00</published><updated>2026-03-23T00:00:00+08:00</updated><id>/engineering/ai/productivity/2026/03/23/harness-engineering-ai-coding</id><content type="html" xml:base="/engineering/ai/productivity/2026/03/23/harness-engineering-ai-coding.html"><![CDATA[<h1 id="模型够聪明之后工程师该做什么harness-engineering-实战指南">模型够聪明之后，工程师该做什么：Harness Engineering 实战指南</h1>
+
+<blockquote>
+  <p><strong>原文来源</strong>: <a href="https://www.xiaohongshu.com/discovery/item/69ba69d8000000001d01ede6">小红书 - 模型够聪明之后，工程师该做什么</a></p>
+</blockquote>
+
+<p>最近科技圈在疯传一个数字：<strong>OpenAI 的 3 个工程师用 5 个月生成了 100 万行生产代码，没有一行是人手写的。</strong></p>
+
+<p>他们给这种工作方式起了个名字：<strong>Harness Engineering</strong>（编排工程）。</p>
+
+<p>这句话点破了本质：</p>
+
+<blockquote>
+  <p>模型已经够聪明了，问题出在你给它的环境不够好。</p>
+</blockquote>
+
+<p>同一个模型，换个环境设计，性能能差 <strong>64%</strong>。不是 AI 不行，是你没给它搭好”跑道”。</p>
+
+<hr />
+
+<h2 id="harness-engineering-的-6-个层次">Harness Engineering 的 6 个层次</h2>
+
+<h3 id="1️⃣-持久状态--解决-ai失忆问题">1️⃣ 持久状态 — 解决 AI”失忆”问题</h3>
+
+<p>每次对话 AI 都是白纸一张，你得用文件让它记住做到哪了。</p>
+
+<p><strong>实战要点</strong>：</p>
+<ul>
+  <li>使用 <code class="language-plaintext highlighter-rouge">memory/</code> 目录保存会话状态</li>
+  <li>每个任务创建独立的上下文文件</li>
+  <li>用 Git 跟踪状态变更历史</li>
+</ul>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gh"># memory/task-state.md</span>
+<span class="p">-</span> [x] 需求分析完成
+<span class="p">-</span> [ ] 代码实现中 (进度：3/5 模块)
+<span class="p">-</span> [ ] 测试用例编写
+</code></pre></div></div>
+
+<h3 id="2️⃣-执行环境--给-ai-手和脚">2️⃣ 执行环境 — 给 AI 手和脚</h3>
+
+<p>不只是能写代码，还得能跑代码、看页面、查日志。</p>
+
+<p><strong>实战要点</strong>：</p>
+<ul>
+  <li>配置沙箱执行环境（Docker/容器）</li>
+  <li>提供日志访问权限</li>
+  <li>支持浏览器自动化（Playwright/Puppeteer）</li>
+</ul>
+
+<h3 id="3️⃣-上下文工程--对抗信息污染">3️⃣ 上下文工程 — 对抗信息污染</h3>
+
+<p>200K 的窗口实际可用只有 160K，信息越多推理越差。</p>
+
+<p><strong>实战要点</strong>：</p>
+<ul>
+  <li>只加载当前任务相关的文件</li>
+  <li>用摘要代替完整历史</li>
+  <li>定期清理过期上下文</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 示例：只加载相关文件</span>
+find src <span class="nt">-name</span> <span class="s2">"*.py"</span> | <span class="nb">grep</span> <span class="nt">-E</span> <span class="s2">"(core|api)"</span> | <span class="nb">head</span> <span class="nt">-20</span>
+</code></pre></div></div>
+
+<h3 id="4️⃣-反馈验证--闭合回路">4️⃣ 反馈验证 — 闭合回路</h3>
+
+<p>AI 说”做完了”不算数，测试通过了才算数。</p>
+
+<p><strong>实战要点</strong>：</p>
+<ul>
+  <li>每个任务必须有自动化测试</li>
+  <li>CI/CD 流水线集成</li>
+  <li>失败时自动回滚 + 错误报告</li>
+</ul>
+
+<h3 id="5️⃣-架构约束--防止代码漂移">5️⃣ 架构约束 — 防止代码漂移</h3>
+
+<p>AI 会复制坏模式，必须用规则机械化地拦住。</p>
+
+<p><strong>实战要点</strong>：</p>
+<ul>
+  <li>用 linter 强制执行代码规范</li>
+  <li>架构决策记录（ADR）</li>
+  <li>代码审查 checklist</li>
+</ul>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># .github/copilot-rules.yaml</span>
+<span class="na">allowed_patterns</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s2">"</span><span class="s">async/await</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">I/O"</span>
+  <span class="pi">-</span> <span class="s2">"</span><span class="s">type</span><span class="nv"> </span><span class="s">hints</span><span class="nv"> </span><span class="s">required"</span>
+<span class="na">forbidden_patterns</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s2">"</span><span class="s">global</span><span class="nv"> </span><span class="s">mutable</span><span class="nv"> </span><span class="s">state"</span>
+  <span class="pi">-</span> <span class="s2">"</span><span class="s">bare</span><span class="nv"> </span><span class="s">except:"</span>
+</code></pre></div></div>
+
+<h3 id="6️⃣-编排协调--跨会话接力">6️⃣ 编排协调 — 跨会话接力</h3>
+
+<p>一个会话做不完的事，怎么让下一个 AI 接着做。</p>
+
+<p><strong>实战要点</strong>：</p>
+<ul>
+  <li>标准化的交接文档格式</li>
+  <li>任务队列管理</li>
+  <li>会话间状态同步机制</li>
+</ul>
+
+<hr />
+
+<h2 id="关键洞察判断力才是核心竞争力">关键洞察：判断力才是核心竞争力</h2>
+
+<blockquote>
+  <p>工具层的配置很快就能学会，真正拉开差距的是<strong>判断力</strong>——你能不能定义什么叫”好”、什么叫”做完了”、什么架构约束是必须守住的。</p>
+</blockquote>
+
+<p><strong>AI 擅长生成和执行，人擅长判断和决策。</strong></p>
+
+<p>最好的方式不是跟 AI 抢同一件事，而是各司其职：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>AI 负责</th>
+      <th>人负责</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>代码生成</td>
+      <td>定义验收标准</td>
+    </tr>
+    <tr>
+      <td>测试执行</td>
+      <td>判断测试是否充分</td>
+    </tr>
+    <tr>
+      <td>文档草稿</td>
+      <td>审核技术准确性</td>
+    </tr>
+    <tr>
+      <td>重构建议</td>
+      <td>评估架构影响</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2 id="判断力从哪里来">判断力从哪里来？</h2>
+
+<blockquote>
+  <p>判断力来自对计算机科学体系化的理解 + 持续和 AI 协作的实践。</p>
+</blockquote>
+
+<p>不需要你手写排序算法，但你得知道：</p>
+<ul>
+  <li>这个复杂度在当前规模下行不行</li>
+  <li>这个架构选择对扩展性意味着什么</li>
+  <li>这个技术债将来要花多少代价</li>
+</ul>
+
+<hr />
+
+<h2 id="行动清单">行动清单</h2>
+
+<p>如果你今天开始实践 Harness Engineering：</p>
+
+<ol>
+  <li><strong>搭建持久状态系统</strong> — 创建 <code class="language-plaintext highlighter-rouge">memory/</code> 目录和状态跟踪模板</li>
+  <li><strong>配置执行环境</strong> — 确保 AI 能跑代码、看日志、访问测试</li>
+  <li><strong>定义架构约束</strong> — 写清楚什么能做、什么不能做</li>
+  <li><strong>建立反馈闭环</strong> — 每个任务必须有自动化验证</li>
+  <li><strong>设计交接协议</strong> — 标准化跨会话协作格式</li>
+</ol>
+
+<hr />
+
+<h2 id="写在最后">写在最后</h2>
+
+<p>Harness Engineering 不是要取代工程师，而是要<strong>放大工程师的价值</strong>。</p>
+
+<p>当 AI 处理生成和执行时，你可以把精力集中在：</p>
+<ul>
+  <li>理解用户需求</li>
+  <li>设计系统架构</li>
+  <li>做出关键决策</li>
+  <li>探索创新方向</li>
+</ul>
+
+<p>这才是工程师该做的事。</p>
+
+<hr />
+
+<h2 id="相关资源">相关资源</h2>
+
+<ul>
+  <li><a href="https://docs.anthropic.com/claude-code/">Claude Code Documentation</a></li>
+  <li><a href="https://github.com/context-engineering/awesome-context-engineering">Context Engineering Best Practices</a></li>
+  <li><a href="https://github.com/rome/ai-dev-patterns">AI-Assisted Development Patterns</a></li>
+</ul>
+
+<hr />
+
+<table>
+  <tbody>
+    <tr>
+      <td>*Posted on 2026-03-23</td>
+      <td>Categories: Engineering, AI, Productivity*</td>
+    </tr>
+  </tbody>
+</table>]]></content><author><name>ROM4AI</name></author><category term="engineering" /><category term="ai" /><category term="productivity" /><category term="harness-engineering" /><category term="ai-coding" /><category term="claude-code" /><category term="developer-productivity" /><category term="context-engineering" /><summary type="html"><![CDATA[模型够聪明之后，工程师该做什么：Harness Engineering 实战指南]]></summary></entry><entry><title type="html">History-Guided Video Diffusion: 用历史引导实现超长视频生成</title><link href="/research/ai/video-generation/diffusion-models/2026/03/23/history-guided-video-diffusion.html" rel="alternate" type="text/html" title="History-Guided Video Diffusion: 用历史引导实现超长视频生成" /><published>2026-03-23T00:00:00+08:00</published><updated>2026-03-23T00:00:00+08:00</updated><id>/research/ai/video-generation/diffusion-models/2026/03/23/history-guided-video-diffusion</id><content type="html" xml:base="/research/ai/video-generation/diffusion-models/2026/03/23/history-guided-video-diffusion.html"><![CDATA[<h1 id="history-guided-video-diffusion-用历史引导实现超长视频生成">History-Guided Video Diffusion: 用历史引导实现超长视频生成</h1>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2502.06764">arXiv:2502.06764</a></td>
+        <td><a href="https://arxiv.org/pdf/2502.06764.pdf">PDF</a></td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<p><strong>会议</strong>: ICML 2025 (Proceedings of the 42nd International Conference on Machine Learning)</p>
+
+<p><strong>机构</strong>: MIT, Carnegie Mellon University, Harvard</p>
+
+<h2 id="核心亮点">核心亮点</h2>
+
+<p>本文提出<strong>Diffusion Forcing Transformer (DFoT)</strong>和<strong>History Guidance (HG)</strong>，实现了灵活的历史帧条件视频生成。该方法能够稳定生成<strong>862 帧</strong>的超长导航视频——远超训练集最大视频长度，性能媲美需要<strong>一个数量级更多计算资源</strong>的行业模型。</p>
+
+<h2 id="摘要">摘要</h2>
+
+<p>Classifier-free guidance (CFG) 是扩散模型中提升条件生成质量的关键技术。在视频扩散中，自然地将可变数量的上下文帧（称为”历史”）作为条件变量。然而，使用可变长度历史进行引导面临两个关键挑战：<strong>仅支持固定大小条件输入的架构</strong>，以及<strong>CFG 风格的历史丢弃经验上表现不佳</strong>。</p>
+
+<p>本文提出 Diffusion Forcing Transformer (DFoT)——一个视频扩散架构和理论基础的训练目标，共同实现了对灵活数量历史帧的条件化。进而引入 History Guidance，一系列由 DFoT 独特支持的引导方法。最简单形式（vanilla history guidance）已显著提升视频生成质量和时间一致性。更高级的方法（history guidance across time and frequency）进一步增强运动动态，实现对分布外历史的组合泛化，并能稳定 rollout 超长视频。</p>
+
+<h2 id="1-问题定义">1. 问题定义</h2>
+
+<h3 id="11-视频扩散中的条件化挑战">1.1 视频扩散中的条件化挑战</h3>
+
+<p>视频扩散模型是条件扩散模型 <code class="language-plaintext highlighter-rouge">p(x|c)</code>，其中 <code class="language-plaintext highlighter-rouge">x</code> 表示要生成的帧，<code class="language-plaintext highlighter-rouge">c</code> 表示条件（如文本提示或观察到的 prior 帧）。在视频生成中，历史帧作为条件变量至关重要，特别是对于自回归扩展新生成的视频。</p>
+
+<blockquote>
+  <p>“然而，我们发现使用可变长度历史进行引导面临两个关键挑战：仅支持固定大小条件输入的架构，以及 CFG 风格的历史丢弃经验上表现不佳。”</p>
+</blockquote>
+
+<h3 id="12-现有方法的局限">1.2 现有方法的局限</h3>
+
+<p><strong>固定长度条件限制</strong>：</p>
+<ul>
+  <li>DiT 或 U-Net 基扩散模型通常使用 AdaLN 层或沿通道维度拼接来注入条件</li>
+  <li>这种设计将条件限制为固定大小向量</li>
+  <li>某些模型采用序列编码器处理可变长度条件（如文本输入），但这些编码器通常是预训练的，无法与扩散模型共享参数来编码历史帧</li>
+  <li>因此，引导被限制为固定长度且通常较短的历史</li>
+</ul>
+
+<p><strong>Framewise Binary Dropout 表现不佳</strong>：</p>
+<ul>
+  <li>CFG 通常使用单个网络联合表示条件和无条件扩散模型，通过随机丢弃条件 <code class="language-plaintext highlighter-rouge">c</code> 实现</li>
+  <li>当扩展到历史引导时，这种二元丢弃训练经验上表现次优</li>
+  <li>导致样本质量显著下降</li>
+</ul>
+
+<h3 id="13-核心研究问题">1.3 核心研究问题</h3>
+
+<blockquote>
+  <p>“能否使用不同部分的历史——可变长度、帧子集、甚至不同的图像域频率——作为视频生成的引导形式？”</p>
+</blockquote>
+
+<h2 id="2-方法">2. 方法</h2>
+
+<h3 id="21-diffusion-forcing-transformer-dfot">2.1 Diffusion Forcing Transformer (DFoT)</h3>
+
+<p>DFoT 扩展了 Diffusion Forcing 中的”noising-as-masking”范式到非因果 transformer，通过<strong>对每帧应用独立噪声级别</strong>来训练视频扩散模型。</p>
+
+<h4 id="核心设计">核心设计</h4>
+
+<p><strong>传统视频扩散 vs DFoT</strong>：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>特性</th>
+      <th>传统方法</th>
+      <th>DFoT</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>噪声级别</td>
+      <td>所有 token 统一</td>
+      <td>每帧独立变化</td>
+    </tr>
+    <tr>
+      <td>历史处理</td>
+      <td>单独编码器 + AdaLN 注入</td>
+      <td>不区分历史和生成帧</td>
+    </tr>
+    <tr>
+      <td>条件化</td>
+      <td>固定长度</td>
+      <td>任意子集</td>
+    </tr>
+    <tr>
+      <td>架构兼容性</td>
+      <td>需专门设计</td>
+      <td>兼容现有 DiT/U-ViT</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>训练目标</strong>：</p>
+
+<p>给定 T 帧视频剪辑 <code class="language-plaintext highlighter-rouge">x_T</code>，定义 <code class="language-plaintext highlighter-rouge">H ⊂ T</code> 为用于条件的历史帧索引，<code class="language-plaintext highlighter-rouge">G = T \ H</code> 为要生成的帧索引。目标是建模条件分布 <code class="language-plaintext highlighter-rouge">p(x_G | x_H)</code>。</p>
+
+<p>DFoT 对序列所有帧去噪，其中帧具有独立变化的噪声级别。在采样时，可以通过噪声选择性掩码历史的部分，实现灵活的条件化和引导。</p>
+
+<h4 id="理论-justification">理论 justification</h4>
+
+<p>通过变分下界提供训练目标的理论 justification。DFoT 可以高效地通过微调预训练视频扩散模型实现。</p>
+
+<h3 id="22-history-guidance-hg-家族">2.2 History Guidance (HG) 家族</h3>
+
+<p>在采样时，DFoT 支持一系列历史条件引导方法：</p>
+
+<h4 id="221-vanilla-history-guidance-hg-v">2.2.1 Vanilla History Guidance (HG-v)</h4>
+
+<p>最简单的形式，使用<strong>任意长度的历史</strong>作为 CFG 的条件变量：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>∇ log p_k(x_k^G) + ω [∇ log p_k(x_k^G | x_H) - ∇ log p_k(x_k^G)]
+</code></pre></div></div>
+
+<p>其中 <code class="language-plaintext highlighter-rouge">ω ≥ 1</code> 是引导尺度。</p>
+
+<blockquote>
+  <p>“值得注意的是，即使这种简单方法也显著增强了视频质量。”</p>
+</blockquote>
+
+<h4 id="222-temporal-history-guidance-hg-t">2.2.2 Temporal History Guidance (HG-t)</h4>
+
+<p>组合不同历史窗口的分数：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>s(x) = ω1 · s(x | H1) + ω2 · s(x | H2) - s(x | ∅)
+</code></pre></div></div>
+
+<p>其中 <code class="language-plaintext highlighter-rouge">H1</code> 和 <code class="language-plaintext highlighter-rouge">H2</code> 是不同的历史子序列（如 <code class="language-plaintext highlighter-rouge">{0,1,2}</code> 和 <code class="language-plaintext highlighter-rouge">{1,2,3}</code>）。</p>
+
+<p><strong>关键优势</strong>：</p>
+<ul>
+  <li>实现对分布外（OOD）历史的鲁棒性</li>
+  <li>通过组合分布内短历史窗口近似严格 OOD 历史</li>
+</ul>
+
+<h4 id="223-fractional-history-guidance-hg-f">2.2.3 Fractional History Guidance (HG-f)</h4>
+
+<p>对历史窗口应用<strong>不同程度的噪声腐蚀</strong>，有效充当历史帧的”低通滤波器”：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>s(x) = ∇ log p_k(x_k^G | x_H^{k_H})
+</code></pre></div></div>
+
+<p>其中 <code class="language-plaintext highlighter-rouge">k_H</code> 是分数掩码程度（如 <code class="language-plaintext highlighter-rouge">k_H = 0.8</code>）。</p>
+
+<p><strong>扩展</strong>：通过轻微修改，可以针对特定频率带宽增强生成视频的动态程度。</p>
+
+<h4 id="224-history-guidance-across-time-and-frequency-hg-tf">2.2.4 History Guidance Across Time and Frequency (HG-tf)</h4>
+
+<p>组合 HG-t 和 HG-f 创建全面的历史引导范式：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>s(x) = ω_t · [s(x | H1) + s(x | H2)] + ω_f · s(x | H^{k_H})
+</code></pre></div></div>
+
+<h3 id="23-实现细节">2.3 实现细节</h3>
+
+<h4 id="架构配置">架构配置</h4>
+
+<p><strong>Kinetics-600 模型</strong>：</p>
+<ul>
+  <li>Backbone: DiT</li>
+  <li>层数：28</li>
+  <li>隐藏大小：1152</li>
+  <li>注意力头：16</li>
+  <li>训练步数：640k</li>
+  <li>批量大小：192</li>
+</ul>
+
+<p><strong>RealEstate10K 模型</strong>：</p>
+<ul>
+  <li>Backbone: U-ViT</li>
+  <li>层配置：<code class="language-plaintext highlighter-rouge">[ResNet×2, Transformer×2] × 4</code></li>
+  <li>隐藏大小：<code class="language-plaintext highlighter-rouge">[128, 256, 576, 1152]</code></li>
+  <li>训练步数：500k</li>
+</ul>
+
+<p><strong>Minecraft 模型</strong>：</p>
+<ul>
+  <li>Backbone: DiT</li>
+  <li>层数：12</li>
+  <li>隐藏大小：768</li>
+  <li>输入：50 帧 256×256</li>
+</ul>
+
+<h4 id="训练技巧">训练技巧</h4>
+
+<p><strong>帧跳跃（Frame Skip）</strong>：</p>
+<ul>
+  <li>Kinetics-600: stride=1</li>
+  <li>Minecraft: stride=2</li>
+  <li>RealEstate10K: 从 10 开始递增到最大可能</li>
+</ul>
+
+<p><strong>Loss 重加权</strong>：</p>
+<ul>
+  <li>min-SNR: Kinetics 和 robot learning</li>
+  <li>Sigmoid: RealEstate10K 和 Minecraft</li>
+</ul>
+
+<p><strong>噪声调度偏移</strong>：<code class="language-plaintext highlighter-rouge">0.125</code>，显著提升样本质量</p>
+
+<p><strong>参数化</strong>：v-parameterization（除 robot 模型使用 x0）</p>
+
+<h2 id="3-实验结果">3. 实验结果</h2>
+
+<h3 id="31-kinetics-600-基准测试">3.1 Kinetics-600 基准测试</h3>
+
+<p><strong>任务设置</strong>：条件化前 5 帧历史，预测接下来 11 帧</p>
+
+<p><strong>FVD 比较</strong>（越低越好）：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>FVD</th>
+      <th>参数量</th>
+      <th>批量大小</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Video Diffusion</td>
+      <td>~200</td>
+      <td>1.1B</td>
+      <td>256</td>
+    </tr>
+    <tr>
+      <td>MAGVIT</td>
+      <td>~190</td>
+      <td>-</td>
+      <td>256</td>
+    </tr>
+    <tr>
+      <td>MAGVIT-v2</td>
+      <td>~185</td>
+      <td>-</td>
+      <td>256</td>
+    </tr>
+    <tr>
+      <td>W.A.L.T</td>
+      <td>~175</td>
+      <td>-</td>
+      <td>512</td>
+    </tr>
+    <tr>
+      <td>Rolling Diffusion</td>
+      <td>~190</td>
+      <td>1.2B</td>
+      <td>512</td>
+    </tr>
+    <tr>
+      <td><strong>DFoT (scratch)</strong></td>
+      <td><strong>181.6</strong></td>
+      <td>673M</td>
+      <td>192</td>
+    </tr>
+    <tr>
+      <td><strong>DFoT + HG-v</strong></td>
+      <td><strong>170.4</strong></td>
+      <td>673M</td>
+      <td>192</td>
+    </tr>
+    <tr>
+      <td><strong>DFoT + HG-f</strong></td>
+      <td><strong>170.4</strong></td>
+      <td>673M</td>
+      <td>192</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>“尽管资源劣势，DFoT 证明与这些强基线高度竞争。仅略落后于 W.A.L.T，与 MAGVIT-v2 相当，并超越其他。”</p>
+</blockquote>
+
+<h3 id="32-history-guidance-效果">3.2 History Guidance 效果</h3>
+
+<h4 id="引导尺度消融">引导尺度消融</h4>
+
+<p><strong>FVD vs 引导尺度 ω</strong>：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>ω</th>
+      <th>DFoT + HG-v</th>
+      <th>BD + HG-v</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1.0</td>
+      <td>208.0</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>1.5</td>
+      <td><strong>181.6</strong></td>
+      <td>196.0</td>
+    </tr>
+    <tr>
+      <td>2.0</td>
+      <td>185.0</td>
+      <td>188.0</td>
+    </tr>
+    <tr>
+      <td>2.5</td>
+      <td>190.0</td>
+      <td><strong>185.0</strong></td>
+    </tr>
+    <tr>
+      <td>3.0</td>
+      <td>195.0</td>
+      <td>192.0</td>
+    </tr>
+    <tr>
+      <td>4.0</td>
+      <td>210.0</td>
+      <td>220.0</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>最优配置</strong>：<code class="language-plaintext highlighter-rouge">ω = 1.5</code> 时 DFoT 达到最低 FVD 181.6，而 Binary-Dropout (BD) 为 196.0</p>
+
+<p><strong>定性比较</strong>：DFoT 生成一致、高质量样本，而 BD 难以与历史帧保持一致并产生伪影。</p>
+
+<h3 id="33-分布外ood历史泛化">3.3 分布外（OOD）历史泛化</h3>
+
+<p><strong>任务</strong>：给定 4 帧历史（不同旋转角度），生成 4 帧插值</p>
+
+<p><strong>旋转角度分布</strong>：</p>
+<ul>
+  <li>训练集：通常 &lt; 100°</li>
+  <li>OOD 定义：&gt; 140°（训练集中 &lt; 100 个场景）</li>
+</ul>
+
+<p><strong>LPIPS 比较</strong>（越低越好）：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>ID (0-100°)</th>
+      <th>Slight OOD (100-140°)</th>
+      <th>OOD (&gt;140°)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>标准 CFG</td>
+      <td>0.15</td>
+      <td>0.28</td>
+      <td>0.45</td>
+    </tr>
+    <tr>
+      <td><strong>HG-t</strong></td>
+      <td><strong>0.14</strong></td>
+      <td><strong>0.18</strong></td>
+      <td><strong>0.22</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>“通过组合分布内短历史窗口，HG-t 能有效近似训练期间未见过的严格 OOD 历史。”</p>
+</blockquote>
+
+<h3 id="34-长上下文生成minecraft">3.4 长上下文生成（Minecraft）</h3>
+
+<p><strong>任务设置</strong>：</p>
+<ul>
+  <li>训练：50 帧 DFoT 模型，条件化历史最长 25 帧</li>
+  <li>测试：自回归扩散接下来 25 帧，rollout 5 次共 125 帧</li>
+</ul>
+
+<p><strong>FVD 比较</strong>：</p>
+<ul>
+  <li>标准条件扩散（全上下文）：97.625</li>
+  <li><strong>DFoT + HG-t</strong>: <strong>79.19</strong></li>
+</ul>
+
+<p><strong>定性观察</strong>：DFoT 的预测在大多数帧上与 ground truth 语义对齐，而长上下文模型无时间引导会遭受高维上下文问题，更可能在历史中看到 OOD 帧。</p>
+
+<h3 id="35-机器人模仿学习">3.5 机器人模仿学习</h3>
+
+<p><strong>任务</strong>：水果交换任务——使用第三个槽交换两个水果的位置</p>
+
+<p><strong>挑战</strong>：</p>
+<ul>
+  <li>需要长期记忆（记住水果初始位置）</li>
+  <li>需要局部反应行为（应对人类扰动）</li>
+</ul>
+
+<p><strong>基线</strong>：</p>
+<ul>
+  <li>Markov 模型：仅基于当前观察扩散接下来动作</li>
+  <li>2-frame 模型：看到前两帧作为短历史</li>
+  <li>Full-history 模型：条件化到目前为止的整个历史</li>
+</ul>
+
+<p><strong>成功率比较</strong>：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>无扰动</th>
+      <th>人类扰动</th>
+      <th>强扰动</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Markov</td>
+      <td>0%</td>
+      <td>0%</td>
+      <td>0%</td>
+    </tr>
+    <tr>
+      <td>2-frame</td>
+      <td>0%</td>
+      <td>15%</td>
+      <td>0%</td>
+    </tr>
+    <tr>
+      <td>Full-history</td>
+      <td>75%</td>
+      <td>12%</td>
+      <td>0%</td>
+    </tr>
+    <tr>
+      <td><strong>DFoT + HG</strong></td>
+      <td><strong>85%</strong></td>
+      <td><strong>83%</strong></td>
+      <td><strong>28%</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>“DFoT 组合引导实际上是在拼接子轨迹做决策，或至少同时从全上下文模型借用记忆，同时使用短上下文模型保持局部反应性。”</p>
+</blockquote>
+
+<p><strong>引导配置</strong>：</p>
+<ul>
+  <li>Full-history 模型：权重 0.2</li>
+  <li>1-frame 模型：权重 0.45</li>
+  <li>4-frame 模型：权重 0.45</li>
+</ul>
+
+<h3 id="36-超长视频生成realestate10k">3.6 超长视频生成（RealEstate10K）</h3>
+
+<p><strong>核心成果</strong>：从单张图像生成<strong>862 帧</strong>导航视频</p>
+
+<p><strong>生成流程</strong>：</p>
+
+<p><strong>Phase 1: Rollout</strong></p>
+<ul>
+  <li>滑动窗口方法：条件化最后 4 帧生成接下来 4 帧</li>
+  <li>第一次迭代例外：条件化单张图像生成接下来 7 帧</li>
+  <li>用户导航 UI：指定水平/垂直角度和移动距离</li>
+  <li>默认引导：HG-f (<code class="language-plaintext highlighter-rouge">ω=4, k_H=0.4</code>)</li>
+  <li>挑战场景切换：HG-v (<code class="language-plaintext highlighter-rouge">ω=4</code>)，当方向变化 &gt;30° 或移动距离超过阈值</li>
+</ul>
+
+<p><strong>Phase 2: Interpolation</strong></p>
+<ul>
+  <li>插值因子：7×</li>
+  <li>每对连续生成帧之间插值 6 帧</li>
+  <li>相机姿态：SLERP 插值旋转矩阵，线性插值平移向量</li>
+  <li>引导：HG-v (<code class="language-plaintext highlighter-rouge">ω=1.5</code>) 确保平滑一致</li>
+</ul>
+
+<p><strong>稳定化技术</strong>：</p>
+<ul>
+  <li>先前生成帧标记为轻微噪声 (<code class="language-plaintext highlighter-rouge">k=0.02</code>)</li>
+  <li>防止误差累积</li>
+</ul>
+
+<p><strong>与基线比较</strong>：</p>
+<ul>
+  <li>SD (Standard Diffusion): ~30 帧失败</li>
+  <li>4DiM (文献最佳): 最大 32 帧</li>
+  <li><strong>DFoT + HG</strong>: <strong>862 帧稳定 rollout</strong></li>
+</ul>
+
+<h2 id="4-技术亮点">4. 技术亮点</h2>
+
+<h3 id="41-微调效率">4.1 微调效率</h3>
+
+<p>从预训练 full-sequence (FS) 模型微调 DFoT：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>配置</th>
+      <th>训练步数</th>
+      <th>FVD</th>
+      <th>训练 Loss</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>DFoT (scratch)</td>
+      <td>640k</td>
+      <td>4.3</td>
+      <td>0.108</td>
+    </tr>
+    <tr>
+      <td>DFoT (fine-tuned)</td>
+      <td>40k</td>
+      <td>5.2</td>
+      <td>0.110</td>
+    </tr>
+    <tr>
+      <td>DFoT (fine-tuned)</td>
+      <td>80k</td>
+      <td>4.7</td>
+      <td><strong>0.106</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>“微调模型仅 40k 步后达到与从头训练 405k 步相当的训练 loss——约<strong>10×加速</strong>。”</p>
+</blockquote>
+
+<h3 id="42-计算资源对比">4.2 计算资源对比</h3>
+
+<p><strong>DFoT 资源</strong>：</p>
+<ul>
+  <li>参数量：673M (DiT/XL)</li>
+  <li>批量大小：192</li>
+  <li>GPU: 12×H100, ~5 天</li>
+</ul>
+
+<p><strong>行业基线</strong>：</p>
+<ul>
+  <li>Video Diffusion: 1.1B, batch=256</li>
+  <li>W.A.L.T: DiT/L, batch=512</li>
+  <li>Rolling Diffusion: 1.2B, batch=512</li>
+</ul>
+
+<blockquote>
+  <p>“MAGVIT 和 MAGVIT-v2 使用与 DFoT 相当的资源，而 Video Diffusion、W.A.L.T 和 Rolling Diffusion 需要显著更多资源。”</p>
+</blockquote>
+
+<h3 id="43-引导方案总结">4.3 引导方案总结</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>适用场景</th>
+      <th>引导尺度</th>
+      <th>特点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>HG-v</td>
+      <td>通用提升</td>
+      <td>ω=1.5-4.0</td>
+      <td>简单有效</td>
+    </tr>
+    <tr>
+      <td>HG-t</td>
+      <td>OOD 泛化</td>
+      <td>ω1=ω2=2.0</td>
+      <td>组合历史窗口</td>
+    </tr>
+    <tr>
+      <td>HG-f</td>
+      <td>长 rollout 稳定</td>
+      <td>ω=4.0, k_H=0.4</td>
+      <td>分数掩码</td>
+    </tr>
+    <tr>
+      <td>HG-tf</td>
+      <td>综合场景</td>
+      <td>组合</td>
+      <td>时间 + 频率</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="5-与相关工作的对比">5. 与相关工作的对比</h2>
+
+<h3 id="51-vs-classifier-free-guidance">5.1 vs Classifier-Free Guidance</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>特性</th>
+      <th>传统 CFG</th>
+      <th>History Guidance</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>条件变量</td>
+      <td>文本/单帧</td>
+      <td>任意历史子集</td>
+    </tr>
+    <tr>
+      <td>训练方式</td>
+      <td>二元丢弃</td>
+      <td>独立噪声级别</td>
+    </tr>
+    <tr>
+      <td>引导形式</td>
+      <td>单条件</td>
+      <td>多条件组合</td>
+    </tr>
+    <tr>
+      <td>OOD 鲁棒性</td>
+      <td>有限</td>
+      <td>强（HG-t）</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="52-vs-diffusion-forcing">5.2 vs Diffusion Forcing</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>特性</th>
+      <th>Diffusion Forcing</th>
+      <th>DFoT</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>架构</td>
+      <td>因果 state-space</td>
+      <td>非因果 state-free</td>
+    </tr>
+    <tr>
+      <td>应用</td>
+      <td>序列建模</td>
+      <td>视频生成</td>
+    </tr>
+    <tr>
+      <td>条件化</td>
+      <td>因果历史</td>
+      <td>任意子集</td>
+    </tr>
+    <tr>
+      <td>引导</td>
+      <td>无</td>
+      <td>History Guidance 家族</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="6-局限性与未来方向">6. 局限性与未来方向</h2>
+
+<h3 id="61-当前局限">6.1 当前局限</h3>
+
+<p><strong>EMA 影响</strong>：</p>
+<ul>
+  <li>微调模型训练 loss 更低但 FVD 略高</li>
+  <li>归因于 EMA (decay=0.9999) 受最后数万步影响</li>
+  <li>无 EMA 时 FVD 显著升高（80k 步：7.3 vs 4.7）</li>
+</ul>
+
+<p><strong>强 OOD 挑战</strong>：</p>
+<ul>
+  <li>强扰动下成功率仅 28%</li>
+  <li>需要更多数据或更强泛化能力</li>
+</ul>
+
+<h3 id="62-未来方向">6.2 未来方向</h3>
+
+<p><strong>大规模微调</strong>：</p>
+<ul>
+  <li>微调大型基础视频扩散模型到 DFoT</li>
+  <li>计算成本小，潜力巨大</li>
+</ul>
+
+<p><strong>EMA 优化</strong>：</p>
+<ul>
+  <li>选择更小 EMA decay 保证样本质量</li>
+  <li>Post hoc EMA tuning 策略</li>
+</ul>
+
+<p><strong>频率引导扩展</strong>：</p>
+<ul>
+  <li>针对特定频率带宽</li>
+  <li>增强动态程度控制</li>
+</ul>
+
+<h2 id="7-总结">7. 总结</h2>
+
+<p>History-Guided Video Diffusion 代表了视频生成的重要进展：</p>
+
+<p><strong>核心贡献</strong>：</p>
+<ol>
+  <li><strong>DFoT 架构</strong>：竞争性视频扩散框架，支持采样时使用任意部分历史进行条件化</li>
+  <li><strong>History Guidance 家族</strong>：HG-v、HG-t、HG-f、HG-tf，显著提升一致性、运动动态和视觉质量</li>
+  <li><strong>SOTA 性能</strong>：尤其在长视频生成中展现新能力</li>
+</ol>
+
+<p><strong>关键成果</strong>：</p>
+<ul>
+  <li>Kinetics-600 FVD 170.4，媲美需要更多资源的行业模型</li>
+  <li>OOD 历史泛化：LPIPS 从 0.45 降至 0.22</li>
+  <li>机器人模仿学习成功率 83%</li>
+  <li><strong>862 帧超长视频稳定生成</strong></li>
+</ul>
+
+<p><strong>技术亮点</strong>：</p>
+<ul>
+  <li>独立噪声级别训练实现灵活条件化</li>
+  <li>多历史窗口组合实现 OOD 鲁棒性</li>
+  <li>分数掩码充当低通滤波器增强稳定性</li>
+  <li>微调预训练模型实现 10× 加速</li>
+</ul>
+
+<p><strong>影响</strong>：</p>
+<ul>
+  <li>为超长视频生成开辟新路径</li>
+  <li>提供理论基础的灵活条件化框架</li>
+  <li>兼容现有架构便于采用</li>
+</ul>
+
+<p>这项工作展示了历史引导在视频扩散中的巨大潜力，为构建更强大、更灵活的视频生成模型奠定了基础。</p>
+
+<h2 id="参考文献">参考文献</h2>
+
+<ol>
+  <li>Kiwhan Song et al. History-Guided Video Diffusion. ICML, 2025.</li>
+  <li>Boyuan Chen et al. Diffusion Forcing: Next-token Prediction Meets Full-Sequence Diffusion. NeurIPS, 2024.</li>
+  <li>William Peebles &amp; Saining Xie. Scalable Diffusion Models with Transformers. ICCV, 2023.</li>
+  <li>Jonathan Ho &amp; Tim Salimans. Classifier-Free Diffusion Guidance. NeurIPS, 2022.</li>
+  <li>Team Wan. Wan: Open and Advanced Large-Scale Video Generative Models. arXiv:2503.20314, 2025.</li>
+</ol>]]></content><author><name>ROM4AI</name></author><category term="research" /><category term="ai" /><category term="video-generation" /><category term="diffusion-models" /><category term="Video Diffusion" /><category term="Classifier-Free Guidance" /><category term="DFoT" /><category term="Long Video Generation" /><category term="Temporal Consistency" /><summary type="html"><![CDATA[History-Guided Video Diffusion: 用历史引导实现超长视频生成]]></summary></entry></feed>

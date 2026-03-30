@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Synthesis-in-the-Loop Evaluation of LLMs for RTL Generation: Quality, Reliability, and Failure Modes | ROM4AI Research Ideas</title>
+    <meta name="description" content="Synthesis-in-the-Loop Evaluation of LLMs for RTL Generation: Quality, Reliability, and Failure Modes">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+
+  </head>
+  <body class="layout-post">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="/" aria-label="ROM4AI Research Ideas">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>ROM4AI Research Ideas</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/" class="">Home</a>
+            
+              <a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Latest note</a>
+            
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main article-page">
+  <article
+    class="article-shell"
+    data-post-id="/research/ai/hardware/2026/03/14/llm-rtl-generation-evaluation.html"
+    data-metrics-endpoint=""
+  >
+    <div class="article-frame">
+      <a class="back-link" href="/#latest-posts">All research notes</a>
+
+      <header class="article-hero">
+        <div class="article-heading">
+          <p class="article-kicker">Research note</p>
+          <h1>Synthesis-in-the-Loop Evaluation of LLMs for RTL Generation: Quality, Reliability, and Failure Modes</h1>
+        </div>
+        <div class="article-meta">
+          <span>March 14, 2026</span>
+          
+            <div class="article-tags" aria-label="Categories">
+              
+                <a class="category-chip category-chip--research" href="/#category=research">research</a>
+              
+                <a class="category-chip category-chip--ai" href="/#category=ai">ai</a>
+              
+                <a class="category-chip category-chip--hardware" href="/#category=hardware">hardware</a>
+              
+            </div>
+          
+        </div>
+      </header>
+
+      <div class="article-context-bar" aria-label="Article context">
+        
+          <section class="article-context-card">
+            <p class="aside-label">Focus areas</p>
+            <ul class="article-category-list">
+              
+                <li>research</li>
+              
+                <li>ai</li>
+              
+                <li>hardware</li>
+              
+            </ul>
+          </section>
+        
+
+        <section class="article-context-card article-context-card--summary">
+          <p class="aside-label">Context</p>
+          <p>Research idea blog on future AI hardware systems and accelerators.</p>
+        </section>
+      </div>
+
+      <div class="article-layout">
+        <div class="article-content" id="article-content">
+          <h1 id="synthesis-in-the-loop-evaluation-of-llms-for-rtl-generation-quality-reliability-and-failure-modes">Synthesis-in-the-Loop Evaluation of LLMs for RTL Generation: Quality, Reliability, and Failure Modes</h1>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2603.11287">arXiv:2603.11287</a></td>
+        <td><a href="https://arxiv.org/pdf/2603.11287.pdf">PDF</a></td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<h2 id="摘要">摘要</h2>
+
+<p>这篇论文首次对 32 个语言模型在 RTL 生成任务上进行了全面的合成感知评估。研究者提出了 Hardware Quality Index (HQI) 指标，综合考量综合后的面积、延迟和警告数量，揭示了当前 LLM 在硬件设计自动化方面的能力边界和失败模式。</p>
+
+<h2 id="1-问题定义">1. 问题定义</h2>
+
+<p>RTL 生成与软件代码合成有着本质区别：</p>
+
+<blockquote>
+  <p>“RTL generation demands more than software code synthesis: designs must be syntactically valid, synthesizable, functionally correct, and hardware-efficient.”</p>
+</blockquote>
+
+<p>现有评估大多停留在功能正确性层面，忽略了可综合性和实现质量的测量。这导致一个关键问题：<strong>一个在仿真中工作的 Verilog 代码，在综合后可能完全无法实现为实际硬件</strong>。</p>
+
+<p>论文要解决的核心问题是：如何系统评估 LLM 生成的 RTL 代码质量，不仅看功能正确性，还要看综合后的实际硬件实现质量？</p>
+
+<h2 id="2-方法框架">2. 方法框架</h2>
+
+<p>研究者提出了一个完整的评估框架，包含以下关键组件：</p>
+
+<h3 id="21-hardware-quality-index-hqi">2.1 Hardware Quality Index (HQI)</h3>
+
+<p>HQI 是一个 0-100 的综合指标，计算公式整合了：</p>
+<ul>
+  <li>综合后面积（area）</li>
+  <li>关键路径延迟（delay）</li>
+  <li>综合警告数量（warning count）</li>
+</ul>
+
+<p>所有指标都相对于专家编写的参考设计进行归一化，在 Nangate45 45nm 工艺库下进行综合评估。</p>
+
+<h3 id="22-评估数据集">2.2 评估数据集</h3>
+
+<ul>
+  <li><strong>VerilogEval</strong>: 包含多种难度的 Verilog 编程任务</li>
+  <li><strong>RTLLM</strong>: 专注于硬件设计任务的基准数据集</li>
+  <li>共 202 个 Verilog 任务，每个任务允许模型尝试 5 次</li>
+</ul>
+
+<h3 id="23-评估流程">2.3 评估流程</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>LLM 生成 Verilog → 语法检查 → 综合 → 提取 PPA 指标 → 计算 HQI
+</code></pre></div></div>
+
+<p>关键创新在于”synthesis-in-the-loop”：每个生成的设计都实际通过综合工具，确保评估结果反映真实硬件实现质量。</p>
+
+<h2 id="3-实验结果">3. 实验结果</h2>
+
+<h3 id="31-模型性能分层">3.1 模型性能分层</h3>
+
+<p>实验揭示了三个明显的性能层级：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>性能层级</th>
+      <th>模型数量</th>
+      <th>Global HQI 范围</th>
+      <th>代表模型</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>前沿模型</td>
+      <td>13</td>
+      <td>&gt; 71</td>
+      <td>Gemini-3-Pro (85.1)</td>
+    </tr>
+    <tr>
+      <td>中等模型</td>
+      <td>11</td>
+      <td>53-68</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>落后模型</td>
+      <td>8</td>
+      <td>&lt; 53</td>
+      <td>-</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="32-顶尖模型表现">3.2 顶尖模型表现</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>模型</th>
+      <th>覆盖率</th>
+      <th>HQI 得分</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Gemini-3-Pro</strong></td>
+      <td>87.5%</td>
+      <td><strong>85.1</strong></td>
+    </tr>
+    <tr>
+      <td>其他前沿模型</td>
+      <td>-</td>
+      <td>71-80</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="33-多次尝试的收益">3.3 多次尝试的收益</h3>
+
+<p>研究发现”能力 - 部署差距”（capability-to-deployment gap）：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>策略</th>
+      <th>HQI 提升</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Best-of-5 vs Single</td>
+      <td>+3.8 ~ 22.1 分</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>这表明多采样策略对于生产部署至关重要。</p>
+
+<h3 id="34-失败模式分析">3.4 失败模式分析</h3>
+
+<p>通过对 195 个真实综合失败案例的分类分析，发现了系统性差异：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>模型类型</th>
+      <th>失败阶段</th>
+      <th>典型失败模式</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>专有模型</td>
+      <td>后期失败</td>
+      <td>细化错误、综合超时</td>
+    </tr>
+    <tr>
+      <td>开源模型</td>
+      <td>早期失败</td>
+      <td>缺少模块封装、不可综合结构</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>“open-weight models fail early through missing module wrappers and non-synthesizable constructs, consistent with training on simulation-grade rather than synthesis-grade RTL”</p>
+</blockquote>
+
+<p>这一发现揭示了开源模型训练数据的关键缺陷：它们主要学习的是仿真级 RTL，而非可综合的 RTL。</p>
+
+<h3 id="35-跨工艺库一致性">3.5 跨工艺库一致性</h3>
+
+<p>在三种不同工艺库下的评估显示排名高度一致：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>比较</th>
+      <th>Spearman ρ</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>三工艺库间</td>
+      <td>&gt; 0.99</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>这表明评估结果具有很好的鲁棒性。</p>
+
+<h2 id="4-优点与局限">4. 优点与局限</h2>
+
+<h3 id="优点">优点</h3>
+
+<ol>
+  <li><strong>首次合成感知评估</strong>：突破了以往仅评估功能正确性的局限</li>
+  <li><strong>全面的模型覆盖</strong>：评估了 32 个模型，包括前沿和开源模型</li>
+  <li><strong>HQI 指标创新</strong>：提供了硬件质量的综合度量标准</li>
+  <li><strong>失败模式洞察</strong>：揭示了不同模型类型的系统性缺陷</li>
+  <li><strong>实用指导价值</strong>：为 LLM 在 EDA 领域的部署提供了明确方向</li>
+</ol>
+
+<h3 id="局限">局限</h3>
+
+<ol>
+  <li><strong>工艺库限制</strong>：主要在 45nm 工艺下评估，先进工艺下的表现待验证</li>
+  <li><strong>任务规模</strong>：评估任务相对较小，大型设计的生成能力未充分测试</li>
+  <li><strong>优化空间</strong>：未探索 prompt 工程和微调对生成质量的提升潜力</li>
+  <li><strong>时序约束</strong>：评估未充分考虑复杂时序约束下的表现</li>
+</ol>
+
+<h2 id="5-总结">5. 总结</h2>
+
+<p>这篇论文为 LLM 在 RTL 生成领域的评估设立了新标准。关键发现包括：</p>
+
+<ul>
+  <li><strong>Gemini-3-Pro 在 RTL 生成任务上表现最佳</strong>，HQI 达到 85.1</li>
+  <li><strong>开源模型与专有模型存在明显差距</strong>，主要源于训练数据质量</li>
+  <li><strong>多采样策略能显著提升部署效果</strong>，best-of-5 可带来 3.8-22.1 分的 HQI 提升</li>
+  <li><strong>失败模式具有系统性特征</strong>，为模型改进提供了明确方向</li>
+</ul>
+
+<p>对于 AI 硬件设计自动化领域，这项工作的重要性在于：</p>
+
+<blockquote>
+  <p>它首次证明了 LLM 生成的 RTL 代码可以通过综合验证，并且质量可以量化评估。这为未来 LLM 在 EDA 工具中的集成应用奠定了基础。</p>
+</blockquote>
+
+<p>未来的研究方向包括：改进开源模型的训练数据质量、探索专门的 RTL 预训练策略、以及将评估扩展到更大规模和更复杂的设计任务。</p>
+
+<h2 id="参考文献">参考文献</h2>
+
+<ol>
+  <li>
+    <p>Fu, W., Wang, Z., Shao, M., Karri, R., Shafique, M., Knechtel, J., Sinanoglu, O., &amp; Guo, X. Synthesis-in-the-Loop Evaluation of LLMs for RTL Generation: Quality, Reliability, and Failure Modes. arXiv preprint arXiv:2603.11287, 2026.</p>
+  </li>
+  <li>
+    <p>VerilogEval: Evaluating Large Language Models for Verilog Generation. arXiv:2309.07157, 2023.</p>
+  </li>
+  <li>
+    <p>RTLLM: A Benchmark for Large Language Models in RTL Generation. arXiv:2402.16847, 2024.</p>
+  </li>
+</ol>
+
+        </div>
+
+        <aside class="article-rail insights-rail" aria-label="Post navigation and metrics">
+          <section class="rail-card article-rail-card article-rail-card--toc" id="article-toc-card" hidden>
+            <div>
+              <p class="rail-kicker">Directory</p>
+              <h2>On this page</h2>
+            </div>
+            <nav id="article-toc" class="article-toc" aria-label="Table of contents"></nav>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="View count">
+            <div>
+              <p class="rail-kicker">Views</p>
+              <h2 id="article-views">—</h2>
+            </div>
+            <p id="article-views-note">Shared views across visitors.</p>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="Post rating">
+            <div>
+              <p class="rail-kicker">Rating</p>
+              <h2 id="article-rating-average">—</h2>
+            </div>
+            <p id="article-rating-summary">Rate this post from 1 to 5 stars.</p>
+            <div class="article-rating-stars" id="article-rating-stars" role="radiogroup" aria-label="Rate this post">
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="1"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 1 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="2"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 2 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="3"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 3 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="4"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 4 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="5"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 5 out of 5"
+                >
+                  ★
+                </button>
+              
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </article>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const articleShell = document.querySelector('.article-shell');
+    const articleContent = document.getElementById('article-content');
+    const tocCard = document.getElementById('article-toc-card');
+    const tocContainer = document.getElementById('article-toc');
+    const viewsElement = document.getElementById('article-views');
+    const viewsNote = document.getElementById('article-views-note');
+    const ratingAverage = document.getElementById('article-rating-average');
+    const ratingSummary = document.getElementById('article-rating-summary');
+    const ratingStarsContainer = document.getElementById('article-rating-stars');
+    const ratingButtons = Array.from(document.querySelectorAll('.article-rating-star'));
+
+    if (!articleShell || !articleContent) return;
+
+    const postId = articleShell.dataset.postId;
+    const metricsEndpoint = (articleShell.dataset.metricsEndpoint || '').replace(/\/$/, '');
+    const sessionViewKey = `post-viewed:${postId}`;
+    const sessionRatingKey = `post-rated:${postId}`;
+
+    function slugify(text) {
+      return (text || '')
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    function ensureHeadingIds(headings) {
+      const seenIds = new Set();
+      headings.forEach((heading, index) => {
+        let nextId = heading.id || slugify(heading.textContent) || `section-${index + 1}`;
+        while (seenIds.has(nextId)) {
+          nextId = `${nextId}-${index + 1}`;
+        }
+        heading.id = nextId;
+        seenIds.add(nextId);
+      });
+    }
+
+    function buildToc() {
+      if (!tocCard || !tocContainer) return;
+
+      const headings = Array.from(articleContent.querySelectorAll('h2, h3'));
+      if (headings.length < 2) {
+        tocCard.hidden = true;
+        return;
+      }
+
+      ensureHeadingIds(headings);
+
+      const list = document.createElement('ul');
+      list.className = 'article-toc-list';
+
+      headings.forEach((heading) => {
+        const item = document.createElement('li');
+        item.className = `article-toc-item article-toc-item--${heading.tagName.toLowerCase()}`;
+
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = heading.textContent.trim();
+
+        item.appendChild(link);
+        list.appendChild(item);
+      });
+
+      tocContainer.innerHTML = '';
+      tocContainer.appendChild(list);
+      tocCard.hidden = false;
+    }
+
+    function formatNumber(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue)) return '—';
+      return new Intl.NumberFormat().format(numericValue);
+    }
+
+    function formatAverage(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue) || numericValue <= 0) return '—';
+      return `${numericValue.toFixed(1)} / 5`;
+    }
+
+    function setRatingSelection(selectedValue) {
+      ratingButtons.forEach((button) => {
+        const value = Number(button.dataset.ratingValue);
+        const isActive = Number.isFinite(selectedValue) && value <= selectedValue;
+        const isChecked = Number.isFinite(selectedValue) && value === selectedValue;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-checked', isChecked ? 'true' : 'false');
+      });
+    }
+
+    function disableRatingButtons(disabled) {
+      ratingButtons.forEach((button) => {
+        button.disabled = disabled;
+        button.tabIndex = disabled ? -1 : 0;
+      });
+      if (ratingStarsContainer) {
+        ratingStarsContainer.classList.toggle('is-disabled', disabled);
+      }
+    }
+
+    function getStoredRating() {
+      const storedRating = Number(window.localStorage.getItem(sessionRatingKey));
+      return storedRating >= 1 && storedRating <= 5 ? storedRating : null;
+    }
+
+    function applyStoredRatingSummary(count) {
+      const normalizedCount = Number(count);
+      if (!ratingSummary) return;
+      ratingSummary.textContent = `${normalizedCount || 0} rating${normalizedCount === 1 ? '' : 's'} submitted. Your rating has been saved.`;
+    }
+
+    function updateMetrics(metrics) {
+      if (viewsElement) viewsElement.textContent = formatNumber(metrics.views);
+      if (ratingAverage) ratingAverage.textContent = formatAverage(metrics.ratingAverage);
+
+      if (ratingSummary) {
+        const count = Number(metrics.ratingCount);
+        if (Number.isFinite(count) && count > 0) {
+          ratingSummary.textContent = `${count} rating${count === 1 ? '' : 's'} submitted.`;
+        } else {
+          ratingSummary.textContent = 'Be the first to rate this post.';
+        }
+      }
+    }
+
+    function setMetricsUnavailable() {
+      if (viewsElement) viewsElement.textContent = '—';
+      if (viewsNote) viewsNote.textContent = 'Metrics API not configured yet.';
+      if (ratingAverage) ratingAverage.textContent = '—';
+      if (ratingSummary) ratingSummary.textContent = 'Ratings will appear when the metrics API is connected.';
+      disableRatingButtons(true);
+    }
+
+    async function fetchJson(url, options) {
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        ...options
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      return response.json();
+    }
+
+    async function loadMetrics() {
+      if (!metricsEndpoint || !postId) {
+        setMetricsUnavailable();
+        return null;
+      }
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-metrics?id=${encodeURIComponent(postId)}`);
+        updateMetrics(metrics);
+        if (viewsNote) viewsNote.textContent = 'Shared views across visitors.';
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to load shared metrics right now.';
+        if (ratingSummary) ratingSummary.textContent = 'Unable to load ratings right now.';
+        return null;
+      }
+    }
+
+    async function trackView() {
+      if (!metricsEndpoint || !postId || window.sessionStorage.getItem(sessionViewKey)) return null;
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-view`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId })
+        });
+        updateMetrics(metrics);
+        window.sessionStorage.setItem(sessionViewKey, 'true');
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to update views right now.';
+        return null;
+      }
+    }
+
+    async function initializeMetrics() {
+      const metrics = await loadMetrics();
+      if (metrics) {
+        await trackView();
+        return;
+      }
+
+      if (metricsEndpoint && postId) {
+        await trackView();
+      }
+    }
+
+    function handleRatingKeydown(event) {
+      const currentValue = Number(event.currentTarget.dataset.ratingValue);
+      if (!Number.isInteger(currentValue)) return;
+
+      if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const nextButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.min(5, currentValue + 1));
+        if (nextButton) nextButton.focus();
+      }
+
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        const previousButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.max(1, currentValue - 1));
+        if (previousButton) previousButton.focus();
+      }
+    }
+
+    const storedRating = getStoredRating();
+    if (storedRating) {
+      setRatingSelection(storedRating);
+      disableRatingButtons(true);
+    }
+
+    if (!metricsEndpoint || !postId) {
+      setMetricsUnavailable();
+    } else {
+      disableRatingButtons(Boolean(storedRating));
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('keydown', handleRatingKeydown);
+    });
+
+    initializeMetrics();
+
+    async function submitRating(value) {
+      if (!metricsEndpoint || !postId || !Number.isInteger(value) || value < 1 || value > 5) return;
+
+      disableRatingButtons(true);
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-rating`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId, rating: value })
+        });
+        updateMetrics(metrics);
+        setRatingSelection(value);
+        window.localStorage.setItem(sessionRatingKey, String(value));
+        applyStoredRatingSummary(metrics.ratingCount);
+      } catch (error) {
+        disableRatingButtons(false);
+        if (ratingSummary) ratingSummary.textContent = 'Unable to submit your rating right now.';
+      }
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        submitRating(Number(button.dataset.ratingValue));
+      });
+    });
+
+    buildToc();
+  });
+</script>
+
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>33 posts</span>
+            <span>46 categories</span>
+            
+              <span>Updated 2026-03-26</span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

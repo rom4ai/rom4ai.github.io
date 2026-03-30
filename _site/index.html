@@ -1,0 +1,2690 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ROM4AI Research Ideas</title>
+    <meta name="description" content="Research idea blog on future AI hardware systems and accelerators.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+
+  </head>
+  <body class="layout-default">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="/" aria-label="ROM4AI Research Ideas">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>ROM4AI Research Ideas</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/" class="is-active">Home</a>
+            
+              <a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Latest note</a>
+            
+          </nav>
+        </div>
+      </header>
+
+      <div class="site-main">
+  
+
+
+<div class="page-content home-page">
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">ROM4AI · Research Blog</p>
+      <h1>Research ideas for next-generation AI hardware.</h1>
+      <p class="hero-description">
+        This site tracks early-stage concepts across algorithms, architecture, and silicon.
+        The writing clusters around neural-symbolic systems, hardwired LLM inference, 3D
+        chiplet integration, and diffusion-oriented accelerators.
+      </p>
+
+      <div class="hero-actions">
+        <a class="button button-primary" href="#latest-posts">Browse research notes</a>
+        
+          <a class="button button-secondary" href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Read the latest note</a>
+        
+      </div>
+
+      <div class="hero-highlights" aria-label="Key themes">
+        <span>Neural-symbolic systems</span>
+        <span>Hardwired LLM inference</span>
+        <span>3D chiplet integration</span>
+        <span>Diffusion acceleration</span>
+      </div>
+    </div>
+
+    <div class="hero-rail">
+      <div class="hero-stats" aria-label="Site overview">
+        <div class="hero-stat-card">
+          <strong>33</strong>
+          <span>Research posts</span>
+        </div>
+        <div class="hero-stat-card">
+          <strong>46</strong>
+          <span>Tracked topics</span>
+        </div>
+        <div class="hero-stat-card hero-stat-card--wide">
+          <strong>2026-03-26</strong>
+          <span>Latest publication</span>
+        </div>
+      </div>
+
+      
+        <article class="hero-featured">
+          <p class="hero-featured-kicker">Latest note</p>
+          <h2><a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Understanding Bottlenecks for Efficiently Serving LLM Inference With KV Offloading</a></h2>
+          <p>Understanding Bottlenecks for Efficiently Serving LLM Inference With KV Offloading
+</p>
+          <div class="hero-featured-meta">
+            <span>2026-03-26</span>
+            <span>4 focus areas</span>
+          </div>
+        </article>
+      
+    </div>
+  </section>
+
+  <section class="home-grid" id="latest-posts">
+    <div class="content-column">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Latest thinking</p>
+          <h2>Explore research posts</h2>
+        </div>
+        <p class="section-description">
+          Use category filters and text search to move through the current set of hardware research ideas quickly.
+        </p>
+      </div>
+
+      <div class="category-panel">
+        <p class="category-panel-title">Browse by category</p>
+
+        <div class="search-panel">
+          <label class="search-label" for="post-search">Search posts</label>
+          <div class="search-input-group">
+            <input
+              id="post-search"
+              class="post-search"
+              type="search"
+              placeholder="Search by title or summary"
+              aria-label="Search posts by title or summary"
+            />
+            <button id="search-clear" class="search-clear" type="button" aria-label="Clear search" hidden>✕</button>
+          </div>
+        </div>
+
+        <div class="category-filters" aria-label="Filter blog posts by category">
+          <button class="category-filter category-filter-all active" type="button" data-filter-value="all" aria-pressed="true">
+            <span>All topics</span>
+          </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--3d-integration"
+              type="button"
+              data-filter-value="3d-integration"
+              aria-pressed="false"
+            >
+              <span>3d-integration</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--3d-vision"
+              type="button"
+              data-filter-value="3d-vision"
+              aria-pressed="false"
+            >
+              <span>3d-vision</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--vla"
+              type="button"
+              data-filter-value="vla"
+              aria-pressed="false"
+            >
+              <span>VLA</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--accelerator"
+              type="button"
+              data-filter-value="accelerator"
+              aria-pressed="false"
+            >
+              <span>accelerator</span>
+              <span class="category-count">7</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--ai"
+              type="button"
+              data-filter-value="ai"
+              aria-pressed="false"
+            >
+              <span>ai</span>
+              <span class="category-count">24</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--ai-hardware"
+              type="button"
+              data-filter-value="ai-hardware"
+              aria-pressed="false"
+            >
+              <span>ai-hardware</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--ai-systems"
+              type="button"
+              data-filter-value="ai-systems"
+              aria-pressed="false"
+            >
+              <span>ai-systems</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--architecture"
+              type="button"
+              data-filter-value="architecture"
+              aria-pressed="false"
+            >
+              <span>architecture</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--bayesian"
+              type="button"
+              data-filter-value="bayesian"
+              aria-pressed="false"
+            >
+              <span>bayesian</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--chiplet"
+              type="button"
+              data-filter-value="chiplet"
+              aria-pressed="false"
+            >
+              <span>chiplet</span>
+              <span class="category-count">3</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--compression"
+              type="button"
+              data-filter-value="compression"
+              aria-pressed="false"
+            >
+              <span>compression</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--cv"
+              type="button"
+              data-filter-value="cv"
+              aria-pressed="false"
+            >
+              <span>cv</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--datacenter"
+              type="button"
+              data-filter-value="datacenter"
+              aria-pressed="false"
+            >
+              <span>datacenter</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--diffusion"
+              type="button"
+              data-filter-value="diffusion"
+              aria-pressed="false"
+            >
+              <span>diffusion</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--diffusion-models"
+              type="button"
+              data-filter-value="diffusion-models"
+              aria-pressed="false"
+            >
+              <span>diffusion-models</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--edge-computing"
+              type="button"
+              data-filter-value="edge-computing"
+              aria-pressed="false"
+            >
+              <span>edge-computing</span>
+              <span class="category-count">4</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--embodied-ai"
+              type="button"
+              data-filter-value="embodied-ai"
+              aria-pressed="false"
+            >
+              <span>embodied-ai</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--energy-efficiency"
+              type="button"
+              data-filter-value="energy-efficiency"
+              aria-pressed="false"
+            >
+              <span>energy-efficiency</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--engineering"
+              type="button"
+              data-filter-value="engineering"
+              aria-pressed="false"
+            >
+              <span>engineering</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--generative-ai"
+              type="button"
+              data-filter-value="generative-ai"
+              aria-pressed="false"
+            >
+              <span>generative-ai</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--gpu"
+              type="button"
+              data-filter-value="gpu"
+              aria-pressed="false"
+            >
+              <span>gpu</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--hardware"
+              type="button"
+              data-filter-value="hardware"
+              aria-pressed="false"
+            >
+              <span>hardware</span>
+              <span class="category-count">14</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--healthcare"
+              type="button"
+              data-filter-value="healthcare"
+              aria-pressed="false"
+            >
+              <span>healthcare</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--inference"
+              type="button"
+              data-filter-value="inference"
+              aria-pressed="false"
+            >
+              <span>inference</span>
+              <span class="category-count">3</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--isa"
+              type="button"
+              data-filter-value="isa"
+              aria-pressed="false"
+            >
+              <span>isa</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--llm"
+              type="button"
+              data-filter-value="llm"
+              aria-pressed="false"
+            >
+              <span>llm</span>
+              <span class="category-count">6</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--manipulation"
+              type="button"
+              data-filter-value="manipulation"
+              aria-pressed="false"
+            >
+              <span>manipulation</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--ml"
+              type="button"
+              data-filter-value="ml"
+              aria-pressed="false"
+            >
+              <span>ml</span>
+              <span class="category-count">6</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--mobile"
+              type="button"
+              data-filter-value="mobile"
+              aria-pressed="false"
+            >
+              <span>mobile</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--neural-symbolic"
+              type="button"
+              data-filter-value="neural-symbolic"
+              aria-pressed="false"
+            >
+              <span>neural-symbolic</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--neuro-symbolic"
+              type="button"
+              data-filter-value="neuro-symbolic"
+              aria-pressed="false"
+            >
+              <span>neuro-symbolic</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--neuromorphic"
+              type="button"
+              data-filter-value="neuromorphic"
+              aria-pressed="false"
+            >
+              <span>neuromorphic</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--productivity"
+              type="button"
+              data-filter-value="productivity"
+              aria-pressed="false"
+            >
+              <span>productivity</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--qlora"
+              type="button"
+              data-filter-value="qlora"
+              aria-pressed="false"
+            >
+              <span>qlora</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--quantization"
+              type="button"
+              data-filter-value="quantization"
+              aria-pressed="false"
+            >
+              <span>quantization</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--reconfigurable"
+              type="button"
+              data-filter-value="reconfigurable"
+              aria-pressed="false"
+            >
+              <span>reconfigurable</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--research"
+              type="button"
+              data-filter-value="research"
+              aria-pressed="false"
+            >
+              <span>research</span>
+              <span class="category-count">22</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--risc-v"
+              type="button"
+              data-filter-value="risc-v"
+              aria-pressed="false"
+            >
+              <span>risc-v</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--robotics"
+              type="button"
+              data-filter-value="robotics"
+              aria-pressed="false"
+            >
+              <span>robotics</span>
+              <span class="category-count">5</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--simulation"
+              type="button"
+              data-filter-value="simulation"
+              aria-pressed="false"
+            >
+              <span>simulation</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--systems"
+              type="button"
+              data-filter-value="systems"
+              aria-pressed="false"
+            >
+              <span>systems</span>
+              <span class="category-count">5</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--taalas"
+              type="button"
+              data-filter-value="taalas"
+              aria-pressed="false"
+            >
+              <span>taalas</span>
+              <span class="category-count">2</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--transformers"
+              type="button"
+              data-filter-value="transformers"
+              aria-pressed="false"
+            >
+              <span>transformers</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--video"
+              type="button"
+              data-filter-value="video"
+              aria-pressed="false"
+            >
+              <span>video</span>
+              <span class="category-count">1</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--video-generation"
+              type="button"
+              data-filter-value="video-generation"
+              aria-pressed="false"
+            >
+              <span>video-generation</span>
+              <span class="category-count">2</span>
+            </button>
+          
+            
+            <button
+              class="category-filter category-chip category-chip--vla"
+              type="button"
+              data-filter-value="vla"
+              aria-pressed="false"
+            >
+              <span>vla</span>
+              <span class="category-count">1</span>
+            </button>
+          
+        </div>
+
+        <div class="category-toolbar">
+          <p class="category-help" id="category-status">Showing all blog posts.</p>
+          <button id="category-clear" class="category-clear" type="button" hidden>Clear filters</button>
+        </div>
+      </div>
+
+      <ul class="post-list">
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|ml|systems"
+            data-search-text="Understanding Bottlenecks for Efficiently Serving LLM Inference With KV Offloading Understanding Bottlenecks for Efficiently Serving LLM Inference With KV Offloading"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-26</p>
+              <div class="post-categories" aria-label="Categories for Understanding Bottlenecks for Efficiently Serving LLM Inference With KV Offloading">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ml js-apply-filter"
+                    type="button"
+                    data-filter-value="ml"
+                    aria-label="Show posts in ml"
+                  >
+                    ml
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--systems js-apply-filter"
+                    type="button"
+                    data-filter-value="systems"
+                    aria-label="Show posts in systems"
+                  >
+                    systems
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Understanding Bottlenecks for Efficiently Serving LLM Inference With KV Offloading</a></h3>
+            <p class="post-summary">Understanding Bottlenecks for Efficiently Serving LLM Inference With KV Offloading
+</p>
+            <a class="post-link" href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|ml|llm|inference"
+            data-search-text="Speculating Experts Accelerates Inference for Mixture-of-Experts: 通过专家预取加速 MoE 推理 Speculating Experts Accelerates Inference for Mixture-of-Experts: 通过专家预取加速 MoE 推理"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-26</p>
+              <div class="post-categories" aria-label="Categories for Speculating Experts Accelerates Inference for Mixture-of-Experts: 通过专家预取加速 MoE 推理">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ml js-apply-filter"
+                    type="button"
+                    data-filter-value="ml"
+                    aria-label="Show posts in ml"
+                  >
+                    ml
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--llm js-apply-filter"
+                    type="button"
+                    data-filter-value="llm"
+                    aria-label="Show posts in llm"
+                  >
+                    llm
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--inference js-apply-filter"
+                    type="button"
+                    data-filter-value="inference"
+                    aria-label="Show posts in inference"
+                  >
+                    inference
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/ml/llm/inference/2026/03/26/speculating-experts-accelerates-moe-inference.html">Speculating Experts Accelerates Inference for Mixture-of-Experts: 通过专家预取加速 MoE 推理</a></h3>
+            <p class="post-summary">Speculating Experts Accelerates Inference for Mixture-of-Experts: 通过专家预取加速 MoE 推理
+</p>
+            <a class="post-link" href="/research/ai/ml/llm/inference/2026/03/26/speculating-experts-accelerates-moe-inference.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="robotics|neuro-symbolic|vla|manipulation|energy-efficiency"
+            data-search-text="The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-26</p>
+              <div class="post-categories" aria-label="Categories for The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks">
+                
+                  <button
+                    class="category-chip category-chip--robotics js-apply-filter"
+                    type="button"
+                    data-filter-value="robotics"
+                    aria-label="Show posts in robotics"
+                  >
+                    robotics
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--neuro-symbolic js-apply-filter"
+                    type="button"
+                    data-filter-value="neuro-symbolic"
+                    aria-label="Show posts in neuro-symbolic"
+                  >
+                    neuro-symbolic
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--vla js-apply-filter"
+                    type="button"
+                    data-filter-value="vla"
+                    aria-label="Show posts in VLA"
+                  >
+                    VLA
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--manipulation js-apply-filter"
+                    type="button"
+                    data-filter-value="manipulation"
+                    aria-label="Show posts in manipulation"
+                  >
+                    manipulation
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--energy-efficiency js-apply-filter"
+                    type="button"
+                    data-filter-value="energy-efficiency"
+                    aria-label="Show posts in energy-efficiency"
+                  >
+                    energy-efficiency
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/robotics/neuro-symbolic/vla/manipulation/energy-efficiency/2026/03/26/price-is-not-right-neuro-symbolic-vs-vla.html">The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks</a></h3>
+            <p class="post-summary">The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks
+</p>
+            <a class="post-link" href="/robotics/neuro-symbolic/vla/manipulation/energy-efficiency/2026/03/26/price-is-not-right-neuro-symbolic-vs-vla.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|robotics|embodied-ai|vla"
+            data-search-text="VLA-Perf: VLA 推理性能全景分析——NVIDIA 首个系统性研究 VLA-Perf: VLA 推理性能全景分析——NVIDIA 首个系统性研究"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-25</p>
+              <div class="post-categories" aria-label="Categories for VLA-Perf: VLA 推理性能全景分析——NVIDIA 首个系统性研究">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--robotics js-apply-filter"
+                    type="button"
+                    data-filter-value="robotics"
+                    aria-label="Show posts in robotics"
+                  >
+                    robotics
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--embodied-ai js-apply-filter"
+                    type="button"
+                    data-filter-value="embodied-ai"
+                    aria-label="Show posts in embodied-ai"
+                  >
+                    embodied-ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--vla js-apply-filter"
+                    type="button"
+                    data-filter-value="vla"
+                    aria-label="Show posts in vla"
+                  >
+                    vla
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/robotics/embodied-ai/vla/2026/03/25/vla-perf-vla-inference-performance-analysis.html">VLA-Perf: VLA 推理性能全景分析——NVIDIA 首个系统性研究</a></h3>
+            <p class="post-summary">VLA-Perf: VLA 推理性能全景分析——NVIDIA 首个系统性研究
+</p>
+            <a class="post-link" href="/research/ai/robotics/embodied-ai/vla/2026/03/25/vla-perf-vla-inference-performance-analysis.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|hardware|chiplet"
+            data-search-text="DS2SC-Agent: 从数据手册到 SystemC 模型的多智能体自动化生成流水线 DS2SC-Agent: 从数据手册到 SystemC 模型的多智能体自动化生成流水线"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-25</p>
+              <div class="post-categories" aria-label="Categories for DS2SC-Agent: 从数据手册到 SystemC 模型的多智能体自动化生成流水线">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--hardware js-apply-filter"
+                    type="button"
+                    data-filter-value="hardware"
+                    aria-label="Show posts in hardware"
+                  >
+                    hardware
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--chiplet js-apply-filter"
+                    type="button"
+                    data-filter-value="chiplet"
+                    aria-label="Show posts in chiplet"
+                  >
+                    chiplet
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/hardware/chiplet/2026/03/25/ds2sc-agent-multi-agent-chiplet-generation.html">DS2SC-Agent: 从数据手册到 SystemC 模型的多智能体自动化生成流水线</a></h3>
+            <p class="post-summary">DS2SC-Agent: 从数据手册到 SystemC 模型的多智能体自动化生成流水线
+</p>
+            <a class="post-link" href="/research/ai/hardware/chiplet/2026/03/25/ds2sc-agent-multi-agent-chiplet-generation.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="llm|compression|gpu|inference|systems"
+            data-search-text="ZipServ: Fast and Memory-Efficient LLM Inference with Hardware-Aware Lossless Compression             原文链接: arXiv      PDF      "
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-24</p>
+              <div class="post-categories" aria-label="Categories for ZipServ: Fast and Memory-Efficient LLM Inference with Hardware-Aware Lossless Compression">
+                
+                  <button
+                    class="category-chip category-chip--llm js-apply-filter"
+                    type="button"
+                    data-filter-value="llm"
+                    aria-label="Show posts in llm"
+                  >
+                    llm
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--compression js-apply-filter"
+                    type="button"
+                    data-filter-value="compression"
+                    aria-label="Show posts in compression"
+                  >
+                    compression
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--gpu js-apply-filter"
+                    type="button"
+                    data-filter-value="gpu"
+                    aria-label="Show posts in gpu"
+                  >
+                    gpu
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--inference js-apply-filter"
+                    type="button"
+                    data-filter-value="inference"
+                    aria-label="Show posts in inference"
+                  >
+                    inference
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--systems js-apply-filter"
+                    type="button"
+                    data-filter-value="systems"
+                    aria-label="Show posts in systems"
+                  >
+                    systems
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/llm/compression/gpu/inference/systems/2026/03/24/zipserv-fast-memory-efficient-llm-inference.html">ZipServ: Fast and Memory-Efficient LLM Inference with Hardware-Aware Lossless Compression</a></h3>
+            <p class="post-summary">
+  
+    
+      原文链接: arXiv
+      PDF
+    
+  
+
+</p>
+            <a class="post-link" href="/llm/compression/gpu/inference/systems/2026/03/24/zipserv-fast-memory-efficient-llm-inference.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="accelerator|isa|hardware|ai|reconfigurable"
+            data-search-text="MINISA: Minimal Instruction Set Architecture for Next-gen Reconfigurable Inference Accelerator             原文链接: arXiv      PDF      "
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-24</p>
+              <div class="post-categories" aria-label="Categories for MINISA: Minimal Instruction Set Architecture for Next-gen Reconfigurable Inference Accelerator">
+                
+                  <button
+                    class="category-chip category-chip--accelerator js-apply-filter"
+                    type="button"
+                    data-filter-value="accelerator"
+                    aria-label="Show posts in accelerator"
+                  >
+                    accelerator
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--isa js-apply-filter"
+                    type="button"
+                    data-filter-value="isa"
+                    aria-label="Show posts in isa"
+                  >
+                    isa
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--hardware js-apply-filter"
+                    type="button"
+                    data-filter-value="hardware"
+                    aria-label="Show posts in hardware"
+                  >
+                    hardware
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--reconfigurable js-apply-filter"
+                    type="button"
+                    data-filter-value="reconfigurable"
+                    aria-label="Show posts in reconfigurable"
+                  >
+                    reconfigurable
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/accelerator/isa/hardware/ai/reconfigurable/2026/03/24/minisa-reconfigurable-inference-accelerator.html">MINISA: Minimal Instruction Set Architecture for Next-gen Reconfigurable Inference Accelerator</a></h3>
+            <p class="post-summary">
+  
+    
+      原文链接: arXiv
+      PDF
+    
+  
+
+</p>
+            <a class="post-link" href="/accelerator/isa/hardware/ai/reconfigurable/2026/03/24/minisa-reconfigurable-inference-accelerator.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|robotics|video"
+            data-search-text="Large Video Planner: 基于视频生成的通用机器人控制新范式 Large Video Planner: 基于视频生成的通用机器人控制新范式"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-23</p>
+              <div class="post-categories" aria-label="Categories for Large Video Planner: 基于视频生成的通用机器人控制新范式">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--robotics js-apply-filter"
+                    type="button"
+                    data-filter-value="robotics"
+                    aria-label="Show posts in robotics"
+                  >
+                    robotics
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--video js-apply-filter"
+                    type="button"
+                    data-filter-value="video"
+                    aria-label="Show posts in video"
+                  >
+                    video
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/robotics/video/2026/03/23/large-video-planner.html">Large Video Planner: 基于视频生成的通用机器人控制新范式</a></h3>
+            <p class="post-summary">Large Video Planner: 基于视频生成的通用机器人控制新范式
+</p>
+            <a class="post-link" href="/research/ai/robotics/video/2026/03/23/large-video-planner.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|robotics|video-generation"
+            data-search-text="Large Video Planner: 用视频生成实现通用机器人控制 Large Video Planner: 用视频生成实现通用机器人控制"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-23</p>
+              <div class="post-categories" aria-label="Categories for Large Video Planner: 用视频生成实现通用机器人控制">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--robotics js-apply-filter"
+                    type="button"
+                    data-filter-value="robotics"
+                    aria-label="Show posts in robotics"
+                  >
+                    robotics
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--video-generation js-apply-filter"
+                    type="button"
+                    data-filter-value="video-generation"
+                    aria-label="Show posts in video-generation"
+                  >
+                    video-generation
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/robotics/video-generation/2026/03/23/large-video-planner-robot-control.html">Large Video Planner: 用视频生成实现通用机器人控制</a></h3>
+            <p class="post-summary">Large Video Planner: 用视频生成实现通用机器人控制
+</p>
+            <a class="post-link" href="/research/ai/robotics/video-generation/2026/03/23/large-video-planner-robot-control.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|video-generation|diffusion-models"
+            data-search-text="History-Guided Video Diffusion: 用历史引导实现超长视频生成 History-Guided Video Diffusion: 用历史引导实现超长视频生成"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-23</p>
+              <div class="post-categories" aria-label="Categories for History-Guided Video Diffusion: 用历史引导实现超长视频生成">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--video-generation js-apply-filter"
+                    type="button"
+                    data-filter-value="video-generation"
+                    aria-label="Show posts in video-generation"
+                  >
+                    video-generation
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--diffusion-models js-apply-filter"
+                    type="button"
+                    data-filter-value="diffusion-models"
+                    aria-label="Show posts in diffusion-models"
+                  >
+                    diffusion-models
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/video-generation/diffusion-models/2026/03/23/history-guided-video-diffusion.html">History-Guided Video Diffusion: 用历史引导实现超长视频生成</a></h3>
+            <p class="post-summary">History-Guided Video Diffusion: 用历史引导实现超长视频生成
+</p>
+            <a class="post-link" href="/research/ai/video-generation/diffusion-models/2026/03/23/history-guided-video-diffusion.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="engineering|ai|productivity"
+            data-search-text="模型够聪明之后，工程师该做什么：Harness Engineering 实战指南 模型够聪明之后，工程师该做什么：Harness Engineering 实战指南"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-23</p>
+              <div class="post-categories" aria-label="Categories for 模型够聪明之后，工程师该做什么：Harness Engineering 实战指南">
+                
+                  <button
+                    class="category-chip category-chip--engineering js-apply-filter"
+                    type="button"
+                    data-filter-value="engineering"
+                    aria-label="Show posts in engineering"
+                  >
+                    engineering
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--productivity js-apply-filter"
+                    type="button"
+                    data-filter-value="productivity"
+                    aria-label="Show posts in productivity"
+                  >
+                    productivity
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/engineering/ai/productivity/2026/03/23/harness-engineering-ai-coding.html">模型够聪明之后，工程师该做什么：Harness Engineering 实战指南</a></h3>
+            <p class="post-summary">模型够聪明之后，工程师该做什么：Harness Engineering 实战指南
+</p>
+            <a class="post-link" href="/engineering/ai/productivity/2026/03/23/harness-engineering-ai-coding.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|hardware|risc-v"
+            data-search-text="Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展 Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-23</p>
+              <div class="post-categories" aria-label="Categories for Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--hardware js-apply-filter"
+                    type="button"
+                    data-filter-value="hardware"
+                    aria-label="Show posts in hardware"
+                  >
+                    hardware
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--risc-v js-apply-filter"
+                    type="button"
+                    data-filter-value="risc-v"
+                    aria-label="Show posts in risc-v"
+                  >
+                    risc-v
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/hardware/risc-v/2026/03/23/design-conductor-autonomous-riscv-cpu.html">Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展</a></h3>
+            <p class="post-summary">Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展
+</p>
+            <a class="post-link" href="/research/ai/hardware/risc-v/2026/03/23/design-conductor-autonomous-riscv-cpu.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|systems"
+            data-search-text="ZipServ: 硬件感知的无损压缩加速 LLM 推理 ZipServ: Fast and Memory-Efficient LLM Inference with Hardware-Aware Lossless Compression"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-20</p>
+              <div class="post-categories" aria-label="Categories for ZipServ: 硬件感知的无损压缩加速 LLM 推理">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--systems js-apply-filter"
+                    type="button"
+                    data-filter-value="systems"
+                    aria-label="Show posts in systems"
+                  >
+                    systems
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/systems/2026/03/20/zipserv-fast-memory-efficient-llm-inference.html">ZipServ: 硬件感知的无损压缩加速 LLM 推理</a></h3>
+            <p class="post-summary">ZipServ: Fast and Memory-Efficient LLM Inference with Hardware-Aware Lossless Compression
+</p>
+            <a class="post-link" href="/research/ai/systems/2026/03/20/zipserv-fast-memory-efficient-llm-inference.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|ml|systems"
+            data-search-text="Mozart: Modularized and Efficient MoE Training on 3.5D Wafer-Scale Chiplet Architectures Mozart: Modularized and Efficient MoE Training on 3.5D Wafer-Scale Chiplet Architectures"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-17</p>
+              <div class="post-categories" aria-label="Categories for Mozart: Modularized and Efficient MoE Training on 3.5D Wafer-Scale Chiplet Architectures">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ml js-apply-filter"
+                    type="button"
+                    data-filter-value="ml"
+                    aria-label="Show posts in ml"
+                  >
+                    ml
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--systems js-apply-filter"
+                    type="button"
+                    data-filter-value="systems"
+                    aria-label="Show posts in systems"
+                  >
+                    systems
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/ml/systems/2026/03/17/mozart-moe-training-3d-chiplet.html">Mozart: Modularized and Efficient MoE Training on 3.5D Wafer-Scale Chiplet Architectures</a></h3>
+            <p class="post-summary">Mozart: Modularized and Efficient MoE Training on 3.5D Wafer-Scale Chiplet Architectures
+</p>
+            <a class="post-link" href="/research/ai/ml/systems/2026/03/17/mozart-moe-training-3d-chiplet.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|ml|systems"
+            data-search-text="HyperOffload: 图驱动的分层内存管理让大模型突破显存限制 HyperOffload: 图驱动的分层内存管理让大模型突破显存限制"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-17</p>
+              <div class="post-categories" aria-label="Categories for HyperOffload: 图驱动的分层内存管理让大模型突破显存限制">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ml js-apply-filter"
+                    type="button"
+                    data-filter-value="ml"
+                    aria-label="Show posts in ml"
+                  >
+                    ml
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--systems js-apply-filter"
+                    type="button"
+                    data-filter-value="systems"
+                    aria-label="Show posts in systems"
+                  >
+                    systems
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/ml/systems/2026/03/17/hyperoffload-graph-driven-memory-management.html">HyperOffload: 图驱动的分层内存管理让大模型突破显存限制</a></h3>
+            <p class="post-summary">HyperOffload: 图驱动的分层内存管理让大模型突破显存限制
+</p>
+            <a class="post-link" href="/research/ai/ml/systems/2026/03/17/hyperoffload-graph-driven-memory-management.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|robotics|3d-vision"
+            data-search-text="PointWorld: Scaling 3D World Models for In-The-Wild Robotic Manipulation PointWorld: Scaling 3D World Models for In-The-Wild Robotic Manipulation"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-16</p>
+              <div class="post-categories" aria-label="Categories for PointWorld: Scaling 3D World Models for In-The-Wild Robotic Manipulation">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--robotics js-apply-filter"
+                    type="button"
+                    data-filter-value="robotics"
+                    aria-label="Show posts in robotics"
+                  >
+                    robotics
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--3d-vision js-apply-filter"
+                    type="button"
+                    data-filter-value="3d-vision"
+                    aria-label="Show posts in 3d-vision"
+                  >
+                    3d-vision
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/robotics/3d-vision/2026/03/16/pointworld-3d-world-models-robotics.html">PointWorld: Scaling 3D World Models for In-The-Wild Robotic Manipulation</a></h3>
+            <p class="post-summary">PointWorld: Scaling 3D World Models for In-The-Wild Robotic Manipulation
+</p>
+            <a class="post-link" href="/research/ai/robotics/3d-vision/2026/03/16/pointworld-3d-world-models-robotics.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|ml|hardware"
+            data-search-text="Orion: 苹果神经引擎 (ANE) 上的 LLM 训练与推理系统 Orion: Characterizing and Programming Apple’s Neural Engine for LLM Training and Inference"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-16</p>
+              <div class="post-categories" aria-label="Categories for Orion: 苹果神经引擎 (ANE) 上的 LLM 训练与推理系统">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ml js-apply-filter"
+                    type="button"
+                    data-filter-value="ml"
+                    aria-label="Show posts in ml"
+                  >
+                    ml
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--hardware js-apply-filter"
+                    type="button"
+                    data-filter-value="hardware"
+                    aria-label="Show posts in hardware"
+                  >
+                    hardware
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/ml/hardware/2026/03/16/orion-apple-neural-engine-llm.html">Orion: 苹果神经引擎 (ANE) 上的 LLM 训练与推理系统</a></h3>
+            <p class="post-summary">Orion: Characterizing and Programming Apple’s Neural Engine for LLM Training and Inference
+</p>
+            <a class="post-link" href="/research/ai/ml/hardware/2026/03/16/orion-apple-neural-engine-llm.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|ml|cv"
+            data-search-text="History-Guided Video Diffusion: 用历史引导实现超长视频生成 History-Guided Video Diffusion: 用历史引导实现超长视频生成"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-16</p>
+              <div class="post-categories" aria-label="Categories for History-Guided Video Diffusion: 用历史引导实现超长视频生成">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ml js-apply-filter"
+                    type="button"
+                    data-filter-value="ml"
+                    aria-label="Show posts in ml"
+                  >
+                    ml
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--cv js-apply-filter"
+                    type="button"
+                    data-filter-value="cv"
+                    aria-label="Show posts in cv"
+                  >
+                    cv
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/ml/cv/2026/03/16/history-guided-video-diffusion.html">History-Guided Video Diffusion: 用历史引导实现超长视频生成</a></h3>
+            <p class="post-summary">History-Guided Video Diffusion: 用历史引导实现超长视频生成
+</p>
+            <a class="post-link" href="/research/ai/ml/cv/2026/03/16/history-guided-video-diffusion.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|hardware|accelerator"
+            data-search-text="GOMA: 通过解析建模实现空间加速器的几何最优映射 GOMA: Geometrically Optimal Mapping via Analytical Modeling for Spatial Accelerators"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-16</p>
+              <div class="post-categories" aria-label="Categories for GOMA: 通过解析建模实现空间加速器的几何最优映射">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--hardware js-apply-filter"
+                    type="button"
+                    data-filter-value="hardware"
+                    aria-label="Show posts in hardware"
+                  >
+                    hardware
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--accelerator js-apply-filter"
+                    type="button"
+                    data-filter-value="accelerator"
+                    aria-label="Show posts in accelerator"
+                  >
+                    accelerator
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/hardware/accelerator/2026/03/16/goma-geometrically-optimal-mapping.html">GOMA: 通过解析建模实现空间加速器的几何最优映射</a></h3>
+            <p class="post-summary">GOMA: Geometrically Optimal Mapping via Analytical Modeling for Spatial Accelerators
+</p>
+            <a class="post-link" href="/research/ai/hardware/accelerator/2026/03/16/goma-geometrically-optimal-mapping.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|hardware"
+            data-search-text="Synthesis-in-the-Loop Evaluation of LLMs for RTL Generation: Quality, Reliability, and Failure Modes Synthesis-in-the-Loop Evaluation of LLMs for RTL Generation: Quality, Reliability, and Failure Modes"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-14</p>
+              <div class="post-categories" aria-label="Categories for Synthesis-in-the-Loop Evaluation of LLMs for RTL Generation: Quality, Reliability, and Failure Modes">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--hardware js-apply-filter"
+                    type="button"
+                    data-filter-value="hardware"
+                    aria-label="Show posts in hardware"
+                  >
+                    hardware
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/hardware/2026/03/14/llm-rtl-generation-evaluation.html">Synthesis-in-the-Loop Evaluation of LLMs for RTL Generation: Quality, Reliability, and Failure Modes</a></h3>
+            <p class="post-summary">Synthesis-in-the-Loop Evaluation of LLMs for RTL Generation: Quality, Reliability, and Failure Modes
+</p>
+            <a class="post-link" href="/research/ai/hardware/2026/03/14/llm-rtl-generation-evaluation.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|hardware|edge-computing|quantization"
+            data-search-text="TOM: 三元只读存储器加速器赋能边缘智能大模型 TOM: 三元只读存储器加速器赋能边缘智能大模型"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-13</p>
+              <div class="post-categories" aria-label="Categories for TOM: 三元只读存储器加速器赋能边缘智能大模型">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--hardware js-apply-filter"
+                    type="button"
+                    data-filter-value="hardware"
+                    aria-label="Show posts in hardware"
+                  >
+                    hardware
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--edge-computing js-apply-filter"
+                    type="button"
+                    data-filter-value="edge-computing"
+                    aria-label="Show posts in edge-computing"
+                  >
+                    edge-computing
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--quantization js-apply-filter"
+                    type="button"
+                    data-filter-value="quantization"
+                    aria-label="Show posts in quantization"
+                  >
+                    quantization
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/hardware/edge-computing/quantization/2026/03/13/tom-ternary-rom-accelerator.html">TOM: 三元只读存储器加速器赋能边缘智能大模型</a></h3>
+            <p class="post-summary">TOM: 三元只读存储器加速器赋能边缘智能大模型
+</p>
+            <a class="post-link" href="/research/ai/hardware/edge-computing/quantization/2026/03/13/tom-ternary-rom-accelerator.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|hardware|edge-computing|neuromorphic"
+            data-search-text="SNAP-V: 面向小型脉冲神经网络的可配置神经形态 RISC-V SoC SNAP-V: 面向小型脉冲神经网络的可配置神经形态 RISC-V SoC"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-13</p>
+              <div class="post-categories" aria-label="Categories for SNAP-V: 面向小型脉冲神经网络的可配置神经形态 RISC-V SoC">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--hardware js-apply-filter"
+                    type="button"
+                    data-filter-value="hardware"
+                    aria-label="Show posts in hardware"
+                  >
+                    hardware
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--edge-computing js-apply-filter"
+                    type="button"
+                    data-filter-value="edge-computing"
+                    aria-label="Show posts in edge-computing"
+                  >
+                    edge-computing
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--neuromorphic js-apply-filter"
+                    type="button"
+                    data-filter-value="neuromorphic"
+                    aria-label="Show posts in neuromorphic"
+                  >
+                    neuromorphic
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/hardware/edge-computing/neuromorphic/2026/03/13/snapv-riscv-neuromorphic-soc.html">SNAP-V: 面向小型脉冲神经网络的可配置神经形态 RISC-V SoC</a></h3>
+            <p class="post-summary">SNAP-V: 面向小型脉冲神经网络的可配置神经形态 RISC-V SoC
+</p>
+            <a class="post-link" href="/research/ai/hardware/edge-computing/neuromorphic/2026/03/13/snapv-riscv-neuromorphic-soc.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|hardware|edge-computing"
+            data-search-text="ROMA: 基于只读存储器的 QLoRA 边缘设备 LLM 加速器 ROMA: 基于只读存储器的 QLoRA 边缘设备 LLM 加速器"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-13</p>
+              <div class="post-categories" aria-label="Categories for ROMA: 基于只读存储器的 QLoRA 边缘设备 LLM 加速器">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--hardware js-apply-filter"
+                    type="button"
+                    data-filter-value="hardware"
+                    aria-label="Show posts in hardware"
+                  >
+                    hardware
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--edge-computing js-apply-filter"
+                    type="button"
+                    data-filter-value="edge-computing"
+                    aria-label="Show posts in edge-computing"
+                  >
+                    edge-computing
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/hardware/edge-computing/2026/03/13/roma-qlora-accelerator.html">ROMA: 基于只读存储器的 QLoRA 边缘设备 LLM 加速器</a></h3>
+            <p class="post-summary">ROMA: 基于只读存储器的 QLoRA 边缘设备 LLM 加速器
+</p>
+            <a class="post-link" href="/research/ai/hardware/edge-computing/2026/03/13/roma-qlora-accelerator.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|healthcare|bayesian|transformers"
+            data-search-text="MedBayes-Lite: 临床 Transformer 的轻量级贝叶斯不确定性量化框架 MedBayes-Lite: 临床 Transformer 的轻量级贝叶斯不确定性量化框架"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-13</p>
+              <div class="post-categories" aria-label="Categories for MedBayes-Lite: 临床 Transformer 的轻量级贝叶斯不确定性量化框架">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--healthcare js-apply-filter"
+                    type="button"
+                    data-filter-value="healthcare"
+                    aria-label="Show posts in healthcare"
+                  >
+                    healthcare
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--bayesian js-apply-filter"
+                    type="button"
+                    data-filter-value="bayesian"
+                    aria-label="Show posts in bayesian"
+                  >
+                    bayesian
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--transformers js-apply-filter"
+                    type="button"
+                    data-filter-value="transformers"
+                    aria-label="Show posts in transformers"
+                  >
+                    transformers
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/healthcare/bayesian/transformers/2026/03/13/medbayes-lite-bayesian-clinical-transformer.html">MedBayes-Lite: 临床 Transformer 的轻量级贝叶斯不确定性量化框架</a></h3>
+            <p class="post-summary">MedBayes-Lite: 临床 Transformer 的轻量级贝叶斯不确定性量化框架
+</p>
+            <a class="post-link" href="/research/ai/healthcare/bayesian/transformers/2026/03/13/medbayes-lite-bayesian-clinical-transformer.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|hardware|datacenter|mobile"
+            data-search-text="LLM 推理硬件的挑战与研究方向：内存与互连是核心瓶颈 LLM 推理硬件的挑战与研究方向：内存与互连是核心瓶颈"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-13</p>
+              <div class="post-categories" aria-label="Categories for LLM 推理硬件的挑战与研究方向：内存与互连是核心瓶颈">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--hardware js-apply-filter"
+                    type="button"
+                    data-filter-value="hardware"
+                    aria-label="Show posts in hardware"
+                  >
+                    hardware
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--datacenter js-apply-filter"
+                    type="button"
+                    data-filter-value="datacenter"
+                    aria-label="Show posts in datacenter"
+                  >
+                    datacenter
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--mobile js-apply-filter"
+                    type="button"
+                    data-filter-value="mobile"
+                    aria-label="Show posts in mobile"
+                  >
+                    mobile
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/hardware/datacenter/mobile/2026/03/13/llm-inference-hardware-challenges.html">LLM 推理硬件的挑战与研究方向：内存与互连是核心瓶颈</a></h3>
+            <p class="post-summary">LLM 推理硬件的挑战与研究方向：内存与互连是核心瓶颈
+</p>
+            <a class="post-link" href="/research/ai/hardware/datacenter/mobile/2026/03/13/llm-inference-hardware-challenges.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="research|ai|hardware|chiplet|simulation"
+            data-search-text="LEGOSim: 多芯片异构集成的统一并行仿真框架 LEGOSim: 多芯片异构集成的统一并行仿真框架"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-13</p>
+              <div class="post-categories" aria-label="Categories for LEGOSim: 多芯片异构集成的统一并行仿真框架">
+                
+                  <button
+                    class="category-chip category-chip--research js-apply-filter"
+                    type="button"
+                    data-filter-value="research"
+                    aria-label="Show posts in research"
+                  >
+                    research
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai js-apply-filter"
+                    type="button"
+                    data-filter-value="ai"
+                    aria-label="Show posts in ai"
+                  >
+                    ai
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--hardware js-apply-filter"
+                    type="button"
+                    data-filter-value="hardware"
+                    aria-label="Show posts in hardware"
+                  >
+                    hardware
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--chiplet js-apply-filter"
+                    type="button"
+                    data-filter-value="chiplet"
+                    aria-label="Show posts in chiplet"
+                  >
+                    chiplet
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--simulation js-apply-filter"
+                    type="button"
+                    data-filter-value="simulation"
+                    aria-label="Show posts in simulation"
+                  >
+                    simulation
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/research/ai/hardware/chiplet/simulation/2026/03/13/legosim-chiplet-simulation.html">LEGOSim: 多芯片异构集成的统一并行仿真框架</a></h3>
+            <p class="post-summary">LEGOSim: 多芯片异构集成的统一并行仿真框架
+</p>
+            <a class="post-link" href="/research/ai/hardware/chiplet/simulation/2026/03/13/legosim-chiplet-simulation.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="llm|accelerator|hardware|taalas"
+            data-search-text="Taalas: 模型专用硬件 - 将AI模型转化为硅芯片 Taalas: 模型专用硬件 - 将AI模型转化为硅芯片"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-11</p>
+              <div class="post-categories" aria-label="Categories for Taalas: 模型专用硬件 - 将AI模型转化为硅芯片">
+                
+                  <button
+                    class="category-chip category-chip--llm js-apply-filter"
+                    type="button"
+                    data-filter-value="llm"
+                    aria-label="Show posts in llm"
+                  >
+                    llm
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--accelerator js-apply-filter"
+                    type="button"
+                    data-filter-value="accelerator"
+                    aria-label="Show posts in accelerator"
+                  >
+                    accelerator
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--hardware js-apply-filter"
+                    type="button"
+                    data-filter-value="hardware"
+                    aria-label="Show posts in hardware"
+                  >
+                    hardware
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--taalas js-apply-filter"
+                    type="button"
+                    data-filter-value="taalas"
+                    aria-label="Show posts in taalas"
+                  >
+                    taalas
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/llm/accelerator/hardware/taalas/2026/03/11/taalas-%E6%A8%A1%E5%9E%8B%E4%B8%93%E7%94%A8%E7%A1%AC%E4%BB%B6.html">Taalas: 模型专用硬件 - 将AI模型转化为硅芯片</a></h3>
+            <p class="post-summary">Taalas: 模型专用硬件 - 将AI模型转化为硅芯片
+</p>
+            <a class="post-link" href="/llm/accelerator/hardware/taalas/2026/03/11/taalas-%E6%A8%A1%E5%9E%8B%E4%B8%93%E7%94%A8%E7%A1%AC%E4%BB%B6.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="llm|accelerator|taalas|hardware"
+            data-search-text="Taalas: Model-Specialized Hardware - Turning AI Models into Silicon "
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-11</p>
+              <div class="post-categories" aria-label="Categories for Taalas: Model-Specialized Hardware - Turning AI Models into Silicon">
+                
+                  <button
+                    class="category-chip category-chip--llm js-apply-filter"
+                    type="button"
+                    data-filter-value="llm"
+                    aria-label="Show posts in llm"
+                  >
+                    llm
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--accelerator js-apply-filter"
+                    type="button"
+                    data-filter-value="accelerator"
+                    aria-label="Show posts in accelerator"
+                  >
+                    accelerator
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--taalas js-apply-filter"
+                    type="button"
+                    data-filter-value="taalas"
+                    aria-label="Show posts in taalas"
+                  >
+                    taalas
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--hardware js-apply-filter"
+                    type="button"
+                    data-filter-value="hardware"
+                    aria-label="Show posts in hardware"
+                  >
+                    hardware
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/llm/accelerator/taalas/hardware/2026/03/11/taalas-model-specialized-hardware.html">Taalas: Model-Specialized Hardware - Turning AI Models into Silicon</a></h3>
+            <p class="post-summary">
+</p>
+            <a class="post-link" href="/llm/accelerator/taalas/hardware/2026/03/11/taalas-model-specialized-hardware.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="llm|accelerator|hardware|qlora|edge-computing"
+            data-search-text="ROMA: 基于ROM的QLoRA边缘设备LLM加速器 ROMA: 基于ROM的QLoRA边缘设备LLM加速器"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-11</p>
+              <div class="post-categories" aria-label="Categories for ROMA: 基于ROM的QLoRA边缘设备LLM加速器">
+                
+                  <button
+                    class="category-chip category-chip--llm js-apply-filter"
+                    type="button"
+                    data-filter-value="llm"
+                    aria-label="Show posts in llm"
+                  >
+                    llm
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--accelerator js-apply-filter"
+                    type="button"
+                    data-filter-value="accelerator"
+                    aria-label="Show posts in accelerator"
+                  >
+                    accelerator
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--hardware js-apply-filter"
+                    type="button"
+                    data-filter-value="hardware"
+                    aria-label="Show posts in hardware"
+                  >
+                    hardware
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--qlora js-apply-filter"
+                    type="button"
+                    data-filter-value="qlora"
+                    aria-label="Show posts in qlora"
+                  >
+                    qlora
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--edge-computing js-apply-filter"
+                    type="button"
+                    data-filter-value="edge-computing"
+                    aria-label="Show posts in edge-computing"
+                  >
+                    edge-computing
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/llm/accelerator/hardware/qlora/edge-computing/2026/03/11/roma-qlora-accelerator.html">ROMA: 基于ROM的QLoRA边缘设备LLM加速器</a></h3>
+            <p class="post-summary">ROMA: 基于ROM的QLoRA边缘设备LLM加速器
+</p>
+            <a class="post-link" href="/llm/accelerator/hardware/qlora/edge-computing/2026/03/11/roma-qlora-accelerator.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="neural-symbolic|ai-hardware|architecture"
+            data-search-text="Neural-Symbolic AI Hardware: Unifying Pattern Learning and Logic Why this direction matters"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-11</p>
+              <div class="post-categories" aria-label="Categories for Neural-Symbolic AI Hardware: Unifying Pattern Learning and Logic">
+                
+                  <button
+                    class="category-chip category-chip--neural-symbolic js-apply-filter"
+                    type="button"
+                    data-filter-value="neural-symbolic"
+                    aria-label="Show posts in neural-symbolic"
+                  >
+                    neural-symbolic
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai-hardware js-apply-filter"
+                    type="button"
+                    data-filter-value="ai-hardware"
+                    aria-label="Show posts in ai-hardware"
+                  >
+                    ai-hardware
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--architecture js-apply-filter"
+                    type="button"
+                    data-filter-value="architecture"
+                    aria-label="Show posts in architecture"
+                  >
+                    architecture
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/neural-symbolic/ai-hardware/architecture/2026/03/11/neural-symbolic-ai-hardware.html">Neural-Symbolic AI Hardware: Unifying Pattern Learning and Logic</a></h3>
+            <p class="post-summary">Why this direction matters
+</p>
+            <a class="post-link" href="/neural-symbolic/ai-hardware/architecture/2026/03/11/neural-symbolic-ai-hardware.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="llm|accelerator|inference"
+            data-search-text="Hardwired LLM Accelerators: From Programmable Kernels to Fixed-Flow Inference Motivation"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-11</p>
+              <div class="post-categories" aria-label="Categories for Hardwired LLM Accelerators: From Programmable Kernels to Fixed-Flow Inference">
+                
+                  <button
+                    class="category-chip category-chip--llm js-apply-filter"
+                    type="button"
+                    data-filter-value="llm"
+                    aria-label="Show posts in llm"
+                  >
+                    llm
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--accelerator js-apply-filter"
+                    type="button"
+                    data-filter-value="accelerator"
+                    aria-label="Show posts in accelerator"
+                  >
+                    accelerator
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--inference js-apply-filter"
+                    type="button"
+                    data-filter-value="inference"
+                    aria-label="Show posts in inference"
+                  >
+                    inference
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/llm/accelerator/inference/2026/03/11/hardwired-llm-accelerators.html">Hardwired LLM Accelerators: From Programmable Kernels to Fixed-Flow Inference</a></h3>
+            <p class="post-summary">Motivation
+</p>
+            <a class="post-link" href="/llm/accelerator/inference/2026/03/11/hardwired-llm-accelerators.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="diffusion|accelerator|generative-ai"
+            data-search-text="Diffusion Model Accelerators: Efficient Sampling Beyond Brute-Force Denoising Problem framing"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-11</p>
+              <div class="post-categories" aria-label="Categories for Diffusion Model Accelerators: Efficient Sampling Beyond Brute-Force Denoising">
+                
+                  <button
+                    class="category-chip category-chip--diffusion js-apply-filter"
+                    type="button"
+                    data-filter-value="diffusion"
+                    aria-label="Show posts in diffusion"
+                  >
+                    diffusion
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--accelerator js-apply-filter"
+                    type="button"
+                    data-filter-value="accelerator"
+                    aria-label="Show posts in accelerator"
+                  >
+                    accelerator
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--generative-ai js-apply-filter"
+                    type="button"
+                    data-filter-value="generative-ai"
+                    aria-label="Show posts in generative-ai"
+                  >
+                    generative-ai
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/diffusion/accelerator/generative-ai/2026/03/11/diffusion-model-accelerator.html">Diffusion Model Accelerators: Efficient Sampling Beyond Brute-Force Denoising</a></h3>
+            <p class="post-summary">Problem framing
+</p>
+            <a class="post-link" href="/diffusion/accelerator/generative-ai/2026/03/11/diffusion-model-accelerator.html">Open research note</a>
+          </li>
+        
+          <li
+            class="post-card"
+            data-categories="chiplet|3d-integration|ai-systems"
+            data-search-text="3D Chiplet Systems for AI: Bandwidth-Centric Compute Integration Why chiplets for AI now"
+          >
+            <div class="post-card-header">
+              <p class="meta">2026-03-11</p>
+              <div class="post-categories" aria-label="Categories for 3D Chiplet Systems for AI: Bandwidth-Centric Compute Integration">
+                
+                  <button
+                    class="category-chip category-chip--chiplet js-apply-filter"
+                    type="button"
+                    data-filter-value="chiplet"
+                    aria-label="Show posts in chiplet"
+                  >
+                    chiplet
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--3d-integration js-apply-filter"
+                    type="button"
+                    data-filter-value="3d-integration"
+                    aria-label="Show posts in 3d-integration"
+                  >
+                    3d-integration
+                  </button>
+                
+                  <button
+                    class="category-chip category-chip--ai-systems js-apply-filter"
+                    type="button"
+                    data-filter-value="ai-systems"
+                    aria-label="Show posts in ai-systems"
+                  >
+                    ai-systems
+                  </button>
+                
+              </div>
+            </div>
+            <h3><a href="/chiplet/3d-integration/ai-systems/2026/03/11/3d-chiplet-ai.html">3D Chiplet Systems for AI: Bandwidth-Centric Compute Integration</a></h3>
+            <p class="post-summary">Why chiplets for AI now
+</p>
+            <a class="post-link" href="/chiplet/3d-integration/ai-systems/2026/03/11/3d-chiplet-ai.html">Open research note</a>
+          </li>
+        
+      </ul>
+
+      <p id="category-empty-state" class="category-empty-state" hidden>No posts match this filter yet.</p>
+    </div>
+
+    <aside class="insights-rail" aria-label="Research overview">
+      <div class="rail-card">
+        <div>
+          <p class="rail-kicker">Research map</p>
+          <h2>Where the writing is concentrated</h2>
+        </div>
+        <ul class="topic-list">
+          
+            
+            <li>
+              <button
+                class="category-chip category-chip--3d-integration js-apply-filter"
+                type="button"
+                data-filter-value="3d-integration"
+              >
+                <span>3d-integration</span>
+                <span class="category-count">1</span>
+              </button>
+            </li>
+          
+            
+            <li>
+              <button
+                class="category-chip category-chip--3d-vision js-apply-filter"
+                type="button"
+                data-filter-value="3d-vision"
+              >
+                <span>3d-vision</span>
+                <span class="category-count">1</span>
+              </button>
+            </li>
+          
+            
+            <li>
+              <button
+                class="category-chip category-chip--vla js-apply-filter"
+                type="button"
+                data-filter-value="vla"
+              >
+                <span>VLA</span>
+                <span class="category-count">1</span>
+              </button>
+            </li>
+          
+            
+            <li>
+              <button
+                class="category-chip category-chip--accelerator js-apply-filter"
+                type="button"
+                data-filter-value="accelerator"
+              >
+                <span>accelerator</span>
+                <span class="category-count">7</span>
+              </button>
+            </li>
+          
+            
+            <li>
+              <button
+                class="category-chip category-chip--ai js-apply-filter"
+                type="button"
+                data-filter-value="ai"
+              >
+                <span>ai</span>
+                <span class="category-count">24</span>
+              </button>
+            </li>
+          
+            
+            <li>
+              <button
+                class="category-chip category-chip--ai-hardware js-apply-filter"
+                type="button"
+                data-filter-value="ai-hardware"
+              >
+                <span>ai-hardware</span>
+                <span class="category-count">1</span>
+              </button>
+            </li>
+          
+        </ul>
+      </div>
+
+      <div class="rail-card">
+        <div>
+          <p class="rail-kicker">Working model</p>
+          <h2>How each note is framed</h2>
+        </div>
+        <ol class="workflow-list">
+          <li>Start from an execution bottleneck, system gap, or integration constraint.</li>
+          <li>Sketch a hardware-software co-design direction that narrows the problem.</li>
+          <li>Capture open questions so the idea can evolve into a research agenda.</li>
+        </ol>
+      </div>
+    </aside>
+  </section>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const filterButtons = Array.from(document.querySelectorAll('.category-filters [data-filter-value]'));
+    const quickFilterButtons = Array.from(document.querySelectorAll('.js-apply-filter'));
+    const posts = Array.from(document.querySelectorAll('.post-card'));
+    const emptyState = document.getElementById('category-empty-state');
+    const status = document.getElementById('category-status');
+    const clearButton = document.getElementById('category-clear');
+    const searchInput = document.getElementById('post-search');
+    const searchClear = document.getElementById('search-clear');
+
+    function parseStateFromHash() {
+      const hash = window.location.hash.replace(/^#/, '');
+      const params = new URLSearchParams(hash);
+      return {
+        category: params.get('category') || 'all',
+        search: params.get('search') || ''
+      };
+    }
+
+    function updateHash(state) {
+      const params = new URLSearchParams();
+      if (state.category && state.category !== 'all') params.set('category', state.category);
+      if (state.search) params.set('search', state.search);
+      const nextHash = params.toString();
+      const target = nextHash ? `#${nextHash}` : '';
+      history.replaceState(null, '', `${window.location.pathname}${window.location.search}${target}`);
+    }
+
+    function getLabelForFilter(filter) {
+      const matchingButton = filterButtons.find((button) => button.dataset.filterValue === filter);
+      if (!matchingButton) return filter;
+      const label = matchingButton.querySelector('span');
+      return label ? label.textContent.trim() : matchingButton.textContent.trim();
+    }
+
+    function applyFilters(state = {}) {
+      const normalizedFilter = (state.category || 'all').trim().toLowerCase();
+      const normalizedSearch = (state.search || '').trim().toLowerCase();
+
+      filterButtons.forEach((button) => {
+        const isActive = button.dataset.filterValue === normalizedFilter;
+        button.classList.toggle('active', isActive);
+        button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+
+      if (searchInput) searchInput.value = state.search || '';
+      if (searchClear) searchClear.hidden = !normalizedSearch;
+
+      let visibleCount = 0;
+
+      posts.forEach((post) => {
+        const categories = (post.dataset.categories || '').split('|').filter(Boolean);
+        const matchesCategory = normalizedFilter === 'all' || categories.includes(normalizedFilter);
+        const searchText = (post.dataset.searchText || '').toLowerCase();
+        const matchesSearch = !normalizedSearch || searchText.includes(normalizedSearch);
+        const isVisible = matchesCategory && matchesSearch;
+
+        post.hidden = !isVisible;
+        if (isVisible) visibleCount += 1;
+      });
+
+      if (emptyState) emptyState.hidden = visibleCount !== 0;
+
+      if (status) {
+        if (normalizedFilter === 'all' && !normalizedSearch) {
+          status.textContent = 'Showing all blog posts.';
+        } else {
+          const parts = [];
+          if (normalizedFilter !== 'all') {
+            parts.push(`Showing ${visibleCount} post${visibleCount === 1 ? '' : 's'} in ${getLabelForFilter(normalizedFilter)}`);
+          } else {
+            parts.push(`Showing ${visibleCount} post${visibleCount === 1 ? '' : 's'}`);
+          }
+          if (normalizedSearch) parts.push(`matching "${normalizedSearch}"`);
+          status.textContent = parts.join(' ') + '.';
+        }
+      }
+
+      if (clearButton) clearButton.hidden = normalizedFilter === 'all' && !normalizedSearch;
+
+      updateHash({ category: normalizedFilter, search: normalizedSearch });
+    }
+
+    filterButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        applyFilters({ category: button.dataset.filterValue, search: searchInput ? searchInput.value : '' });
+      });
+    });
+
+    quickFilterButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        applyFilters({ category: button.dataset.filterValue, search: searchInput ? searchInput.value : '' });
+        const targetSection = document.getElementById('latest-posts');
+        if (targetSection) targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        const activeFilter = document.querySelector('.category-filter.active');
+        applyFilters({ category: activeFilter ? activeFilter.dataset.filterValue : 'all', search: this.value });
+      });
+    }
+
+    if (searchClear) {
+      searchClear.addEventListener('click', function () {
+        const activeFilter = document.querySelector('.category-filter.active');
+        applyFilters({ category: activeFilter ? activeFilter.dataset.filterValue : 'all', search: '' });
+      });
+    }
+
+    if (clearButton) {
+      clearButton.addEventListener('click', function () {
+        applyFilters({ category: 'all', search: '' });
+      });
+    }
+
+    applyFilters(parseStateFromHash());
+  });
+</script>
+
+</div>
+
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>33 posts</span>
+            <span>46 categories</span>
+            
+              <span>Updated 2026-03-26</span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

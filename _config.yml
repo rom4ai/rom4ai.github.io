@@ -3,6 +3,7 @@ description: Research idea blog on future AI hardware systems and accelerators.
 theme: minima
 markdown: kramdown
 future: true
+post_metrics_endpoint: ""
 plugins:
   - jekyll-feed
 

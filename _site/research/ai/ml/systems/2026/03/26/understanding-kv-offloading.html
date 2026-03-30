@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Understanding Bottlenecks for Efficiently Serving LLM Inference With KV Offloading | ROM4AI Research Ideas</title>
+    <meta name="description" content="Understanding Bottlenecks for Efficiently Serving LLM Inference With KV Offloading">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+
+  </head>
+  <body class="layout-post">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="/" aria-label="ROM4AI Research Ideas">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>ROM4AI Research Ideas</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/" class="">Home</a>
+            
+              <a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Latest note</a>
+            
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main article-page">
+  <article
+    class="article-shell"
+    data-post-id="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html"
+    data-metrics-endpoint=""
+  >
+    <div class="article-frame">
+      <a class="back-link" href="/#latest-posts">All research notes</a>
+
+      <header class="article-hero">
+        <div class="article-heading">
+          <p class="article-kicker">Research note</p>
+          <h1>Understanding Bottlenecks for Efficiently Serving LLM Inference With KV Offloading</h1>
+        </div>
+        <div class="article-meta">
+          <span>March 26, 2026</span>
+          
+            <div class="article-tags" aria-label="Categories">
+              
+                <a class="category-chip category-chip--research" href="/#category=research">research</a>
+              
+                <a class="category-chip category-chip--ai" href="/#category=ai">ai</a>
+              
+                <a class="category-chip category-chip--ml" href="/#category=ml">ml</a>
+              
+                <a class="category-chip category-chip--systems" href="/#category=systems">systems</a>
+              
+            </div>
+          
+        </div>
+      </header>
+
+      <div class="article-context-bar" aria-label="Article context">
+        
+          <section class="article-context-card">
+            <p class="aside-label">Focus areas</p>
+            <ul class="article-category-list">
+              
+                <li>research</li>
+              
+                <li>ai</li>
+              
+                <li>ml</li>
+              
+                <li>systems</li>
+              
+            </ul>
+          </section>
+        
+
+        <section class="article-context-card article-context-card--summary">
+          <p class="aside-label">Context</p>
+          <p>Research idea blog on future AI hardware systems and accelerators.</p>
+        </section>
+      </div>
+
+      <div class="article-layout">
+        <div class="article-content" id="article-content">
+          <h1 id="understanding-bottlenecks-for-efficiently-serving-llm-inference-with-kv-offloading">Understanding Bottlenecks for Efficiently Serving LLM Inference With KV Offloading</h1>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2601.19910">arXiv:2601.19910</a></td>
+        <td><a href="https://arxiv.org/pdf/2601.19910.pdf">PDF</a></td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<p><strong>作者</strong>: William Meng, Benjamin Lee, Hong Wang<br />
+<strong>机构</strong>: arXiv GenPDF<br />
+<strong>发布日期</strong>: 2025 年 12 月 16 日</p>
+
+<hr />
+
+<h2 id="技术总结">技术总结</h2>
+
+<h3 id="问题定义">问题定义</h3>
+
+<p>KV 缓存卸载（KV cache offloading）通过将 KV 缓存存储在 CPU DRAM 中来实现长上下文 LLM 推理，但 PCIe 带宽限制造成了严重的瓶颈。随着模型支持越来越长的上下文（从数十万到数百万 token），KV 缓存可能达到数十 GB，迅速耗尽 GPU VRAM 容量。虽然 CPU DRAM 可提供 TB 级容量，但 GPU 通过 HBM 提供 TB/s 级带宽，而 CPU-GPU PCIe 互连仅提供数十 GB/s——相差数个数量级。</p>
+
+<blockquote>
+  <p>“对于缓存 token 数量远多于新 token 的工作负载，这将传统的计算密集型预填充（compute-bound prefill）转变为内存密集型执行（memory-bound execution），导致 GPU 计算资源未被充分利用。”</p>
+</blockquote>
+
+<h3 id="方法框架">方法框架</h3>
+
+<p>本文开发了一个分析框架，推导出 <strong>κ_crit</strong>（关键缓存与预填充 token 比率），即执行变为内存受限的临界点。框架核心是两个关键指标：</p>
+
+<ul>
+  <li><strong>κ_ratio = K/T</strong>：工作负载中缓存 token 数量（K）与新预填充 token 数量（T）的比率，描述工作负载的内存与计算强度平衡</li>
+  <li><strong>κ_crit</strong>：硬件的临界比率，计算从计算密集型转变为内存密集型的阈值</li>
+</ul>
+
+<p>当 <strong>κ_ratio &gt; κ_crit</strong> 时，预填充变为内存受限。κ_crit 由模型因素（κ_M）和硬件因素（κ_HW）共同决定：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>κ_crit = κ_M × κ_HW = (F_pfl / B_kv) × (BW_PCIe / C_eff)
+</code></pre></div></div>
+
+<p>其中 F_pfl 是每个预填充 token 的 FLOPs，B_kv 是每个 token 的 KV 缓存字节数，BW_PCIe 是 PCIe 带宽，C_eff 是 GPU 有效计算吞吐量。</p>
+
+<h3 id="核心模块">核心模块</h3>
+
+<p>论文的核心贡献包括三个部分：</p>
+
+<ol>
+  <li>
+    <p><strong>分析框架</strong>：通过 κ_crit 和 κ_ratio 的公式化，将模型与系统架构解耦，使软件优化和硬件优化可以独立推理</p>
+  </li>
+  <li>
+    <p><strong>性能特征分析</strong>：在 H100 和 B200 系统上对 ShareGPT、NarrativeQA 和 FinQA 工作负载进行实证测量，发现 PCIe 开销可达预填充计算的 86 倍，占总执行时间的 99%</p>
+  </li>
+  <li>
+    <p><strong>设计启示</strong>：识别硬件优化（NVLink C2C、统一 HBM）、模型优化（MLA 注意力机制）和调度策略的改进方向</p>
+  </li>
+</ol>
+
+<blockquote>
+  <p>“典型工作负载的 κ_ratio 值比 κ_crit 超出数个数量级：对话的中位数为 100，文档查询的中位数为 5000，而大多数系统的 κ_crit 小于 15。”</p>
+</blockquote>
+
+<h3 id="实验设置">实验设置</h3>
+
+<p><strong>硬件平台</strong>：</p>
+<ul>
+  <li>8×H100 SXM5 GPU（每个 80GB HBM3，通过 NVLink 4.0 连接）</li>
+  <li>AMD EPYC 7R13 CPU（48 核）</li>
+  <li>2 TB DDR4-3200 DRAM</li>
+  <li>PCIe 5.0 ×16（峰值双向带宽：128 GB/s）</li>
+</ul>
+
+<p><strong>软件栈</strong>：</p>
+<ul>
+  <li>vLLM v0.10.1 + LMCache v0.3.5 用于 KV 缓存卸载</li>
+  <li>FP16 精度</li>
+  <li>禁用前缀缓存以隔离 PCIe 传输性能</li>
+</ul>
+
+<p><strong>评估模型</strong>：</p>
+<ul>
+  <li>Llama-3.1-70B（稠密 Transformer，GQA，B_kv = 328 KB/token）</li>
+  <li>Qwen3-235B-A22B（稀疏 MoE，GQA，B_kv = 192 KB/token，235B 总参数中激活 22B）</li>
+</ul>
+
+<p><strong>工作负载</strong>：</p>
+<ul>
+  <li>ShareGPT：90k 对话，685k 轮次</li>
+  <li>NarrativeQA：47k 问题，1,572 个叙事文本</li>
+  <li>FinQA：7.4k 问题，801 个财务文档</li>
+</ul>
+
+<h3 id="优点">优点</h3>
+
+<ol>
+  <li>
+    <p><strong>理论贡献</strong>：首次通过 κ_crit 和 κ_ratio 的形式化分析，揭示了 KV 卸载何时以及为何会导致内存瓶颈，为系统设计提供了清晰的指导原则</p>
+  </li>
+  <li>
+    <p><strong>实证洞察</strong>：发现 GPU 在卸载场景下平均仅消耗 28% 的额定 TDP，表明存在严重的资源浪费，这对数据中心的电力基础设施规划有重要影响</p>
+  </li>
+  <li>
+    <p><strong>实用建议</strong>：提出了具体的优化方向，包括使用 NVLink C2C（提升κ_crit5.3 倍）、统一 HBM 架构（提升 48 倍）、MLA 注意力机制（减少 2.7-4.7 倍数据需求）和量化技术（INT8 提供 2 倍压缩）</p>
+  </li>
+  <li>
+    <p><strong>调度优化</strong>：提出了基于利用率的感知调度策略，通过 VRAM 约束下的 token 预算优化，可以在不增加硬件成本的情况下提高 GPU 利用率</p>
+  </li>
+</ol>
+
+<h3 id="局限">局限</h3>
+
+<ol>
+  <li>
+    <p><strong>MLA 评估不完整</strong>：论文尝试评估 DeepSeek-V2 的 MLA 特性，但遇到了实现特定的开销问题，无法准确隔离 PCIe 传输性能，因此将全面的 MLA 评估留待未来工作</p>
+  </li>
+  <li>
+    <p><strong>简化假设</strong>：框架使用 2N FLOPs/token 近似 F_pfl，忽略了上下文缩放项 2n_layer·n_ctx·d_attn。对于典型模型这项可以忽略，但对于超大上下文（如 65K token），可能引入约 10% 的误差</p>
+  </li>
+  <li>
+    <p><strong>写入开销未建模</strong>：框架专注于从 CPU DRAM 加载 KV 缓存，忽略了将新前缀写回 DRAM 的开销。假设写入操作在预填充之后进行，且双向 PCIe 可以缓解影响，但较大的 T 值可能引入未建模的读写竞争开销</p>
+  </li>
+  <li>
+    <p><strong>量化和压缩未实证验证</strong>：虽然论文指出 MLA（2.7-4.7 倍 B_kv 减少）和量化（2-4 倍压缩）可以减少 PCIe 开销，但没有实证表征这些技术，需要未来工作验证预测的收益</p>
+  </li>
+</ol>
+
+<p><img src="/assets/figure-1-kv-offloading-overview-1.png" alt="KV 缓存卸载概述" />
+<em>图 1：KV 缓存卸载概述。当服务第二个请求（绿色）时，只有新 token（”ocean”）需要计算；缓存的 token 通过 PCIe 加载。（来源：原文 Figure 1）</em></p>
+
+<hr />
+
+<h2 id="1-背景与动机">1. 背景与动机</h2>
+
+<h3 id="11-llm-推理的挑战">1.1 LLM 推理的挑战</h3>
+
+<p>大型语言模型已成为跨领域的基础设施，从聊天机器人到金融分析和医疗应用。现代 LLM 使用 Transformer 架构，在预填充阶段生成键值（KV）缓存。随着模型支持更长的上下文（数十万到数百万 token），计算成本大幅增加。</p>
+
+<p>在多轮对话或多次查询相同文档时，token 经常重复出现。前缀缓存（Prefix Caching）通过将 KV 缓存存储在 GPU VRAM 中来消除冗余计算。然而，这些缓存可能达到数十 GB，在服务多个并发请求时迅速耗尽 VRAM 容量。</p>
+
+<blockquote>
+  <p>“LLaMA-3.1-405B 为每个 token 生成 500 KB 的 KV 缓存，对于长输入可能达到数十 GB。”</p>
+</blockquote>
+
+<h3 id="12-kv-缓存卸载的权衡">1.2 KV 缓存卸载的权衡</h3>
+
+<p>KV 缓存卸载通过将 KV 存储在 CPU DRAM 中来解决 VRAM 约束，其中可提供 TB 级容量。然而，虽然 GPU 提供 TB/s 级的 HBM 带宽，但 CPU-GPU PCIe 互连仅提供数十 GB/s——相差数个数量级。</p>
+
+<p><strong>关键问题</strong>：对于缓存 token 数量远多于新 token 的工作负载，这将传统的计算密集型预填充转变为内存密集型执行，导致 GPU 计算资源未被充分利用。</p>
+
+<hr />
+
+<h2 id="2-分析框架">2. 分析框架</h2>
+
+<h3 id="21-内存受限执行的判定">2.1 内存受限执行的判定</h3>
+
+<p>论文建模了预填充请求的 TTFT（Time To First Token），该请求从 CPU DRAM 加载 K 个缓存 token 并在 GPU 上计算 T 个新预填充 token：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TTFT = t_PCIe + t_prefill = (K · B_kv) / BW_PCIe + (T · F_pfl) / C_eff
+</code></pre></div></div>
+
+<p>其中：</p>
+<ul>
+  <li>B_kv：每个 token 的 KV 缓存字节数（取决于层数、注意力头数、头维度和浮点精度）</li>
+  <li>F_pfl：每个预填充 token 的 FLOPs（取决于模型架构）</li>
+  <li>BW_PCIe：持续的 host-to-device 带宽（GB/s）</li>
+  <li>C_eff：有效 GPU FLOPS/s</li>
+</ul>
+
+<p><strong>临界比率</strong>：当 PCIe 传输时间主导 GPU 计算时间时，预填充变为内存受限：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>κ_ratio = K/T &gt; κ_crit = (F_pfl / B_kv) × (BW_PCIe / C_eff) = κ_M × κ_HW
+</code></pre></div></div>
+
+<blockquote>
+  <p>“κ_crit 是无量纲的。在 roofline 术语中，卸载预填充的计算强度是 AI = (T · F_pfl) / (K · B_kv)。计算与带宽的转换发生在 AI = C_eff / BW_PCIe 处。”</p>
+</blockquote>
+
+<h3 id="22-模型因素κ_m">2.2 模型因素（κ_M）</h3>
+
+<p>κ_crit 的阈值随计算强度（F_pfl）增加而增加，随 KV 占用（B_kv）减少而减少。使用更高 F_pfl/B_kv 比率的模型（如使用 Multi-Head Latent Attention（MLA）压缩 KV 表示的模型）表现出更高的 κ_crit 值，对内存瓶颈更具弹性。</p>
+
+<p><strong>表 1：不同模型的 κ_M 比较</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>模型</th>
+      <th>激活参数</th>
+      <th>注意力架构</th>
+      <th>B_kv (KB/token)</th>
+      <th>κ_M</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>LLama-3.1-70B</td>
+      <td>70B</td>
+      <td>GQA Dense</td>
+      <td>328</td>
+      <td>0.42</td>
+    </tr>
+    <tr>
+      <td>LLama-3.1-405B</td>
+      <td>405B</td>
+      <td>GQA Dense</td>
+      <td>516</td>
+      <td>1.42</td>
+    </tr>
+    <tr>
+      <td>Qwen3-30B-A3B</td>
+      <td>3.3B</td>
+      <td>GQA MoE</td>
+      <td>98</td>
+      <td>0.07</td>
+    </tr>
+    <tr>
+      <td>Qwen3-235B-A22B</td>
+      <td>22B</td>
+      <td>GQA MoE</td>
+      <td>192</td>
+      <td>0.23</td>
+    </tr>
+    <tr>
+      <td>Deepseek-V3</td>
+      <td>37B</td>
+      <td>MLA MoE</td>
+      <td>70</td>
+      <td>1.06</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>关键洞察</strong>：</p>
+<ul>
+  <li>MoE 模型仅激活部分参数，大幅减少了 F_pfl，但 B_kv 不随激活参数缩放。Qwen3-235B-A22B 仅激活 5% 的参数（相比 LLaMA-3.1-405B），但其 B_kv 是 LLaMA-405B 的 37%</li>
+  <li>MLA 显著减少了 B_kv。DeepSeek-V3 的 B_kv = 70 KB，仅为 Qwen3-235B-A22B 的 36% 和 LLaMA-405B 的 14%</li>
+</ul>
+
+<h3 id="23-硬件因素κ_hw">2.3 硬件因素（κ_HW）</h3>
+
+<p>κ_crit 随互连带宽（BW_PCIe）增加而增加，随计算吞吐量（C_eff）减少而减少。维持更高吞吐量的 GPU 更容易受到内存瓶颈的影响，因为更难保持核心有数据供应。</p>
+
+<p><strong>表 2：不同 GPU 和 PCIe 世代的 κ_HW</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>GPU</th>
+      <th>PCIe-4</th>
+      <th>PCIe-5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>B200</td>
+      <td>6.7</td>
+      <td>13.5</td>
+    </tr>
+    <tr>
+      <td>H100</td>
+      <td>17</td>
+      <td>34</td>
+    </tr>
+    <tr>
+      <td>A100</td>
+      <td>53.8</td>
+      <td>107.5</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>“B200 系统表现出比 H100 高 2.5 倍的 C_eff，而 PCIe 5.0 仅提供比 PCIe 4.0 高 2 倍的带宽。这种不平衡导致 B200 的κ_HW 值 consistently 更低。”</p>
+</blockquote>
+
+<p><img src="/assets/figure-4-roofline-analysis-1.png" alt="Roofline 分析" />
+<em>图 4：Roofline 模型分析 Qwen3-235B-A22B（左）和 Deepseek-V3（右）在 NVIDIA B200、H100 和 A100 上的性能。垂直线表示特定硬件的κ_crit。κ_crit 左侧的点为计算受限，右侧为带宽受限。（来源：原文 Figure 4）</em></p>
+
+<h3 id="24-案例研究llama-31-405b-on-h100">2.4 案例研究：LLaMA-3.1-405B on H100</h3>
+
+<p>对于 LLaMA-3.1-405B 在 PCIe 5.0 的 H100 GPU 上：</p>
+<ul>
+  <li>F_pfl = 2 × 405 × 10^9 = 810 GFLOPs/token</li>
+  <li>B_kv = 516 KB/token</li>
+  <li>BW_PCIe = 64 GB/s（峰值）</li>
+  <li>C_eff ≈ 2000 TFLOP/s</li>
+</ul>
+
+<p>计算得 κ_crit ≈ 50，因此一旦缓存 token 超过预填充 token 的 50 倍，执行就变为内存受限。典型的 65K token 文档配 32 预填充 token 产生 κ_ratio ≈ 2000，超出 κ_crit40 倍，明确处于内存受限状态。</p>
+
+<p><strong>考虑实测的 15GB/s PCIe 带宽后，κ_crit ≈ 12</strong>，进一步确认了内存受限行为。</p>
+
+<hr />
+
+<h2 id="3-工作负载分析">3. 工作负载分析</h2>
+
+<h3 id="31-多轮对话sharegpt">3.1 多轮对话（ShareGPT）</h3>
+
+<p>ShareGPT 包含 90k 对话，685k 轮次。使用 LLaMA-3.1 tokenization：</p>
+<ul>
+  <li>用户查询平均 53 token</li>
+  <li>模型响应平均 187 token</li>
+</ul>
+
+<p><strong>分布特征</strong>：</p>
+<ul>
+  <li>50% 的轮次处理少于 20 个 token，90% 少于 133 个</li>
+  <li>50% 的 KV 缓存超过 3.2K token，10% 超过 30K</li>
+  <li><strong>50% 的轮次 κ_ratio &gt; 100，20% 超过 1000</strong></li>
+</ul>
+
+<h3 id="32-文档问答narrativeqa--finqa">3.2 文档问答（NarrativeQA &amp; FinQA）</h3>
+
+<p><strong>NarrativeQA</strong>：</p>
+<ul>
+  <li>47k 问题，1,572 个叙事文本（书籍、剧本）</li>
+  <li>文档中位长度 57K token（范围 15K-190K）</li>
+  <li>问题平均 12 token</li>
+  <li><strong>中位 κ_ratio = 5000</strong>（IQR 2400-11000）</li>
+</ul>
+
+<p><strong>FinQA</strong>：</p>
+<ul>
+  <li>7.4k 问题，801 个财务文档</li>
+  <li>文档中位长度 167K token（范围 60K-450K）</li>
+  <li>问题平均 23 token</li>
+  <li><strong>中位 κ_ratio = 10000</strong>（IQR 5000-17000）</li>
+</ul>
+
+<blockquote>
+  <p>“文档 Q&amp;A 的κ_ratio 比多轮对话高出 2 个数量级，反映了 Q&amp;A 工作负载中文档长度显著更长。”</p>
+</blockquote>
+
+<p><img src="/assets/figure-3-workload-distributions-1.png" alt="工作负载分布" />
+<em>图 3：ShareGPT（顶部）、NarrativeQA（中间）和 FinQA（底部）的预填充 token（T）、复用 KV token（K）和复用 KV 与预填充 token 比率（κ_ratio）的分布。中位κ_ratio 值：ShareGPT=100，NarrativeQA=5000，FinQA=10000。（来源：原文 Figure 3）</em></p>
+
+<hr />
+
+<h2 id="4-实验评估">4. 实验评估</h2>
+
+<h3 id="41-验证分析框架">4.1 验证分析框架</h3>
+
+<p><strong>峰值带宽分析的局限</strong>：</p>
+
+<p>论文发现使用峰值硬件规格会高估 κ_crit。实测结果：</p>
+<ul>
+  <li>Llama-3.1-70B：实测κ_crit = 2，估计值 14.3</li>
+  <li>Qwen3-235B-A22B：实测κ_crit = 1，估计值 7.8</li>
+</ul>
+
+<p><strong>实际带宽分析的优势</strong>：</p>
+
+<p>实测持续 PCIe 带宽为 15 GB/s（峰值 64 GB/s 的 23%），原因是系统瓶颈包括 CPU-GPU 内存复制开销、NUMA 效应和传输粒度。使用实测带宽重新计算κ_crit：</p>
+<ul>
+  <li>Llama：3.3（接近实测的 2）</li>
+  <li>Qwen：1.8（接近实测的 1）</li>
+</ul>
+
+<p>这验证了分析框架，同时强调了使用经验导出带宽值的重要性。</p>
+
+<p><img src="/assets/figure-5-kcrit-validation-1.png" alt="κ_crit 验证" />
+<em>图 5：κ_crit 的实测值。PCIe 开销（POH）随κ_ratio 变化。当 POH=1 时（t_PCIe = t_GPU），执行变为内存受限。实测κ_crit 值远小于使用峰值带宽的估计值。（来源：原文 Figure 5）</em></p>
+
+<h3 id="42-pcie-开销">4.2 PCIe 开销</h3>
+
+<p><strong>表 3：不同工作负载的 PCIe 开销</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>场景</th>
+      <th>K (缓存 token)</th>
+      <th>T (预填充 token)</th>
+      <th>κ_ratio</th>
+      <th>PCIe 开销占比</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>小文档</td>
+      <td>65K</td>
+      <td>64</td>
+      <td>~1000</td>
+      <td>99%</td>
+    </tr>
+    <tr>
+      <td>多轮对话</td>
+      <td>8K</td>
+      <td>128</td>
+      <td>~63</td>
+      <td>88%</td>
+    </tr>
+    <tr>
+      <td>中等文档</td>
+      <td>6.4K</td>
+      <td>100</td>
+      <td>64</td>
+      <td>86%</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>“对于 65K+ KV token 和 64 输入 token 的小文档，Qwen 花费 99% 的时间在传输上。”</p>
+</blockquote>
+
+<p><img src="/assets/figure-6-pcie-overhead-1.png" alt="PCIe 开销" />
+<em>图 6：KV 缓存卸载在不同预填充 token 数量和 KV 缓存大小下的 PCIe 开销。（来源：原文 Figure 6）</em></p>
+
+<h3 id="43-调度器利用率">4.3 调度器利用率</h3>
+
+<p><img src="/assets/figure-2-vllm-scheduling.png" alt="vLLM 调度器" />
+<em>图 2：vLLM 调度器的迭代级调度概述。每个请求获得 token 预算，调度器在每次迭代中填充到系统范围的预算。（来源：原文 Figure 2）</em></p>
+
+<p>vLLM 使用迭代级调度和 token 预算来饱和 GPU 计算。然而，VRAM 容量（而非 token 预算）限制了调度器吞吐量。</p>
+
+<p><strong>表 4：ShareGPT 和 NarrativeQA 的平均每迭代调度 token 数</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>RPS</th>
+      <th>ShareGPT (T_sched)</th>
+      <th>NarrativeQA (T_sched)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>70</td>
+      <td>4064</td>
+      <td>532</td>
+    </tr>
+    <tr>
+      <td>130</td>
+      <td>3793</td>
+      <td>555</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>对于 ShareGPT，平均 K=11115，T=82。使用公式计算 T_sched = 3509，与实测值一致。这确认了 VRAM 容量（而非 token 预算）限制了调度器吞吐量。</p>
+
+<h3 id="44-gpu-功耗与利用率">4.4 GPU 功耗与利用率</h3>
+
+<p><strong>表 5：ShareGPT 和 NarrativeQA 的平均和最大 GPU 功耗</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>RPS</th>
+      <th>ShareGPT 平均 (W)</th>
+      <th>ShareGPT 最大 (W)</th>
+      <th>NarrativeQA 平均 (W)</th>
+      <th>NarrativeQA 最大 (W)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>70</td>
+      <td>196</td>
+      <td>342</td>
+      <td>152</td>
+      <td>202</td>
+    </tr>
+    <tr>
+      <td>130</td>
+      <td>192</td>
+      <td>287</td>
+      <td>152</td>
+      <td>194</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>关键发现</strong>：</p>
+<ul>
+  <li>GPU 仅使用最大 TDP 的 28%（ShareGPT）和 22%（NarrativeQA）</li>
+  <li>ShareGPT 比 NarrativeQA 消耗多 29% 的功率，因为调度了更多 token</li>
+  <li>低 GPU 利用率对数据中心基础设施（电力、冷却、配电）有重大影响，导致每单位有用工作的成本增加</li>
+</ul>
+
+<hr />
+
+<h2 id="5-系统启示">5. 系统启示</h2>
+
+<h3 id="51-硬件优化">5.1 硬件优化</h3>
+
+<p><strong>CPU-GPU 互连</strong>：</p>
+
+<p>NVIDIA 的 Grace Blackwell 和 Grace Hopper 采用 NVLink Chip-to-Chip（C2C）互连，单向带宽 900 GB/s，比 PCIe 5.0 高 14 倍。</p>
+
+<ul>
+  <li>Qwen3-235B-A22B 的 κ_crit 从 7.8 提升到 41.5（5.3 倍）</li>
+  <li>DeepSeek-V3 的 κ_crit 达到 191</li>
+</ul>
+
+<p>然而，文档 Q&amp;A 的中位κ_ratio = 5000，即使 NVLink C2C 系统仍处于内存受限状态。</p>
+
+<p><img src="/assets/figure-7-nvlink-roofline-1.png" alt="NVLink Roofline" />
+<em>图 7：NVLink C2C 和统一 HBM 架构的 Roofline 模型。NVLink C2C 相比 PCIe 5.0 带宽提升 14 倍，κ_crit 提升 5.3 倍。统一 HBM 提供额外 9 倍改进，显著扩展计算受限区域。（来源：原文 Figure 7）</em></p>
+
+<p><strong>统一内存架构</strong>：</p>
+
+<p>更激进的解决方案将 CPU 和 GPU die 集成到同一封装上，共享统一 HBM，消除 CPU-GPU 互连瓶颈：</p>
+
+<ul>
+  <li>Qwen3-235B-A22B 的 κ_crit 提升到 370（比 NVLink 高 9 倍）</li>
+  <li>DeepSeek-V3 的 κ_crit 达到 1700</li>
+</ul>
+
+<p>这种架构下，即使是文档 Q&amp;A 工作负载也接近计算受限状态（对于 MLA 模型）。</p>
+
+<h3 id="52-模型架构优化">5.2 模型架构优化</h3>
+
+<p><strong>Multi-Head Latent Attention（MLA）</strong>：</p>
+
+<p>MLA 通过低秩投影压缩 KV 表示。DeepSeek-V3 实现 B_kv = 70 KB/token，相比 GQA 模型的 192-328 KB/token，减少了 2.7-4.7 倍。</p>
+
+<p><strong>KV 缓存量化</strong>：</p>
+
+<p>将 KV 缓存量化到更低精度（INT8、FP8、FP4）可减少 B_kv：</p>
+<ul>
+  <li>INT8：2 倍减少，最小精度损失</li>
+  <li>FP4：4 倍压缩</li>
+</ul>
+
+<p>结合 MLA（2.7 倍），量化可产生高达 11 倍的总内存占用减少。</p>
+
+<h3 id="53-工作负载感知异构化">5.3 工作负载感知异构化</h3>
+
+<p>在异构集群中（Grace Hopper、H100、A100），智能路由可匹配工作负载特性与硬件能力：</p>
+
+<ul>
+  <li><strong>高κ_ratio 请求</strong>（κ_ratio &gt; 100）：路由到 Grace Hopper，更高带宽减少传输开销</li>
+  <li><strong>计算密集型预填充</strong>（κ_ratio &lt; 1）：路由到 H100/A100，以更低成本获得计算吞吐量</li>
+  <li><strong>解码请求</strong>：继续路由到内存优化系统（如当前异构化）</li>
+</ul>
+
+<p><strong>电力配置</strong>：</p>
+
+<p>高κ_ratio 工作负载的服务器可以功率限制在 200-300W，而不影响吞吐量（因为 PCIe 带宽而非计算限制性能）。这释放了电力预算用于更多服务器，可能通过更高并发提高总吞吐量。</p>
+
+<h3 id="54-利用率感知调度">5.4 利用率感知调度</h3>
+
+<p>传统 FIFO 调度因 VRAM 约束导致 token 预算未充分利用。改进的调度器应最大化 VRAM 约束下的计算利用率。</p>
+
+<p><strong>公平性机制</strong>：</p>
+<ul>
+  <li><strong>老化积分</strong>：请求优先级随等待时间成比例增加</li>
+  <li><strong>加权公平队列</strong>：按请求优先级而非到达顺序分配 VRAM</li>
+  <li><strong>准入控制</strong>：限制并发高κ_ratio 请求以防止 VRAM 饱和</li>
+</ul>
+
+<p><img src="/assets/figure-8-scheduling-example-1.png" alt="调度示例" />
+<em>图 8：利用率感知调度示例。FIFO 调度（左）因 VRAM 约束导致 token 预算未充分利用（迭代 1 中 3/5 token）。利用率感知调度（右）通过重新排序请求饱和 token 预算（5/5 token）。（来源：原文 Figure 8）</em></p>
+
+<hr />
+
+<h2 id="6-总结与展望">6. 总结与展望</h2>
+
+<p>本文开发了一个分析框架，展示了预填充如何因模型特性和硬件规格而变为内存受限。通过实证表征 KV 卸载，发现预填充在非常小的 κ_ratio 值下就变得内存受限，导致资源浪费和 GPU 低利用率。</p>
+
+<p><strong>主要贡献</strong>：</p>
+<ol>
+  <li>提出了 κ_crit 和 κ_ratio 的形式化分析框架</li>
+  <li>实证测量显示 PCIe 开销可达 99% 的执行时间，GPU 仅使用 28% TDP</li>
+  <li>识别了硬件（NVLink C2C、统一 HBM）、模型（MLA、量化）和调度优化的方向</li>
+</ol>
+
+<p><strong>未来工作</strong>：</p>
+<ul>
+  <li>实证表征 MLA 和量化技术的收益</li>
+  <li>完善超大上下文下的 F_pfl 模型</li>
+  <li>建模写入操作开销和读写竞争</li>
+</ul>
+
+<blockquote>
+  <p>“即使激进的 KV 压缩也无法消除 PCIe 瓶颈。在κ_ratio = 100-1000 的典型工作负载下，所有模型都变为带宽受限。”</p>
+</blockquote>
+
+<hr />
+
+<h2 id="参考文献">参考文献</h2>
+
+<ol>
+  <li>Kwon W, et al. Efficient Memory Management for Large Language Model Serving with PagedAttention. SOSP 2023.</li>
+  <li>Patel et al. SplitInfer: Spatiotemporal Disaggregation of LLM Inference. 2024.</li>
+  <li>DeepSeek-AI et al. DeepSeek-V3 Technical Report. 2025.</li>
+  <li>Grattafiori et al. The Llama 3 Herd of Models. 2024.</li>
+  <li>Liu et al. LMCache: An Efficient KV Cache Layer for Enterprise-Scale LLM Inference. 2024.</li>
+  <li>Yao et al. DistiLLM: Towards Streamlined Distillation for Large Language Models. 2025.</li>
+  <li>Reddy et al. FinQA: A Dataset of Numerical Reasoning over Financial Data. 2024.</li>
+  <li>Kociský et al. The NarrativeQA Reading Comprehension Challenge. 2017.</li>
+</ol>
+
+<hr />
+
+<p><em>本文基于 arXiv:2601.19910 自动生成，旨在提供技术洞察和快速理解。如需引用，请参考原始论文。</em></p>
+
+        </div>
+
+        <aside class="article-rail insights-rail" aria-label="Post navigation and metrics">
+          <section class="rail-card article-rail-card article-rail-card--toc" id="article-toc-card" hidden>
+            <div>
+              <p class="rail-kicker">Directory</p>
+              <h2>On this page</h2>
+            </div>
+            <nav id="article-toc" class="article-toc" aria-label="Table of contents"></nav>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="View count">
+            <div>
+              <p class="rail-kicker">Views</p>
+              <h2 id="article-views">—</h2>
+            </div>
+            <p id="article-views-note">Shared views across visitors.</p>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="Post rating">
+            <div>
+              <p class="rail-kicker">Rating</p>
+              <h2 id="article-rating-average">—</h2>
+            </div>
+            <p id="article-rating-summary">Rate this post from 1 to 5 stars.</p>
+            <div class="article-rating-stars" id="article-rating-stars" role="radiogroup" aria-label="Rate this post">
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="1"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 1 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="2"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 2 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="3"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 3 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="4"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 4 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="5"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 5 out of 5"
+                >
+                  ★
+                </button>
+              
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </article>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const articleShell = document.querySelector('.article-shell');
+    const articleContent = document.getElementById('article-content');
+    const tocCard = document.getElementById('article-toc-card');
+    const tocContainer = document.getElementById('article-toc');
+    const viewsElement = document.getElementById('article-views');
+    const viewsNote = document.getElementById('article-views-note');
+    const ratingAverage = document.getElementById('article-rating-average');
+    const ratingSummary = document.getElementById('article-rating-summary');
+    const ratingStarsContainer = document.getElementById('article-rating-stars');
+    const ratingButtons = Array.from(document.querySelectorAll('.article-rating-star'));
+
+    if (!articleShell || !articleContent) return;
+
+    const postId = articleShell.dataset.postId;
+    const metricsEndpoint = (articleShell.dataset.metricsEndpoint || '').replace(/\/$/, '');
+    const sessionViewKey = `post-viewed:${postId}`;
+    const sessionRatingKey = `post-rated:${postId}`;
+
+    function slugify(text) {
+      return (text || '')
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    function ensureHeadingIds(headings) {
+      const seenIds = new Set();
+      headings.forEach((heading, index) => {
+        let nextId = heading.id || slugify(heading.textContent) || `section-${index + 1}`;
+        while (seenIds.has(nextId)) {
+          nextId = `${nextId}-${index + 1}`;
+        }
+        heading.id = nextId;
+        seenIds.add(nextId);
+      });
+    }
+
+    function buildToc() {
+      if (!tocCard || !tocContainer) return;
+
+      const headings = Array.from(articleContent.querySelectorAll('h2, h3'));
+      if (headings.length < 2) {
+        tocCard.hidden = true;
+        return;
+      }
+
+      ensureHeadingIds(headings);
+
+      const list = document.createElement('ul');
+      list.className = 'article-toc-list';
+
+      headings.forEach((heading) => {
+        const item = document.createElement('li');
+        item.className = `article-toc-item article-toc-item--${heading.tagName.toLowerCase()}`;
+
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = heading.textContent.trim();
+
+        item.appendChild(link);
+        list.appendChild(item);
+      });
+
+      tocContainer.innerHTML = '';
+      tocContainer.appendChild(list);
+      tocCard.hidden = false;
+    }
+
+    function formatNumber(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue)) return '—';
+      return new Intl.NumberFormat().format(numericValue);
+    }
+
+    function formatAverage(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue) || numericValue <= 0) return '—';
+      return `${numericValue.toFixed(1)} / 5`;
+    }
+
+    function setRatingSelection(selectedValue) {
+      ratingButtons.forEach((button) => {
+        const value = Number(button.dataset.ratingValue);
+        const isActive = Number.isFinite(selectedValue) && value <= selectedValue;
+        const isChecked = Number.isFinite(selectedValue) && value === selectedValue;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-checked', isChecked ? 'true' : 'false');
+      });
+    }
+
+    function disableRatingButtons(disabled) {
+      ratingButtons.forEach((button) => {
+        button.disabled = disabled;
+        button.tabIndex = disabled ? -1 : 0;
+      });
+      if (ratingStarsContainer) {
+        ratingStarsContainer.classList.toggle('is-disabled', disabled);
+      }
+    }
+
+    function getStoredRating() {
+      const storedRating = Number(window.localStorage.getItem(sessionRatingKey));
+      return storedRating >= 1 && storedRating <= 5 ? storedRating : null;
+    }
+
+    function applyStoredRatingSummary(count) {
+      const normalizedCount = Number(count);
+      if (!ratingSummary) return;
+      ratingSummary.textContent = `${normalizedCount || 0} rating${normalizedCount === 1 ? '' : 's'} submitted. Your rating has been saved.`;
+    }
+
+    function updateMetrics(metrics) {
+      if (viewsElement) viewsElement.textContent = formatNumber(metrics.views);
+      if (ratingAverage) ratingAverage.textContent = formatAverage(metrics.ratingAverage);
+
+      if (ratingSummary) {
+        const count = Number(metrics.ratingCount);
+        if (Number.isFinite(count) && count > 0) {
+          ratingSummary.textContent = `${count} rating${count === 1 ? '' : 's'} submitted.`;
+        } else {
+          ratingSummary.textContent = 'Be the first to rate this post.';
+        }
+      }
+    }
+
+    function setMetricsUnavailable() {
+      if (viewsElement) viewsElement.textContent = '—';
+      if (viewsNote) viewsNote.textContent = 'Metrics API not configured yet.';
+      if (ratingAverage) ratingAverage.textContent = '—';
+      if (ratingSummary) ratingSummary.textContent = 'Ratings will appear when the metrics API is connected.';
+      disableRatingButtons(true);
+    }
+
+    async function fetchJson(url, options) {
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        ...options
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      return response.json();
+    }
+
+    async function loadMetrics() {
+      if (!metricsEndpoint || !postId) {
+        setMetricsUnavailable();
+        return null;
+      }
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-metrics?id=${encodeURIComponent(postId)}`);
+        updateMetrics(metrics);
+        if (viewsNote) viewsNote.textContent = 'Shared views across visitors.';
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to load shared metrics right now.';
+        if (ratingSummary) ratingSummary.textContent = 'Unable to load ratings right now.';
+        return null;
+      }
+    }
+
+    async function trackView() {
+      if (!metricsEndpoint || !postId || window.sessionStorage.getItem(sessionViewKey)) return null;
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-view`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId })
+        });
+        updateMetrics(metrics);
+        window.sessionStorage.setItem(sessionViewKey, 'true');
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to update views right now.';
+        return null;
+      }
+    }
+
+    async function initializeMetrics() {
+      const metrics = await loadMetrics();
+      if (metrics) {
+        await trackView();
+        return;
+      }
+
+      if (metricsEndpoint && postId) {
+        await trackView();
+      }
+    }
+
+    function handleRatingKeydown(event) {
+      const currentValue = Number(event.currentTarget.dataset.ratingValue);
+      if (!Number.isInteger(currentValue)) return;
+
+      if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const nextButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.min(5, currentValue + 1));
+        if (nextButton) nextButton.focus();
+      }
+
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        const previousButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.max(1, currentValue - 1));
+        if (previousButton) previousButton.focus();
+      }
+    }
+
+    const storedRating = getStoredRating();
+    if (storedRating) {
+      setRatingSelection(storedRating);
+      disableRatingButtons(true);
+    }
+
+    if (!metricsEndpoint || !postId) {
+      setMetricsUnavailable();
+    } else {
+      disableRatingButtons(Boolean(storedRating));
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('keydown', handleRatingKeydown);
+    });
+
+    initializeMetrics();
+
+    async function submitRating(value) {
+      if (!metricsEndpoint || !postId || !Number.isInteger(value) || value < 1 || value > 5) return;
+
+      disableRatingButtons(true);
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-rating`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId, rating: value })
+        });
+        updateMetrics(metrics);
+        setRatingSelection(value);
+        window.localStorage.setItem(sessionRatingKey, String(value));
+        applyStoredRatingSummary(metrics.ratingCount);
+      } catch (error) {
+        disableRatingButtons(false);
+        if (ratingSummary) ratingSummary.textContent = 'Unable to submit your rating right now.';
+      }
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        submitRating(Number(button.dataset.ratingValue));
+      });
+    });
+
+    buildToc();
+  });
+</script>
+
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>33 posts</span>
+            <span>46 categories</span>
+            
+              <span>Updated 2026-03-26</span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

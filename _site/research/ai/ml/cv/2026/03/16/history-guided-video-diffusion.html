@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>History-Guided Video Diffusion: 用历史引导实现超长视频生成 | ROM4AI Research Ideas</title>
+    <meta name="description" content="History-Guided Video Diffusion: 用历史引导实现超长视频生成">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+
+  </head>
+  <body class="layout-post">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="/" aria-label="ROM4AI Research Ideas">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>ROM4AI Research Ideas</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/" class="">Home</a>
+            
+              <a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Latest note</a>
+            
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main article-page">
+  <article
+    class="article-shell"
+    data-post-id="/research/ai/ml/cv/2026/03/16/history-guided-video-diffusion.html"
+    data-metrics-endpoint=""
+  >
+    <div class="article-frame">
+      <a class="back-link" href="/#latest-posts">All research notes</a>
+
+      <header class="article-hero">
+        <div class="article-heading">
+          <p class="article-kicker">Research note</p>
+          <h1>History-Guided Video Diffusion: 用历史引导实现超长视频生成</h1>
+        </div>
+        <div class="article-meta">
+          <span>March 16, 2026</span>
+          
+            <div class="article-tags" aria-label="Categories">
+              
+                <a class="category-chip category-chip--research" href="/#category=research">research</a>
+              
+                <a class="category-chip category-chip--ai" href="/#category=ai">ai</a>
+              
+                <a class="category-chip category-chip--ml" href="/#category=ml">ml</a>
+              
+                <a class="category-chip category-chip--cv" href="/#category=cv">cv</a>
+              
+            </div>
+          
+        </div>
+      </header>
+
+      <div class="article-context-bar" aria-label="Article context">
+        
+          <section class="article-context-card">
+            <p class="aside-label">Focus areas</p>
+            <ul class="article-category-list">
+              
+                <li>research</li>
+              
+                <li>ai</li>
+              
+                <li>ml</li>
+              
+                <li>cv</li>
+              
+            </ul>
+          </section>
+        
+
+        <section class="article-context-card article-context-card--summary">
+          <p class="aside-label">Context</p>
+          <p>Research idea blog on future AI hardware systems and accelerators.</p>
+        </section>
+      </div>
+
+      <div class="article-layout">
+        <div class="article-content" id="article-content">
+          <h1 id="history-guided-video-diffusion-用历史引导实现超长视频生成">History-Guided Video Diffusion: 用历史引导实现超长视频生成</h1>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2502.06764">arXiv:2502.06764</a></td>
+        <td><a href="https://arxiv.org/pdf/2502.06764.pdf">PDF</a></td>
+        <td><a href="https://boyuan.space/history-guidance">项目主页</a></td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<h2 id="摘要">摘要</h2>
+
+<p>本文提出了<strong>Diffusion Forcing Transformer (DFoT)</strong> 和<strong>History Guidance (HG)</strong> 方法，解决了视频扩散模型中灵活历史条件化的关键挑战。通过允许模型在采样时灵活条件化任意数量的历史帧，该方法显著提升了视频生成质量和时间一致性，能够稳定生成超过 800 帧的超长视频，在 Kinetics-600 基准上超越了现有方法。</p>
+
+<h2 id="1-问题定义">1. 问题定义</h2>
+
+<p>视频扩散模型的核心挑战在于如何有效地利用历史帧（之前生成的帧）来指导后续帧的生成。传统的 Classifier-Free Guidance (CFG) 技术在视频领域面临两个关键问题：</p>
+
+<blockquote>
+  <p>” architectures that only support fixed-size conditioning, and the empirical observation that CFG-style history dropout performs poorly.”</p>
+</blockquote>
+
+<p><strong>问题 1：固定长度的条件化架构</strong></p>
+<ul>
+  <li>现有的 DiT 或 U-Net 架构通常使用 AdaLN 层或通道拼接来注入条件信息</li>
+  <li>这限制了条件输入必须是固定大小的向量</li>
+  <li>无法灵活处理可变长度的历史帧序列</li>
+</ul>
+
+<p><strong>问题 2：帧级二元 Dropout 效果差</strong></p>
+<ul>
+  <li>传统的 CFG 通过随机丢弃条件变量来训练条件/无条件模型</li>
+  <li>当扩展到历史引导时，随机丢弃历史帧子集的方法表现不佳</li>
+  <li>原因是 token 利用率低：模型处理所有帧，但只有随机子集对损失有贡献</li>
+</ul>
+
+<h2 id="2-方法框架">2. 方法框架</h2>
+
+<h3 id="21-diffusion-forcing-transformer-dfot">2.1 Diffusion Forcing Transformer (DFoT)</h3>
+
+<p>DFoT 的核心思想是<strong>“噪声即掩码”（Noise as Masking）</strong>：</p>
+
+<blockquote>
+  <p>“Each frame xt ∈ xT is assigned an independent noise level kt ∈ [0, 1], resulting in random sequences of noise levels.”</p>
+</blockquote>
+
+<p><strong>关键创新点：</strong></p>
+
+<ol>
+  <li><strong>统一历史与生成帧</strong>：不区分历史帧和生成帧，将所有帧视为同一输入序列</li>
+  <li><strong>逐帧独立噪声级别</strong>：每个帧分配独立的噪声级别 kt ∈ [0, 1]</li>
+  <li><strong>全序列训练</strong>：训练模型去噪整个序列，其中每个帧有不同的噪声级别</li>
+</ol>
+
+<p><strong>训练目标：</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>E_{kT,xT,ϵT}[||ϵT - ϵθ(x^{kT}_T, kT)||²]
+</code></pre></div></div>
+
+<p>这种方法允许模型在采样时灵活地条件化任意子集的历史帧，因为历史帧只是噪声级别为 0 的帧。</p>
+
+<h3 id="22-history-guidance-hg-方法族">2.2 History Guidance (HG) 方法族</h3>
+
+<p>DFoT 使得一系列历史引导方法成为可能：</p>
+
+<p><strong>1. Vanilla History Guidance (HG-v)</strong></p>
+<ul>
+  <li>使用任意长度的历史作为 CFG 的条件变量</li>
+  <li>最简单的形式，但已显著提升视频质量</li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>公式：∇log pk(x^k_G) + ω[∇log pk(x^k_G</td>
+          <td>xH) - ∇log pk(x^k_G)]</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+</ul>
+
+<p><strong>2. Temporal History Guidance (HG-t)</strong></p>
+<ul>
+  <li>组合不同历史窗口的分数</li>
+  <li>将 OOD 历史分割为更短的、分布内的子序列</li>
+  <li>实现鲁棒的分布外泛化能力</li>
+</ul>
+
+<p><strong>3. Fractional History Guidance (HG-f)</strong></p>
+<ul>
+  <li>条件化被不同噪声级别破坏的历史窗口</li>
+  <li>充当”低通滤波器”，关注低频细节</li>
+  <li>增强运动动态性，同时保持一致性</li>
+</ul>
+
+<p><strong>4. History Guidance across Time and Frequency (HG-tf)</strong></p>
+<ul>
+  <li>组合 HG-t 和 HG-f 的综合方法</li>
+  <li>实现最佳的视频质量和稳定性</li>
+</ul>
+
+<h2 id="3-实验设置">3. 实验设置</h2>
+
+<h3 id="31-数据集">3.1 数据集</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>数据集</th>
+      <th>分辨率</th>
+      <th>用途</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Kinetics-600</td>
+      <td>128×128</td>
+      <td>标准视频预测基准</td>
+    </tr>
+    <tr>
+      <td>RealEstate10K (RE10K)</td>
+      <td>256×256</td>
+      <td>真实世界室内场景</td>
+    </tr>
+    <tr>
+      <td>Minecraft</td>
+      <td>256×256</td>
+      <td>长上下文导航视频</td>
+    </tr>
+    <tr>
+      <td>Fruit Swapping</td>
+      <td>-</td>
+      <td>机器人模仿学习任务</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="32-基线方法">3.2 基线方法</h3>
+
+<ol>
+  <li><strong>Standard Diffusion (SD)</strong>: 针对特定历史长度优化的单任务模型</li>
+  <li><strong>Binary-Dropout Diffusion (BD)</strong>: 使用帧级二元 dropout 的消融基线</li>
+  <li><strong>Full-Sequence Diffusion (FS)</strong>: 使用最大序列长度训练的无条件模型</li>
+</ol>
+
+<h3 id="33-评估指标">3.3 评估指标</h3>
+
+<ul>
+  <li><strong>FVD (Fréchet Video Distance)</strong>: 综合评估视频质量和多样性</li>
+  <li><strong>V Bench</strong>: 分别评估帧质量、一致性、动态性</li>
+  <li><strong>LPIPS</strong>: 针对确定性任务的帧级感知相似度</li>
+</ul>
+
+<h2 id="4-实验结果">4. 实验结果</h2>
+
+<h3 id="41-dfot-作为通用视频模型的性能">4.1 DFoT 作为通用视频模型的性能</h3>
+
+<p>在 Kinetics-600 上的对比结果：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>FVD ↓</th>
+      <th>灵活历史条件化</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>MAGVIT-v2</td>
+      <td>4.3±0.1</td>
+      <td>✗</td>
+    </tr>
+    <tr>
+      <td>W.A.L.T</td>
+      <td>3.3±0.1</td>
+      <td>✗</td>
+    </tr>
+    <tr>
+      <td>Rolling Diffusion</td>
+      <td>5.2</td>
+      <td>✗</td>
+    </tr>
+    <tr>
+      <td>Standard Diffusion (SD)</td>
+      <td>247.5</td>
+      <td>✗</td>
+    </tr>
+    <tr>
+      <td>Binary-Dropout (BD)</td>
+      <td>表现差</td>
+      <td>▲</td>
+    </tr>
+    <tr>
+      <td><strong>DFoT (从头训练)</strong></td>
+      <td><strong>181.6</strong></td>
+      <td>✔</td>
+    </tr>
+    <tr>
+      <td><strong>DFoT (微调)</strong></td>
+      <td><strong>~180</strong></td>
+      <td>✔</td>
+    </tr>
+    <tr>
+      <td><strong>DFoT + HG-v</strong></td>
+      <td><strong>181.6 (ω=1.5)</strong></td>
+      <td>✔</td>
+    </tr>
+    <tr>
+      <td><strong>DFoT + HG-tf</strong></td>
+      <td><strong>170.4</strong></td>
+      <td>✔</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>关键发现：</p>
+<ul>
+  <li>DFoT 超越了所有基线，包括针对特定历史长度优化的 SD</li>
+  <li>二元 Dropout (BD) 表现显著下降，产生伪影和不一致生成</li>
+  <li>DFoT 可以通过微调现有模型获得，仅需 12.5% 的训练成本</li>
+</ul>
+
+<h3 id="42-history-guidance-的效果">4.2 History Guidance 的效果</h3>
+
+<p><strong>Vanilla HG 的质量 - 多样性权衡：</strong></p>
+<ul>
+  <li>最佳 FVD 在ω=1.5 时获得 (181.6)</li>
+  <li>更高的引导尺度会提升质量但降低多样性</li>
+  <li>ω≥3 时生成过于静态的视频</li>
+</ul>
+
+<p><strong>Fractional HG 的动态性提升：</strong></p>
+<ul>
+  <li>通过引导低频信息，显著增加运动动态性</li>
+  <li>FVD 从 181.6 降至 170.4</li>
+  <li>超越了 FS (1040)、SD (247.5) 和无引导的 DFoT (208.0)</li>
+</ul>
+
+<h3 id="43-新能力展示">4.3 新能力展示</h3>
+
+<p><strong>任务 1：分布外 (OOD) 历史鲁棒性</strong></p>
+<ul>
+  <li>在 RealEstate10K 上测试极端相机旋转的插值</li>
+  <li>基线方法失败，产生不连贯生成</li>
+  <li>DFoT + HG-t 通过分割 OOD 历史为分布内子序列，保持高质量生成</li>
+</ul>
+
+<p><strong>任务 2：长上下文生成 (Minecraft)</strong></p>
+<ul>
+  <li>需要长上下文才能获得好的 FVD</li>
+  <li>HG-t 平衡长期记忆和 OOD 鲁棒性</li>
+  <li>FVD 从 97.63 提升至 79.19</li>
+</ul>
+
+<p><strong>任务 3：长视野但反应式的模仿学习</strong></p>
+<ul>
+  <li>机器人操作任务，需要长期记忆和短期反应性</li>
+  <li>基线无法整合两种行为</li>
+  <li>DFoT + HG-t 组合全历史分数（记忆）和单帧分数（反应性）</li>
+  <li>成功率 83%，基线完全失败</li>
+</ul>
+
+<h3 id="44-超长视频生成">4.4 超长视频生成</h3>
+
+<p><strong>关键展示：从单张图像生成 862 帧导航视频</strong></p>
+
+<blockquote>
+  <p>“We extend a single image to an 862-frame video in RE10K. Even the most high-performing prior methods can only roll out for dozens of frames under the same setup.”</p>
+</blockquote>
+
+<p>这是通过以下技术实现的：</p>
+<ul>
+  <li>DFoT 的灵活条件化能力</li>
+  <li>HG-tf 增强的质量、一致性和滚动稳定性</li>
+  <li>远超训练集中的最大视频长度</li>
+</ul>
+
+<h2 id="5-优点与局限">5. 优点与局限</h2>
+
+<h3 id="优点">优点</h3>
+
+<ol>
+  <li><strong>灵活的历史条件化</strong>：支持任意长度、任意子集的历史帧</li>
+  <li><strong>显著提升视频质量</strong>：FVD 超越现有方法，达到行业模型水平</li>
+  <li><strong>超长视频生成能力</strong>：稳定生成 800+ 帧视频</li>
+  <li><strong>分布外泛化能力</strong>：对 OOD 历史保持鲁棒性</li>
+  <li><strong>高效微调</strong>：可用 12.5% 训练成本从现有模型微调</li>
+  <li><strong>理论保证</strong>：提供变分下界 (ELBO) 的理论证明</li>
+</ol>
+
+<h3 id="局限">局限</h3>
+
+<ol>
+  <li><strong>计算成本</strong>：虽然优于行业模型，但仍需要大量计算资源</li>
+  <li><strong>引导尺度权衡</strong>：高质量和高多样性之间存在权衡</li>
+  <li><strong>复杂采样策略</strong>：HG-tf 的最佳参数设置需要进一步研究</li>
+  <li><strong>潜在滥用风险</strong>：生成高质量长视频可能被用于不当内容</li>
+</ol>
+
+<h2 id="6-总结">6. 总结</h2>
+
+<p>本文提出的 Diffusion Forcing Transformer 和 History Guidance 方法代表了视频生成领域的重要进展：</p>
+
+<p><strong>核心贡献：</strong></p>
+<ol>
+  <li>DFoT 架构：支持灵活历史条件化的竞争性视频扩散框架</li>
+  <li>History Guidance 方法族：显著提升视频质量、一致性和运动动态性</li>
+  <li>新能力展示：超长视频生成、OOD 鲁棒性、长视野反应式控制</li>
+</ol>
+
+<p><strong>实际意义：</strong></p>
+<ul>
+  <li>为机器人学、虚拟现实、内容创作等领域提供强大工具</li>
+  <li>展示了通过灵活条件化释放扩散模型潜力的新方向</li>
+  <li>为未来整合现有基础模型提供了可行路径</li>
+</ul>
+
+<p><strong>未来方向：</strong></p>
+<ul>
+  <li>探索更复杂的采样策略</li>
+  <li>整合文本等多模态条件</li>
+  <li>扩展到更高分辨率和更长视频</li>
+</ul>
+
+<hr />
+
+<h2 id="参考文献">参考文献</h2>
+
+<ol>
+  <li>Song K, Chen B, Simchowitz M, Du Y, Tedrake R, Sitzmann V. History-Guided Video Diffusion. ICML 2025.</li>
+  <li>Chen B, et al. Diffusion Forcing: Next-token Prediction Meets Full-sequence Diffusion. NeurIPS 2024.</li>
+  <li>Ho J, Salimans T. Classifier-Free Diffusion Guidance. arXiv:2207.12598, 2022.</li>
+  <li>Peebles W, Xie S. Scalable Diffusion Models with Transformers (DiT). ICCV 2023.</li>
+  <li>Blattmann A, et al. Stable Video Diffusion. arXiv:2311.15127, 2023.</li>
+</ol>
+
+<hr />
+
+<p><em>本文总结基于 arXiv:2502.06764，更多技术细节和可视化结果请访问 <a href="https://boyuan.space/history-guidance">项目主页</a></em></p>
+
+        </div>
+
+        <aside class="article-rail insights-rail" aria-label="Post navigation and metrics">
+          <section class="rail-card article-rail-card article-rail-card--toc" id="article-toc-card" hidden>
+            <div>
+              <p class="rail-kicker">Directory</p>
+              <h2>On this page</h2>
+            </div>
+            <nav id="article-toc" class="article-toc" aria-label="Table of contents"></nav>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="View count">
+            <div>
+              <p class="rail-kicker">Views</p>
+              <h2 id="article-views">—</h2>
+            </div>
+            <p id="article-views-note">Shared views across visitors.</p>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="Post rating">
+            <div>
+              <p class="rail-kicker">Rating</p>
+              <h2 id="article-rating-average">—</h2>
+            </div>
+            <p id="article-rating-summary">Rate this post from 1 to 5 stars.</p>
+            <div class="article-rating-stars" id="article-rating-stars" role="radiogroup" aria-label="Rate this post">
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="1"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 1 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="2"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 2 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="3"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 3 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="4"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 4 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="5"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 5 out of 5"
+                >
+                  ★
+                </button>
+              
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </article>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const articleShell = document.querySelector('.article-shell');
+    const articleContent = document.getElementById('article-content');
+    const tocCard = document.getElementById('article-toc-card');
+    const tocContainer = document.getElementById('article-toc');
+    const viewsElement = document.getElementById('article-views');
+    const viewsNote = document.getElementById('article-views-note');
+    const ratingAverage = document.getElementById('article-rating-average');
+    const ratingSummary = document.getElementById('article-rating-summary');
+    const ratingStarsContainer = document.getElementById('article-rating-stars');
+    const ratingButtons = Array.from(document.querySelectorAll('.article-rating-star'));
+
+    if (!articleShell || !articleContent) return;
+
+    const postId = articleShell.dataset.postId;
+    const metricsEndpoint = (articleShell.dataset.metricsEndpoint || '').replace(/\/$/, '');
+    const sessionViewKey = `post-viewed:${postId}`;
+    const sessionRatingKey = `post-rated:${postId}`;
+
+    function slugify(text) {
+      return (text || '')
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    function ensureHeadingIds(headings) {
+      const seenIds = new Set();
+      headings.forEach((heading, index) => {
+        let nextId = heading.id || slugify(heading.textContent) || `section-${index + 1}`;
+        while (seenIds.has(nextId)) {
+          nextId = `${nextId}-${index + 1}`;
+        }
+        heading.id = nextId;
+        seenIds.add(nextId);
+      });
+    }
+
+    function buildToc() {
+      if (!tocCard || !tocContainer) return;
+
+      const headings = Array.from(articleContent.querySelectorAll('h2, h3'));
+      if (headings.length < 2) {
+        tocCard.hidden = true;
+        return;
+      }
+
+      ensureHeadingIds(headings);
+
+      const list = document.createElement('ul');
+      list.className = 'article-toc-list';
+
+      headings.forEach((heading) => {
+        const item = document.createElement('li');
+        item.className = `article-toc-item article-toc-item--${heading.tagName.toLowerCase()}`;
+
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = heading.textContent.trim();
+
+        item.appendChild(link);
+        list.appendChild(item);
+      });
+
+      tocContainer.innerHTML = '';
+      tocContainer.appendChild(list);
+      tocCard.hidden = false;
+    }
+
+    function formatNumber(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue)) return '—';
+      return new Intl.NumberFormat().format(numericValue);
+    }
+
+    function formatAverage(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue) || numericValue <= 0) return '—';
+      return `${numericValue.toFixed(1)} / 5`;
+    }
+
+    function setRatingSelection(selectedValue) {
+      ratingButtons.forEach((button) => {
+        const value = Number(button.dataset.ratingValue);
+        const isActive = Number.isFinite(selectedValue) && value <= selectedValue;
+        const isChecked = Number.isFinite(selectedValue) && value === selectedValue;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-checked', isChecked ? 'true' : 'false');
+      });
+    }
+
+    function disableRatingButtons(disabled) {
+      ratingButtons.forEach((button) => {
+        button.disabled = disabled;
+        button.tabIndex = disabled ? -1 : 0;
+      });
+      if (ratingStarsContainer) {
+        ratingStarsContainer.classList.toggle('is-disabled', disabled);
+      }
+    }
+
+    function getStoredRating() {
+      const storedRating = Number(window.localStorage.getItem(sessionRatingKey));
+      return storedRating >= 1 && storedRating <= 5 ? storedRating : null;
+    }
+
+    function applyStoredRatingSummary(count) {
+      const normalizedCount = Number(count);
+      if (!ratingSummary) return;
+      ratingSummary.textContent = `${normalizedCount || 0} rating${normalizedCount === 1 ? '' : 's'} submitted. Your rating has been saved.`;
+    }
+
+    function updateMetrics(metrics) {
+      if (viewsElement) viewsElement.textContent = formatNumber(metrics.views);
+      if (ratingAverage) ratingAverage.textContent = formatAverage(metrics.ratingAverage);
+
+      if (ratingSummary) {
+        const count = Number(metrics.ratingCount);
+        if (Number.isFinite(count) && count > 0) {
+          ratingSummary.textContent = `${count} rating${count === 1 ? '' : 's'} submitted.`;
+        } else {
+          ratingSummary.textContent = 'Be the first to rate this post.';
+        }
+      }
+    }
+
+    function setMetricsUnavailable() {
+      if (viewsElement) viewsElement.textContent = '—';
+      if (viewsNote) viewsNote.textContent = 'Metrics API not configured yet.';
+      if (ratingAverage) ratingAverage.textContent = '—';
+      if (ratingSummary) ratingSummary.textContent = 'Ratings will appear when the metrics API is connected.';
+      disableRatingButtons(true);
+    }
+
+    async function fetchJson(url, options) {
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        ...options
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      return response.json();
+    }
+
+    async function loadMetrics() {
+      if (!metricsEndpoint || !postId) {
+        setMetricsUnavailable();
+        return null;
+      }
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-metrics?id=${encodeURIComponent(postId)}`);
+        updateMetrics(metrics);
+        if (viewsNote) viewsNote.textContent = 'Shared views across visitors.';
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to load shared metrics right now.';
+        if (ratingSummary) ratingSummary.textContent = 'Unable to load ratings right now.';
+        return null;
+      }
+    }
+
+    async function trackView() {
+      if (!metricsEndpoint || !postId || window.sessionStorage.getItem(sessionViewKey)) return null;
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-view`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId })
+        });
+        updateMetrics(metrics);
+        window.sessionStorage.setItem(sessionViewKey, 'true');
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to update views right now.';
+        return null;
+      }
+    }
+
+    async function initializeMetrics() {
+      const metrics = await loadMetrics();
+      if (metrics) {
+        await trackView();
+        return;
+      }
+
+      if (metricsEndpoint && postId) {
+        await trackView();
+      }
+    }
+
+    function handleRatingKeydown(event) {
+      const currentValue = Number(event.currentTarget.dataset.ratingValue);
+      if (!Number.isInteger(currentValue)) return;
+
+      if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const nextButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.min(5, currentValue + 1));
+        if (nextButton) nextButton.focus();
+      }
+
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        const previousButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.max(1, currentValue - 1));
+        if (previousButton) previousButton.focus();
+      }
+    }
+
+    const storedRating = getStoredRating();
+    if (storedRating) {
+      setRatingSelection(storedRating);
+      disableRatingButtons(true);
+    }
+
+    if (!metricsEndpoint || !postId) {
+      setMetricsUnavailable();
+    } else {
+      disableRatingButtons(Boolean(storedRating));
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('keydown', handleRatingKeydown);
+    });
+
+    initializeMetrics();
+
+    async function submitRating(value) {
+      if (!metricsEndpoint || !postId || !Number.isInteger(value) || value < 1 || value > 5) return;
+
+      disableRatingButtons(true);
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-rating`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId, rating: value })
+        });
+        updateMetrics(metrics);
+        setRatingSelection(value);
+        window.localStorage.setItem(sessionRatingKey, String(value));
+        applyStoredRatingSummary(metrics.ratingCount);
+      } catch (error) {
+        disableRatingButtons(false);
+        if (ratingSummary) ratingSummary.textContent = 'Unable to submit your rating right now.';
+      }
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        submitRating(Number(button.dataset.ratingValue));
+      });
+    });
+
+    buildToc();
+  });
+</script>
+
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>33 posts</span>
+            <span>46 categories</span>
+            
+              <span>Updated 2026-03-26</span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

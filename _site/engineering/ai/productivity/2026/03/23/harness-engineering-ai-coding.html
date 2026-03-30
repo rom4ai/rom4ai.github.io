@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>模型够聪明之后，工程师该做什么：Harness Engineering 实战指南 | ROM4AI Research Ideas</title>
+    <meta name="description" content="模型够聪明之后，工程师该做什么：Harness Engineering 实战指南">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+
+  </head>
+  <body class="layout-post">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="/" aria-label="ROM4AI Research Ideas">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>ROM4AI Research Ideas</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/" class="">Home</a>
+            
+              <a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Latest note</a>
+            
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main article-page">
+  <article
+    class="article-shell"
+    data-post-id="/engineering/ai/productivity/2026/03/23/harness-engineering-ai-coding.html"
+    data-metrics-endpoint=""
+  >
+    <div class="article-frame">
+      <a class="back-link" href="/#latest-posts">All research notes</a>
+
+      <header class="article-hero">
+        <div class="article-heading">
+          <p class="article-kicker">Research note</p>
+          <h1>模型够聪明之后，工程师该做什么：Harness Engineering 实战指南</h1>
+        </div>
+        <div class="article-meta">
+          <span>March 23, 2026</span>
+          
+            <div class="article-tags" aria-label="Categories">
+              
+                <a class="category-chip category-chip--engineering" href="/#category=engineering">engineering</a>
+              
+                <a class="category-chip category-chip--ai" href="/#category=ai">ai</a>
+              
+                <a class="category-chip category-chip--productivity" href="/#category=productivity">productivity</a>
+              
+            </div>
+          
+        </div>
+      </header>
+
+      <div class="article-context-bar" aria-label="Article context">
+        
+          <section class="article-context-card">
+            <p class="aside-label">Focus areas</p>
+            <ul class="article-category-list">
+              
+                <li>engineering</li>
+              
+                <li>ai</li>
+              
+                <li>productivity</li>
+              
+            </ul>
+          </section>
+        
+
+        <section class="article-context-card article-context-card--summary">
+          <p class="aside-label">Context</p>
+          <p>Research idea blog on future AI hardware systems and accelerators.</p>
+        </section>
+      </div>
+
+      <div class="article-layout">
+        <div class="article-content" id="article-content">
+          <h1 id="模型够聪明之后工程师该做什么harness-engineering-实战指南">模型够聪明之后，工程师该做什么：Harness Engineering 实战指南</h1>
+
+<blockquote>
+  <p><strong>原文来源</strong>: <a href="https://www.xiaohongshu.com/discovery/item/69ba69d8000000001d01ede6">小红书 - 模型够聪明之后，工程师该做什么</a></p>
+</blockquote>
+
+<p>最近科技圈在疯传一个数字：<strong>OpenAI 的 3 个工程师用 5 个月生成了 100 万行生产代码，没有一行是人手写的。</strong></p>
+
+<p>他们给这种工作方式起了个名字：<strong>Harness Engineering</strong>（编排工程）。</p>
+
+<p>这句话点破了本质：</p>
+
+<blockquote>
+  <p>模型已经够聪明了，问题出在你给它的环境不够好。</p>
+</blockquote>
+
+<p>同一个模型，换个环境设计，性能能差 <strong>64%</strong>。不是 AI 不行，是你没给它搭好”跑道”。</p>
+
+<hr />
+
+<h2 id="harness-engineering-的-6-个层次">Harness Engineering 的 6 个层次</h2>
+
+<h3 id="1️⃣-持久状态--解决-ai失忆问题">1️⃣ 持久状态 — 解决 AI”失忆”问题</h3>
+
+<p>每次对话 AI 都是白纸一张，你得用文件让它记住做到哪了。</p>
+
+<p><strong>实战要点</strong>：</p>
+<ul>
+  <li>使用 <code class="language-plaintext highlighter-rouge">memory/</code> 目录保存会话状态</li>
+  <li>每个任务创建独立的上下文文件</li>
+  <li>用 Git 跟踪状态变更历史</li>
+</ul>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gh"># memory/task-state.md</span>
+<span class="p">-</span> [x] 需求分析完成
+<span class="p">-</span> [ ] 代码实现中 (进度：3/5 模块)
+<span class="p">-</span> [ ] 测试用例编写
+</code></pre></div></div>
+
+<h3 id="2️⃣-执行环境--给-ai-手和脚">2️⃣ 执行环境 — 给 AI 手和脚</h3>
+
+<p>不只是能写代码，还得能跑代码、看页面、查日志。</p>
+
+<p><strong>实战要点</strong>：</p>
+<ul>
+  <li>配置沙箱执行环境（Docker/容器）</li>
+  <li>提供日志访问权限</li>
+  <li>支持浏览器自动化（Playwright/Puppeteer）</li>
+</ul>
+
+<h3 id="3️⃣-上下文工程--对抗信息污染">3️⃣ 上下文工程 — 对抗信息污染</h3>
+
+<p>200K 的窗口实际可用只有 160K，信息越多推理越差。</p>
+
+<p><strong>实战要点</strong>：</p>
+<ul>
+  <li>只加载当前任务相关的文件</li>
+  <li>用摘要代替完整历史</li>
+  <li>定期清理过期上下文</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 示例：只加载相关文件</span>
+find src <span class="nt">-name</span> <span class="s2">"*.py"</span> | <span class="nb">grep</span> <span class="nt">-E</span> <span class="s2">"(core|api)"</span> | <span class="nb">head</span> <span class="nt">-20</span>
+</code></pre></div></div>
+
+<h3 id="4️⃣-反馈验证--闭合回路">4️⃣ 反馈验证 — 闭合回路</h3>
+
+<p>AI 说”做完了”不算数，测试通过了才算数。</p>
+
+<p><strong>实战要点</strong>：</p>
+<ul>
+  <li>每个任务必须有自动化测试</li>
+  <li>CI/CD 流水线集成</li>
+  <li>失败时自动回滚 + 错误报告</li>
+</ul>
+
+<h3 id="5️⃣-架构约束--防止代码漂移">5️⃣ 架构约束 — 防止代码漂移</h3>
+
+<p>AI 会复制坏模式，必须用规则机械化地拦住。</p>
+
+<p><strong>实战要点</strong>：</p>
+<ul>
+  <li>用 linter 强制执行代码规范</li>
+  <li>架构决策记录（ADR）</li>
+  <li>代码审查 checklist</li>
+</ul>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># .github/copilot-rules.yaml</span>
+<span class="na">allowed_patterns</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s2">"</span><span class="s">async/await</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">I/O"</span>
+  <span class="pi">-</span> <span class="s2">"</span><span class="s">type</span><span class="nv"> </span><span class="s">hints</span><span class="nv"> </span><span class="s">required"</span>
+<span class="na">forbidden_patterns</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s2">"</span><span class="s">global</span><span class="nv"> </span><span class="s">mutable</span><span class="nv"> </span><span class="s">state"</span>
+  <span class="pi">-</span> <span class="s2">"</span><span class="s">bare</span><span class="nv"> </span><span class="s">except:"</span>
+</code></pre></div></div>
+
+<h3 id="6️⃣-编排协调--跨会话接力">6️⃣ 编排协调 — 跨会话接力</h3>
+
+<p>一个会话做不完的事，怎么让下一个 AI 接着做。</p>
+
+<p><strong>实战要点</strong>：</p>
+<ul>
+  <li>标准化的交接文档格式</li>
+  <li>任务队列管理</li>
+  <li>会话间状态同步机制</li>
+</ul>
+
+<hr />
+
+<h2 id="关键洞察判断力才是核心竞争力">关键洞察：判断力才是核心竞争力</h2>
+
+<blockquote>
+  <p>工具层的配置很快就能学会，真正拉开差距的是<strong>判断力</strong>——你能不能定义什么叫”好”、什么叫”做完了”、什么架构约束是必须守住的。</p>
+</blockquote>
+
+<p><strong>AI 擅长生成和执行，人擅长判断和决策。</strong></p>
+
+<p>最好的方式不是跟 AI 抢同一件事，而是各司其职：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>AI 负责</th>
+      <th>人负责</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>代码生成</td>
+      <td>定义验收标准</td>
+    </tr>
+    <tr>
+      <td>测试执行</td>
+      <td>判断测试是否充分</td>
+    </tr>
+    <tr>
+      <td>文档草稿</td>
+      <td>审核技术准确性</td>
+    </tr>
+    <tr>
+      <td>重构建议</td>
+      <td>评估架构影响</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2 id="判断力从哪里来">判断力从哪里来？</h2>
+
+<blockquote>
+  <p>判断力来自对计算机科学体系化的理解 + 持续和 AI 协作的实践。</p>
+</blockquote>
+
+<p>不需要你手写排序算法，但你得知道：</p>
+<ul>
+  <li>这个复杂度在当前规模下行不行</li>
+  <li>这个架构选择对扩展性意味着什么</li>
+  <li>这个技术债将来要花多少代价</li>
+</ul>
+
+<hr />
+
+<h2 id="行动清单">行动清单</h2>
+
+<p>如果你今天开始实践 Harness Engineering：</p>
+
+<ol>
+  <li><strong>搭建持久状态系统</strong> — 创建 <code class="language-plaintext highlighter-rouge">memory/</code> 目录和状态跟踪模板</li>
+  <li><strong>配置执行环境</strong> — 确保 AI 能跑代码、看日志、访问测试</li>
+  <li><strong>定义架构约束</strong> — 写清楚什么能做、什么不能做</li>
+  <li><strong>建立反馈闭环</strong> — 每个任务必须有自动化验证</li>
+  <li><strong>设计交接协议</strong> — 标准化跨会话协作格式</li>
+</ol>
+
+<hr />
+
+<h2 id="写在最后">写在最后</h2>
+
+<p>Harness Engineering 不是要取代工程师，而是要<strong>放大工程师的价值</strong>。</p>
+
+<p>当 AI 处理生成和执行时，你可以把精力集中在：</p>
+<ul>
+  <li>理解用户需求</li>
+  <li>设计系统架构</li>
+  <li>做出关键决策</li>
+  <li>探索创新方向</li>
+</ul>
+
+<p>这才是工程师该做的事。</p>
+
+<hr />
+
+<h2 id="相关资源">相关资源</h2>
+
+<ul>
+  <li><a href="https://docs.anthropic.com/claude-code/">Claude Code Documentation</a></li>
+  <li><a href="https://github.com/context-engineering/awesome-context-engineering">Context Engineering Best Practices</a></li>
+  <li><a href="https://github.com/rome/ai-dev-patterns">AI-Assisted Development Patterns</a></li>
+</ul>
+
+<hr />
+
+<table>
+  <tbody>
+    <tr>
+      <td>*Posted on 2026-03-23</td>
+      <td>Categories: Engineering, AI, Productivity*</td>
+    </tr>
+  </tbody>
+</table>
+
+        </div>
+
+        <aside class="article-rail insights-rail" aria-label="Post navigation and metrics">
+          <section class="rail-card article-rail-card article-rail-card--toc" id="article-toc-card" hidden>
+            <div>
+              <p class="rail-kicker">Directory</p>
+              <h2>On this page</h2>
+            </div>
+            <nav id="article-toc" class="article-toc" aria-label="Table of contents"></nav>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="View count">
+            <div>
+              <p class="rail-kicker">Views</p>
+              <h2 id="article-views">—</h2>
+            </div>
+            <p id="article-views-note">Shared views across visitors.</p>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="Post rating">
+            <div>
+              <p class="rail-kicker">Rating</p>
+              <h2 id="article-rating-average">—</h2>
+            </div>
+            <p id="article-rating-summary">Rate this post from 1 to 5 stars.</p>
+            <div class="article-rating-stars" id="article-rating-stars" role="radiogroup" aria-label="Rate this post">
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="1"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 1 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="2"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 2 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="3"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 3 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="4"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 4 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="5"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 5 out of 5"
+                >
+                  ★
+                </button>
+              
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </article>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const articleShell = document.querySelector('.article-shell');
+    const articleContent = document.getElementById('article-content');
+    const tocCard = document.getElementById('article-toc-card');
+    const tocContainer = document.getElementById('article-toc');
+    const viewsElement = document.getElementById('article-views');
+    const viewsNote = document.getElementById('article-views-note');
+    const ratingAverage = document.getElementById('article-rating-average');
+    const ratingSummary = document.getElementById('article-rating-summary');
+    const ratingStarsContainer = document.getElementById('article-rating-stars');
+    const ratingButtons = Array.from(document.querySelectorAll('.article-rating-star'));
+
+    if (!articleShell || !articleContent) return;
+
+    const postId = articleShell.dataset.postId;
+    const metricsEndpoint = (articleShell.dataset.metricsEndpoint || '').replace(/\/$/, '');
+    const sessionViewKey = `post-viewed:${postId}`;
+    const sessionRatingKey = `post-rated:${postId}`;
+
+    function slugify(text) {
+      return (text || '')
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    function ensureHeadingIds(headings) {
+      const seenIds = new Set();
+      headings.forEach((heading, index) => {
+        let nextId = heading.id || slugify(heading.textContent) || `section-${index + 1}`;
+        while (seenIds.has(nextId)) {
+          nextId = `${nextId}-${index + 1}`;
+        }
+        heading.id = nextId;
+        seenIds.add(nextId);
+      });
+    }
+
+    function buildToc() {
+      if (!tocCard || !tocContainer) return;
+
+      const headings = Array.from(articleContent.querySelectorAll('h2, h3'));
+      if (headings.length < 2) {
+        tocCard.hidden = true;
+        return;
+      }
+
+      ensureHeadingIds(headings);
+
+      const list = document.createElement('ul');
+      list.className = 'article-toc-list';
+
+      headings.forEach((heading) => {
+        const item = document.createElement('li');
+        item.className = `article-toc-item article-toc-item--${heading.tagName.toLowerCase()}`;
+
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = heading.textContent.trim();
+
+        item.appendChild(link);
+        list.appendChild(item);
+      });
+
+      tocContainer.innerHTML = '';
+      tocContainer.appendChild(list);
+      tocCard.hidden = false;
+    }
+
+    function formatNumber(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue)) return '—';
+      return new Intl.NumberFormat().format(numericValue);
+    }
+
+    function formatAverage(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue) || numericValue <= 0) return '—';
+      return `${numericValue.toFixed(1)} / 5`;
+    }
+
+    function setRatingSelection(selectedValue) {
+      ratingButtons.forEach((button) => {
+        const value = Number(button.dataset.ratingValue);
+        const isActive = Number.isFinite(selectedValue) && value <= selectedValue;
+        const isChecked = Number.isFinite(selectedValue) && value === selectedValue;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-checked', isChecked ? 'true' : 'false');
+      });
+    }
+
+    function disableRatingButtons(disabled) {
+      ratingButtons.forEach((button) => {
+        button.disabled = disabled;
+        button.tabIndex = disabled ? -1 : 0;
+      });
+      if (ratingStarsContainer) {
+        ratingStarsContainer.classList.toggle('is-disabled', disabled);
+      }
+    }
+
+    function getStoredRating() {
+      const storedRating = Number(window.localStorage.getItem(sessionRatingKey));
+      return storedRating >= 1 && storedRating <= 5 ? storedRating : null;
+    }
+
+    function applyStoredRatingSummary(count) {
+      const normalizedCount = Number(count);
+      if (!ratingSummary) return;
+      ratingSummary.textContent = `${normalizedCount || 0} rating${normalizedCount === 1 ? '' : 's'} submitted. Your rating has been saved.`;
+    }
+
+    function updateMetrics(metrics) {
+      if (viewsElement) viewsElement.textContent = formatNumber(metrics.views);
+      if (ratingAverage) ratingAverage.textContent = formatAverage(metrics.ratingAverage);
+
+      if (ratingSummary) {
+        const count = Number(metrics.ratingCount);
+        if (Number.isFinite(count) && count > 0) {
+          ratingSummary.textContent = `${count} rating${count === 1 ? '' : 's'} submitted.`;
+        } else {
+          ratingSummary.textContent = 'Be the first to rate this post.';
+        }
+      }
+    }
+
+    function setMetricsUnavailable() {
+      if (viewsElement) viewsElement.textContent = '—';
+      if (viewsNote) viewsNote.textContent = 'Metrics API not configured yet.';
+      if (ratingAverage) ratingAverage.textContent = '—';
+      if (ratingSummary) ratingSummary.textContent = 'Ratings will appear when the metrics API is connected.';
+      disableRatingButtons(true);
+    }
+
+    async function fetchJson(url, options) {
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        ...options
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      return response.json();
+    }
+
+    async function loadMetrics() {
+      if (!metricsEndpoint || !postId) {
+        setMetricsUnavailable();
+        return null;
+      }
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-metrics?id=${encodeURIComponent(postId)}`);
+        updateMetrics(metrics);
+        if (viewsNote) viewsNote.textContent = 'Shared views across visitors.';
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to load shared metrics right now.';
+        if (ratingSummary) ratingSummary.textContent = 'Unable to load ratings right now.';
+        return null;
+      }
+    }
+
+    async function trackView() {
+      if (!metricsEndpoint || !postId || window.sessionStorage.getItem(sessionViewKey)) return null;
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-view`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId })
+        });
+        updateMetrics(metrics);
+        window.sessionStorage.setItem(sessionViewKey, 'true');
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to update views right now.';
+        return null;
+      }
+    }
+
+    async function initializeMetrics() {
+      const metrics = await loadMetrics();
+      if (metrics) {
+        await trackView();
+        return;
+      }
+
+      if (metricsEndpoint && postId) {
+        await trackView();
+      }
+    }
+
+    function handleRatingKeydown(event) {
+      const currentValue = Number(event.currentTarget.dataset.ratingValue);
+      if (!Number.isInteger(currentValue)) return;
+
+      if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const nextButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.min(5, currentValue + 1));
+        if (nextButton) nextButton.focus();
+      }
+
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        const previousButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.max(1, currentValue - 1));
+        if (previousButton) previousButton.focus();
+      }
+    }
+
+    const storedRating = getStoredRating();
+    if (storedRating) {
+      setRatingSelection(storedRating);
+      disableRatingButtons(true);
+    }
+
+    if (!metricsEndpoint || !postId) {
+      setMetricsUnavailable();
+    } else {
+      disableRatingButtons(Boolean(storedRating));
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('keydown', handleRatingKeydown);
+    });
+
+    initializeMetrics();
+
+    async function submitRating(value) {
+      if (!metricsEndpoint || !postId || !Number.isInteger(value) || value < 1 || value > 5) return;
+
+      disableRatingButtons(true);
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-rating`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId, rating: value })
+        });
+        updateMetrics(metrics);
+        setRatingSelection(value);
+        window.localStorage.setItem(sessionRatingKey, String(value));
+        applyStoredRatingSummary(metrics.ratingCount);
+      } catch (error) {
+        disableRatingButtons(false);
+        if (ratingSummary) ratingSummary.textContent = 'Unable to submit your rating right now.';
+      }
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        submitRating(Number(button.dataset.ratingValue));
+      });
+    });
+
+    buildToc();
+  });
+</script>
+
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>33 posts</span>
+            <span>46 categories</span>
+            
+              <span>Updated 2026-03-26</span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

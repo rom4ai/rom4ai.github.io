@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展 | ROM4AI Research Ideas</title>
+    <meta name="description" content="Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+
+  </head>
+  <body class="layout-post">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="/" aria-label="ROM4AI Research Ideas">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>ROM4AI Research Ideas</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/" class="">Home</a>
+            
+              <a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Latest note</a>
+            
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main article-page">
+  <article
+    class="article-shell"
+    data-post-id="/research/ai/hardware/risc-v/2026/03/23/design-conductor-autonomous-riscv-cpu.html"
+    data-metrics-endpoint=""
+  >
+    <div class="article-frame">
+      <a class="back-link" href="/#latest-posts">All research notes</a>
+
+      <header class="article-hero">
+        <div class="article-heading">
+          <p class="article-kicker">Research note</p>
+          <h1>Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展</h1>
+        </div>
+        <div class="article-meta">
+          <span>March 23, 2026</span>
+          
+            <div class="article-tags" aria-label="Categories">
+              
+                <a class="category-chip category-chip--research" href="/#category=research">research</a>
+              
+                <a class="category-chip category-chip--ai" href="/#category=ai">ai</a>
+              
+                <a class="category-chip category-chip--hardware" href="/#category=hardware">hardware</a>
+              
+                <a class="category-chip category-chip--risc-v" href="/#category=risc-v">risc-v</a>
+              
+            </div>
+          
+        </div>
+      </header>
+
+      <div class="article-context-bar" aria-label="Article context">
+        
+          <section class="article-context-card">
+            <p class="aside-label">Focus areas</p>
+            <ul class="article-category-list">
+              
+                <li>research</li>
+              
+                <li>ai</li>
+              
+                <li>hardware</li>
+              
+                <li>risc-v</li>
+              
+            </ul>
+          </section>
+        
+
+        <section class="article-context-card article-context-card--summary">
+          <p class="aside-label">Context</p>
+          <p>Research idea blog on future AI hardware systems and accelerators.</p>
+        </section>
+      </div>
+
+      <div class="article-layout">
+        <div class="article-content" id="article-content">
+          <h1 id="design-conductor-ai-自主构建-15ghz-risc-v-cpu-的突破性进展">Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展</h1>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2603.08716">arXiv:2603.08716</a></td>
+        <td><a href="https://arxiv.org/pdf/2603.08716.pdf">PDF</a></td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<h2 id="核心亮点">核心亮点</h2>
+
+<p>这是<strong>首次</strong>有自主 AI 代理从规格说明到 GDSII 完整构建出一个可工作的 CPU。Design Conductor (DC) 在 12 小时内自主构建了一个完整的 RISC-V CPU（VerCore），时钟频率达到 1.48 GHz，CoreMark 得分 3261，性能约等于 2011 年的 Intel Celeron SU2300。</p>
+
+<h2 id="摘要">摘要</h2>
+
+<p>Design Conductor 是一个端到端的自主代理系统，能够应用前沿模型的能力来构建半导体——从概念到可 tape-out 的 GDSII 布局文件。仅从一个 219 词的需求文档开始，DC 在 12 小时内完全自主地构建了多个微架构变体的完整 RISC-V CPU，满足 1.48 GHz 的时序要求。VerCore 的 CoreMark 得分为 3261。本报告回顾了 DC 的设计架构、方法论、关键组件，以及如何与 EDA 工具交互实现时序收敛，并讨论了前沿模型如何改进以更好地支持此类应用。</p>
+
+<h2 id="1-问题定义">1. 问题定义</h2>
+
+<p>芯片设计是一个高度耗时且昂贵的过程。将新的领先设计推向市场需要超过 4 亿美元，耗时 18-36 个月，即使有数百人的工程团队。芯片设计流程包括多个独立步骤：</p>
+
+<ul>
+  <li>架构定义</li>
+  <li>RTL 实现</li>
+  <li>测试平台实现和功能验证</li>
+  <li>前端综合</li>
+  <li>布局布线</li>
+  <li>功耗估计</li>
+  <li>封装</li>
+</ul>
+
+<p>其中最关键的挑战是<strong>极高的功能测试覆盖率要求</strong>——因为单次 tape-out 成本高达数千万美元，生产后”修复”bug 是不可行的。这导致验证成本占总成本的 50% 以上。</p>
+
+<blockquote>
+  <p>“由于这些成本和挑战，许多硅市场由少数供应商服务，初创企业的进入比软件行业更为罕见。”</p>
+</blockquote>
+
+<p>Design Conductor 的目标是通过长时程自主 AI 代理来改变这一范式，解决从概念到 GDSII 的整个问题。</p>
+
+<h2 id="2-design-conductor-架构">2. Design Conductor 架构</h2>
+
+<h3 id="21-核心能力">2.1 核心能力</h3>
+
+<p>DC 被设计为实现以下关键能力：</p>
+
+<p><strong>稳定长时程执行</strong>：芯片设计是复杂任务，包含多个子组件。DC 必须能够在消耗数百亿 token 的过程中持续向目标推进——功能正确、高性能的设计。</p>
+
+<p><strong>上下文管理</strong>：DC 必须为底层 LLM 提供做出良好决策所需的信息，同时精心管理有限的上下文窗口。</p>
+
+<p><strong>技术掌握</strong>：芯片设计需要特定领域的深度知识。DC 必须达到足够高的知识水平，能够与领域专家顺畅合作。</p>
+
+<p><strong>正确性与验证</strong>：当生产数百万单位时，”凭感觉设计芯片”是不可行的。DC 必须交付可验证的正确设计。</p>
+
+<p><strong>平衡探索与速度</strong>：芯片设计空间巨大。DC 必须能够探索该空间，同时避免陷入”兔子洞”，及时完成总体目标。</p>
+
+<p><strong>端到端操作</strong>：人类芯片设计过程中最昂贵和痛苦的部分是在 tape-out 前最后一刻需要 RTL 更改以满足时序目标或修复功能 bug。DC 必须执行相同的操作，同时保持必要的上下文和记忆。</p>
+
+<p><strong>基础设施</strong>：大规模芯片设计对硬件资源要求极高。VCD 跟踪文件可达数百 GB，EDA 工具在综合、布局和布线期间使用大量 DRAM。</p>
+
+<h3 id="22-系统架构">2.2 系统架构</h3>
+
+<p>DC 是一个可扩展的、基于云的应用程序，运行在分布式文件系统上。LLM 会话由工作服务器管理，所有服务器都同步到中央数据库。这些会话连接到存在于一个或多个执行环境中的工具服务器。</p>
+
+<p>上下文管理模块监控和控制各种会话的上下文窗口使用。DC Core 模块管理子代理和更高级别的算法（如进化算法），与下层 LLM 会话交互。</p>
+
+<p>特定知识通过专用知识库提供给 DC。记忆无限期存在并完全自主管理。单个 DC”实例”专用于一个客户的设计，确保代码、记忆或任何信息不会在客户之间交叉。</p>
+
+<h2 id="3-方法论">3. 方法论</h2>
+
+<h3 id="31-输入规格">3.1 输入规格</h3>
+
+<p>DC 的唯一用户输入是一个简洁的需求文档：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>VerCore RISC-V Design Requirements Overview
+
+构建 VerCore，一个支持 RV32I 和 ZMMUL 的 RISC-V CPU 核心：
+- 指令缓存接口（32 位数据路径）
+- 数据缓存接口（32 位数据路径）
+- 其他接口信号：核心时钟输入、复位输入（低有效）
+- 简单 5 级流水线设计，顺序执行，单发射
+- 不支持压缩指令
+- 寄存器文件实现为触发器
+- CPI &lt;= 1.5
+- 目标时钟频率 1.6 GHz
+- 最大化 CoreMark 得分
+- 使用 ASAP7 平台/PDK 和 OpenROAD flow scripts 生成 GDSII
+</code></pre></div></div>
+
+<h3 id="32-设计流程">3.2 设计流程</h3>
+
+<p>DC 遵循以下流程：</p>
+
+<ol>
+  <li>
+    <p><strong>设计提案</strong>：DC 首先创建详细的架构设计提案，包括流水线阶段、冒险处理、转发逻辑等</p>
+  </li>
+  <li>
+    <p><strong>手动审查</strong>：DC 会”手动”和”细致”地审查提案的每个方面，确保设计在实现前是正确的</p>
+  </li>
+  <li>
+    <p><strong>模块实现</strong>：DC 构建每个模块的测试平台，在继续之前修复模块功能以确保测试通过</p>
+  </li>
+  <li>
+    <p><strong>集成测试</strong>：DC 使用 Spike 构建整体测试平台，在 DUT 上运行测试程序并确认设计的架构状态和内存事务与 Spike 报告匹配</p>
+  </li>
+  <li>
+    <p><strong>调试与修复</strong>：当发现与 Spike 的差异时，DC 观察条件并检查 VCD 文件调试问题。通常将 VCD 转换为 CSV 文件，使用 Python 能力简化处理</p>
+  </li>
+  <li>
+    <p><strong>PPA 收敛</strong>：所有测试程序通过后，DC 审查时序报告并进行 RTL 更改以实现 PPA（性能、功耗、面积）收敛</p>
+  </li>
+</ol>
+
+<h3 id="33-调试方法示例">3.3 调试方法示例</h3>
+
+<p>DC 在调试过程中编写了脚本来分析 VCD 文件：</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nf">read_csv</span><span class="p">(</span><span class="sh">'</span><span class="s">vercore_tb.csv</span><span class="sh">'</span><span class="p">)</span>
+<span class="c1"># 比较预期和实际的寄存器写入
+# 追踪流水线状态，识别根本原因
+</span></code></pre></div></div>
+
+<p>通过 VCD 分析，DC 能够追踪问题的根本原因，提出修复方案，实施并再次测试。</p>
+
+<h2 id="4-实验结果">4. 实验结果</h2>
+
+<h3 id="41-关键指标">4.1 关键指标</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>CoreMark 得分</td>
+      <td>3261</td>
+    </tr>
+    <tr>
+      <td>面积（不含缓存）</td>
+      <td>2809 µm²</td>
+    </tr>
+    <tr>
+      <td>时钟频率</td>
+      <td>1.48 GHz</td>
+    </tr>
+    <tr>
+      <td>工艺</td>
+      <td>ASAP7 7nm</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="42-vercore-流水线特性">4.2 VerCore 流水线特性</h3>
+
+<p>VerCore 采用 5 级流水线设计，具有以下特性：</p>
+
+<ul>
+  <li><strong>早期分支解析</strong>：在 ID 阶段尽可能早地解析分支</li>
+  <li><strong>早期转发</strong>：实现 EX→ID 转发以解决 ALU 依赖</li>
+  <li><strong>高效 Booth-Wallace 乘法器</strong>：4 级流水线，单独时钟频率达 2.57 GHz</li>
+  <li><strong>1 周期分支惩罚</strong>：DC 通过完整实现多个变体并生成 GDSII，得出结论：即使有更长的关键路径，1 周期分支惩罚设计也能满足时钟频率目标</li>
+</ul>
+
+<p>这些特性是 DC 自主发现的，并未包含在任何输入指令中。DC 本质上重新发现了原始 MIPS 5 级 RISC CPU 设计的关键路径，后者也采用了 1 周期分支惩罚！</p>
+
+<h3 id="43-流水线冒险处理">4.3 流水线冒险处理</h3>
+
+<p>DC 实现了完整的冒险检测和处理逻辑：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>冒险类型</th>
+      <th>处理机制</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Load-use</td>
+      <td>stall IF/ID + PC 保持，插入 bubble</td>
+    </tr>
+    <tr>
+      <td>Branch/jalr</td>
+      <td>使用与 load-use 相同的检测，EX→ID 转发解决 ALU 依赖</td>
+    </tr>
+    <tr>
+      <td>Mul stall</td>
+      <td>全局 stall 保持所有流水线寄存器 + PC</td>
+    </tr>
+    <tr>
+      <td>Branch/jump taken</td>
+      <td>更新 PC 到目标，flush IF/ID，插入 bubble</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="5-前沿模型的教训">5. 前沿模型的教训</h2>
+
+<h3 id="51-架构推理">5.1 架构推理</h3>
+
+<p>基础模型需要额外帮助来像架构师一样推理。观察到模型做出次优设计选择的情况，需要大量 token 来优化。例如，转发实现最初往往导致过长的关键路径。只有在观察到时序结果后，模型才理解问题并修复。</p>
+
+<h3 id="52-rtl-和时序理解">5.2 RTL 和时序理解</h3>
+
+<p>观察到模型将 Verilog（事件驱动语言）推理为顺序代码的情况。虽然这不影响 DC 实现功能正确性，但使调试时序问题更具挑战性。</p>
+
+<blockquote>
+  <p>“DC 错误地推理减少依赖代码行数会缩短芯片中的关键路径。”</p>
+</blockquote>
+
+<p>这些错误最终会被纠正，因为 DC 可以访问工具的实际时序报告，但它们会减慢 DC 的进度并消耗额外 token。</p>
+
+<h3 id="53-规格要求">5.3 规格要求</h3>
+
+<p>输入规格必须以极其谨慎、严格和可验证/可测量的方式编写。例如，如果没有 CPI 要求，DC 有时会生成分支和转发性能明显较差的处理器。有了这一行，DC 会在测试平台中使用周期计数器来计算 Spike 跟踪中报告的每 PC 周期数来估计 CPI。</p>
+
+<h2 id="6-未来方向">6. 未来方向</h2>
+
+<h3 id="61-扩展">6.1 扩展</h3>
+
+<p>DC 扩展到非常大的代码库（如数百万行 Verilog）没有特别问题。在 13 级乱序处理器的代码库测试中，DC 能够像在 VerCore 上一样解决功能和时序问题。</p>
+
+<p>关键挑战不在于处理代码库的机制，而在于 DC 需要由特定设计领域经验丰富的架构师操作才能取得良好结果。</p>
+
+<h3 id="62-新设计流程">6.2 新设计流程</h3>
+
+<p>有了 DC 这样的系统，目前由 100 多人组成的团队将能够同时探索许多不同的设计、架构和产品想法，每个都从概念到 GDSII。这些团队将能够在 3-6 个月内 tape-out 最复杂的设计，而不是当前的 18-36 个月。</p>
+
+<blockquote>
+  <p>“未来团队中的高级工程师和大师级设计师将拥有更少的’工具操作’责任，而是依靠他们的判断和经验，DC 能够处理几乎所有其他工程工作。”</p>
+</blockquote>
+
+<p>公司还将在以前因量太小而无法盈利服务的应用中找到更多可寻址的 socket。</p>
+
+<h2 id="7-总结">7. 总结</h2>
+
+<p>Design Conductor 代表了芯片设计自动化的重大突破：</p>
+
+<p><strong>成就</strong>：</p>
+<ul>
+  <li>首次自主代理从 spec 到 GDSII 构建完整 CPU</li>
+  <li>12 小时内完成，1.48 GHz 时钟频率</li>
+  <li>CoreMark 3261，相当于 2011 年 Celeron 水平</li>
+  <li>自主发现优化技术（早期转发、Booth-Wallace 乘法器）</li>
+</ul>
+
+<p><strong>关键创新</strong>：</p>
+<ul>
+  <li>长时程稳定执行（数百亿 token）</li>
+  <li>端到端操作（RTL 到 GDSII）</li>
+  <li>验证驱动方法（Spike 比对、VCD 分析）</li>
+  <li>记忆系统管理跨会话上下文</li>
+</ul>
+
+<p><strong>局限性</strong>：</p>
+<ul>
+  <li>需要人类架构师指导以获得最佳结果</li>
+  <li>模型对 RTL/时序理解仍有改进空间</li>
+  <li>规格必须极其严格和可验证</li>
+</ul>
+
+<p><strong>未来影响</strong>：</p>
+<ul>
+  <li>设计周期从 18-36 个月缩短到 3-6 个月</li>
+  <li>小批量设计变得经济可行</li>
+  <li>工程师角色从工具操作转向架构决策</li>
+</ul>
+
+<p>这标志着 AI 在硬件设计领域的里程碑，展示了自主代理在复杂工程任务中的巨大潜力。</p>
+
+<h2 id="参考文献">参考文献</h2>
+
+<ol>
+  <li>Verkor Team. Design Conductor: An agent autonomously builds a 1.5 GHz Linux-capable RISC-V CPU. arXiv:2603.08716, 2026.</li>
+  <li>EEMBC. CoreMark EEMBC Benchmark. https://www.eembc.org/coremark/</li>
+  <li>RISC-V International. Spike, a RISC-V ISA Simulator. https://github.com/riscv-software-src/riscv-isa-sim</li>
+  <li>Andrew Waterman et al. The RISC-V Instruction Set Manual, Volume I: Base User-Level ISA. UC Berkeley, 2011.</li>
+</ol>
+
+        </div>
+
+        <aside class="article-rail insights-rail" aria-label="Post navigation and metrics">
+          <section class="rail-card article-rail-card article-rail-card--toc" id="article-toc-card" hidden>
+            <div>
+              <p class="rail-kicker">Directory</p>
+              <h2>On this page</h2>
+            </div>
+            <nav id="article-toc" class="article-toc" aria-label="Table of contents"></nav>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="View count">
+            <div>
+              <p class="rail-kicker">Views</p>
+              <h2 id="article-views">—</h2>
+            </div>
+            <p id="article-views-note">Shared views across visitors.</p>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="Post rating">
+            <div>
+              <p class="rail-kicker">Rating</p>
+              <h2 id="article-rating-average">—</h2>
+            </div>
+            <p id="article-rating-summary">Rate this post from 1 to 5 stars.</p>
+            <div class="article-rating-stars" id="article-rating-stars" role="radiogroup" aria-label="Rate this post">
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="1"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 1 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="2"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 2 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="3"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 3 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="4"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 4 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="5"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 5 out of 5"
+                >
+                  ★
+                </button>
+              
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </article>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const articleShell = document.querySelector('.article-shell');
+    const articleContent = document.getElementById('article-content');
+    const tocCard = document.getElementById('article-toc-card');
+    const tocContainer = document.getElementById('article-toc');
+    const viewsElement = document.getElementById('article-views');
+    const viewsNote = document.getElementById('article-views-note');
+    const ratingAverage = document.getElementById('article-rating-average');
+    const ratingSummary = document.getElementById('article-rating-summary');
+    const ratingStarsContainer = document.getElementById('article-rating-stars');
+    const ratingButtons = Array.from(document.querySelectorAll('.article-rating-star'));
+
+    if (!articleShell || !articleContent) return;
+
+    const postId = articleShell.dataset.postId;
+    const metricsEndpoint = (articleShell.dataset.metricsEndpoint || '').replace(/\/$/, '');
+    const sessionViewKey = `post-viewed:${postId}`;
+    const sessionRatingKey = `post-rated:${postId}`;
+
+    function slugify(text) {
+      return (text || '')
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    function ensureHeadingIds(headings) {
+      const seenIds = new Set();
+      headings.forEach((heading, index) => {
+        let nextId = heading.id || slugify(heading.textContent) || `section-${index + 1}`;
+        while (seenIds.has(nextId)) {
+          nextId = `${nextId}-${index + 1}`;
+        }
+        heading.id = nextId;
+        seenIds.add(nextId);
+      });
+    }
+
+    function buildToc() {
+      if (!tocCard || !tocContainer) return;
+
+      const headings = Array.from(articleContent.querySelectorAll('h2, h3'));
+      if (headings.length < 2) {
+        tocCard.hidden = true;
+        return;
+      }
+
+      ensureHeadingIds(headings);
+
+      const list = document.createElement('ul');
+      list.className = 'article-toc-list';
+
+      headings.forEach((heading) => {
+        const item = document.createElement('li');
+        item.className = `article-toc-item article-toc-item--${heading.tagName.toLowerCase()}`;
+
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = heading.textContent.trim();
+
+        item.appendChild(link);
+        list.appendChild(item);
+      });
+
+      tocContainer.innerHTML = '';
+      tocContainer.appendChild(list);
+      tocCard.hidden = false;
+    }
+
+    function formatNumber(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue)) return '—';
+      return new Intl.NumberFormat().format(numericValue);
+    }
+
+    function formatAverage(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue) || numericValue <= 0) return '—';
+      return `${numericValue.toFixed(1)} / 5`;
+    }
+
+    function setRatingSelection(selectedValue) {
+      ratingButtons.forEach((button) => {
+        const value = Number(button.dataset.ratingValue);
+        const isActive = Number.isFinite(selectedValue) && value <= selectedValue;
+        const isChecked = Number.isFinite(selectedValue) && value === selectedValue;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-checked', isChecked ? 'true' : 'false');
+      });
+    }
+
+    function disableRatingButtons(disabled) {
+      ratingButtons.forEach((button) => {
+        button.disabled = disabled;
+        button.tabIndex = disabled ? -1 : 0;
+      });
+      if (ratingStarsContainer) {
+        ratingStarsContainer.classList.toggle('is-disabled', disabled);
+      }
+    }
+
+    function getStoredRating() {
+      const storedRating = Number(window.localStorage.getItem(sessionRatingKey));
+      return storedRating >= 1 && storedRating <= 5 ? storedRating : null;
+    }
+
+    function applyStoredRatingSummary(count) {
+      const normalizedCount = Number(count);
+      if (!ratingSummary) return;
+      ratingSummary.textContent = `${normalizedCount || 0} rating${normalizedCount === 1 ? '' : 's'} submitted. Your rating has been saved.`;
+    }
+
+    function updateMetrics(metrics) {
+      if (viewsElement) viewsElement.textContent = formatNumber(metrics.views);
+      if (ratingAverage) ratingAverage.textContent = formatAverage(metrics.ratingAverage);
+
+      if (ratingSummary) {
+        const count = Number(metrics.ratingCount);
+        if (Number.isFinite(count) && count > 0) {
+          ratingSummary.textContent = `${count} rating${count === 1 ? '' : 's'} submitted.`;
+        } else {
+          ratingSummary.textContent = 'Be the first to rate this post.';
+        }
+      }
+    }
+
+    function setMetricsUnavailable() {
+      if (viewsElement) viewsElement.textContent = '—';
+      if (viewsNote) viewsNote.textContent = 'Metrics API not configured yet.';
+      if (ratingAverage) ratingAverage.textContent = '—';
+      if (ratingSummary) ratingSummary.textContent = 'Ratings will appear when the metrics API is connected.';
+      disableRatingButtons(true);
+    }
+
+    async function fetchJson(url, options) {
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        ...options
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      return response.json();
+    }
+
+    async function loadMetrics() {
+      if (!metricsEndpoint || !postId) {
+        setMetricsUnavailable();
+        return null;
+      }
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-metrics?id=${encodeURIComponent(postId)}`);
+        updateMetrics(metrics);
+        if (viewsNote) viewsNote.textContent = 'Shared views across visitors.';
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to load shared metrics right now.';
+        if (ratingSummary) ratingSummary.textContent = 'Unable to load ratings right now.';
+        return null;
+      }
+    }
+
+    async function trackView() {
+      if (!metricsEndpoint || !postId || window.sessionStorage.getItem(sessionViewKey)) return null;
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-view`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId })
+        });
+        updateMetrics(metrics);
+        window.sessionStorage.setItem(sessionViewKey, 'true');
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to update views right now.';
+        return null;
+      }
+    }
+
+    async function initializeMetrics() {
+      const metrics = await loadMetrics();
+      if (metrics) {
+        await trackView();
+        return;
+      }
+
+      if (metricsEndpoint && postId) {
+        await trackView();
+      }
+    }
+
+    function handleRatingKeydown(event) {
+      const currentValue = Number(event.currentTarget.dataset.ratingValue);
+      if (!Number.isInteger(currentValue)) return;
+
+      if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const nextButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.min(5, currentValue + 1));
+        if (nextButton) nextButton.focus();
+      }
+
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        const previousButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.max(1, currentValue - 1));
+        if (previousButton) previousButton.focus();
+      }
+    }
+
+    const storedRating = getStoredRating();
+    if (storedRating) {
+      setRatingSelection(storedRating);
+      disableRatingButtons(true);
+    }
+
+    if (!metricsEndpoint || !postId) {
+      setMetricsUnavailable();
+    } else {
+      disableRatingButtons(Boolean(storedRating));
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('keydown', handleRatingKeydown);
+    });
+
+    initializeMetrics();
+
+    async function submitRating(value) {
+      if (!metricsEndpoint || !postId || !Number.isInteger(value) || value < 1 || value > 5) return;
+
+      disableRatingButtons(true);
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-rating`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId, rating: value })
+        });
+        updateMetrics(metrics);
+        setRatingSelection(value);
+        window.localStorage.setItem(sessionRatingKey, String(value));
+        applyStoredRatingSummary(metrics.ratingCount);
+      } catch (error) {
+        disableRatingButtons(false);
+        if (ratingSummary) ratingSummary.textContent = 'Unable to submit your rating right now.';
+      }
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        submitRating(Number(button.dataset.ratingValue));
+      });
+    });
+
+    buildToc();
+  });
+</script>
+
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>33 posts</span>
+            <span>46 categories</span>
+            
+              <span>Updated 2026-03-26</span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

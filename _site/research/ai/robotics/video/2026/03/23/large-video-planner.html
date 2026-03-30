@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Large Video Planner: 基于视频生成的通用机器人控制新范式 | ROM4AI Research Ideas</title>
+    <meta name="description" content="Large Video Planner: 基于视频生成的通用机器人控制新范式">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+
+  </head>
+  <body class="layout-post">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="/" aria-label="ROM4AI Research Ideas">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>ROM4AI Research Ideas</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/" class="">Home</a>
+            
+              <a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Latest note</a>
+            
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main article-page">
+  <article
+    class="article-shell"
+    data-post-id="/research/ai/robotics/video/2026/03/23/large-video-planner.html"
+    data-metrics-endpoint=""
+  >
+    <div class="article-frame">
+      <a class="back-link" href="/#latest-posts">All research notes</a>
+
+      <header class="article-hero">
+        <div class="article-heading">
+          <p class="article-kicker">Research note</p>
+          <h1>Large Video Planner: 基于视频生成的通用机器人控制新范式</h1>
+        </div>
+        <div class="article-meta">
+          <span>March 23, 2026</span>
+          
+            <div class="article-tags" aria-label="Categories">
+              
+                <a class="category-chip category-chip--research" href="/#category=research">research</a>
+              
+                <a class="category-chip category-chip--ai" href="/#category=ai">ai</a>
+              
+                <a class="category-chip category-chip--robotics" href="/#category=robotics">robotics</a>
+              
+                <a class="category-chip category-chip--video" href="/#category=video">video</a>
+              
+            </div>
+          
+        </div>
+      </header>
+
+      <div class="article-context-bar" aria-label="Article context">
+        
+          <section class="article-context-card">
+            <p class="aside-label">Focus areas</p>
+            <ul class="article-category-list">
+              
+                <li>research</li>
+              
+                <li>ai</li>
+              
+                <li>robotics</li>
+              
+                <li>video</li>
+              
+            </ul>
+          </section>
+        
+
+        <section class="article-context-card article-context-card--summary">
+          <p class="aside-label">Context</p>
+          <p>Research idea blog on future AI hardware systems and accelerators.</p>
+        </section>
+      </div>
+
+      <div class="article-layout">
+        <div class="article-content" id="article-content">
+          <h1 id="large-video-planner-基于视频生成的通用机器人控制新范式">Large Video Planner: 基于视频生成的通用机器人控制新范式</h1>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2512.15840">arXiv:2512.15840</a></td>
+        <td><a href="https://arxiv.org/pdf/2512.15840.pdf">PDF</a></td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<blockquote>
+  <p><strong>项目主页</strong>: <a href="https://www.boyuan.space/large-video-planner/">https://www.boyuan.space/large-video-planner/</a></p>
+</blockquote>
+
+<h2 id="摘要">摘要</h2>
+
+<p>本文提出了一种新的机器人基础模型范式——使用大规模视频预训练作为主要模态，而非传统的视觉 - 语言 - 动作（VLA）方法。作者训练了一个互联网规模的视频生成模型，能够为零样本的新场景和任务生成视频规划，并通过后处理提取可执行的机器人动作。该方法在真实机器人实验中展示了强大的指令跟随能力、泛化能力和物理可行性。</p>
+
+<h2 id="1-问题定义">1. 问题定义</h2>
+
+<p>通用机器人需要能够在多样化任务和环境中进行决策的规划算法。当前的机器人基础模型主要采用<strong>视觉 - 语言 - 动作（VLA）</strong>范式，即在多模态大语言模型（MLLM）基础上扩展动作输出。</p>
+
+<blockquote>
+  <p>“然而，与支撑 MLLM 的 web 规模文本和图像数据相比，机器人动作数据要稀缺得多。”</p>
+</blockquote>
+
+<p>这导致现有 VLA 模型存在以下问题：</p>
+
+<ul>
+  <li><strong>数据稀缺</strong>：机器人动作数据远少于文本和图像数据</li>
+  <li><strong>泛化能力差</strong>：在未见过的任务场景中表现不佳</li>
+  <li><strong>不对称迁移</strong>：依赖 MLLM 预训练知识，仅在少量机器人数据上微调</li>
+</ul>
+
+<h2 id="2-方法框架">2. 方法框架</h2>
+
+<p><img src="/assets/large-video-planner/method-framework.png" alt="方法框架图" />
+<em>图 1：Large Video Planner 的整体流程。从单张图像和任务指令出发，模型生成展示任务完成方式的视频，然后将预测的人体动作重定向到机器人手进行真实世界执行。</em></p>
+
+<p>本文提出<strong>以视频为主要模态</strong>的替代范式：</p>
+
+<blockquote>
+  <p>“与静态图像 - 文本对不同，视频自然地编码了状态 - 动作规划，视觉化地展示了智能体与世界交互时的演变过程。”</p>
+</blockquote>
+
+<h3 id="21-核心思想">2.1 核心思想</h3>
+
+<ol>
+  <li><strong>视频即规划</strong>：视频生成模型根据文本指令和初始观察帧，预测合理的未来帧， effectively 生成视觉动作规划</li>
+  <li><strong>时空连续性</strong>：视频捕捉物理世界中状态和动作的时空序列，与机器人行为自然对齐</li>
+  <li><strong>数据丰富</strong>：在线视频数据丰富，涵盖人类活动和任务演示</li>
+</ol>
+
+<h3 id="22-模型架构">2.2 模型架构</h3>
+
+<ul>
+  <li><strong>基础模型</strong>：基于 Wan I2V 14B 权重进行继续预训练</li>
+  <li><strong>输入</strong>：单张图像 + 文本指令</li>
+  <li><strong>输出</strong>：3 秒动作视频（16 FPS，共 48 帧）</li>
+  <li><strong>历史条件</strong>：支持最多 24 帧作为上下文，支持自回归多阶段规划</li>
+</ul>
+
+<h3 id="23-训练策略">2.3 训练策略</h3>
+
+<p>模型采用两阶段训练：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>阶段</th>
+      <th>数据</th>
+      <th>步数</th>
+      <th>Batch Size</th>
+      <th>总 Token 数</th>
+      <th>目的</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>继续预训练</td>
+      <td>全量数据集</td>
+      <td>60k</td>
+      <td>128</td>
+      <td>200B</td>
+      <td>捕捉丰富动态和指令跟随行为</td>
+    </tr>
+    <tr>
+      <td>低相机运动微调</td>
+      <td>低光流子集</td>
+      <td>10k</td>
+      <td>-</td>
+      <td>-</td>
+      <td>抑制相机漂移，提升时间平滑性</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>总训练时间：约 14 天（128 块 H100 SXM5 GPU）</p>
+
+<h2 id="3-lvp-1m-数据集">3. LVP-1M 数据集</h2>
+
+<p>为了训练具身规划的视频基础模型，作者构建了<strong>LVP-1M</strong>数据集——包含 140 万个展示人类或机器人与物体交互的短视频片段。</p>
+
+<h3 id="31-视频来源">3.1 视频来源</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>来源类型</th>
+      <th>数据集</th>
+      <th>特点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>机器人数据</td>
+      <td>Bridge, Droid, Language Table, AgiBot-World</td>
+      <td>提供机器人形态知识，但视觉质量较差</td>
+    </tr>
+    <tr>
+      <td>第一人称人类活动</td>
+      <td>Ego4D, Epic-Kitchens, Something-something</td>
+      <td>包含大量人手 - 物体交互，但有相机运动</td>
+    </tr>
+    <tr>
+      <td>网络爬取</td>
+      <td>Panda-70M</td>
+      <td>规模大、多样性高，但手部交互细节少</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="32-关键处理步骤">3.2 关键处理步骤</h3>
+
+<p><strong>时间对齐</strong>：将所有视频对齐到人类速度（3 秒完成原子动作），避免不同形态间的时间不一致。</p>
+
+<p><strong>质量过滤</strong>：</p>
+<ul>
+  <li>过滤快速相机运动（使用光流统计）</li>
+  <li>确保首帧中 embodiment（手或机器人夹爪）清晰可见</li>
+  <li>移除失败轨迹（仅保留成功完成任务的动作）</li>
+  <li>对 Panda-70M 进行三阶段过滤（关键词、人体检测、Gemini 验证）</li>
+</ul>
+
+<h2 id="4-实验结果">4. 实验结果</h2>
+
+<h3 id="41-评估设置">4.1 评估设置</h3>
+
+<ul>
+  <li><strong>任务级泛化</strong>：通过第三方选择的野外任务和真实机器人实验评估</li>
+  <li><strong>零样本规划</strong>：在新场景和任务上无需微调</li>
+  <li><strong>物理执行</strong>：将生成的视频计划重定向到真实机器人执行</li>
+</ul>
+
+<h3 id="42-主要结果">4.2 主要结果</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>评估维度</th>
+      <th>结果</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>指令跟随</td>
+      <td>强大的自然语言指令理解能力</td>
+    </tr>
+    <tr>
+      <td>泛化能力</td>
+      <td>在未见过的任务场景中成功执行</td>
+    </tr>
+    <tr>
+      <td>物理可行性</td>
+      <td>真实机器人实验验证成功执行</td>
+    </tr>
+    <tr>
+      <td>多阶段规划</td>
+      <td>支持自回归扩展，生成多阶段视频计划</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="43-定性结果">4.3 定性结果</h3>
+
+<p><img src="/assets/large-video-planner/qualitative-results.png" alt="定性结果" />
+<em>图：Large Video Planner 在不同场景和任务上生成的视频计划示例。</em></p>
+
+<h2 id="5-优点与局限">5. 优点与局限</h2>
+
+<h3 id="优点">优点</h3>
+
+<ul>
+  <li><strong>新范式</strong>：首次在互联网规模上训练用于机器人规划的视频基础模型</li>
+  <li><strong>数据丰富</strong>：利用海量在线视频数据，突破机器人数据稀缺瓶颈</li>
+  <li><strong>零样本泛化</strong>：在新任务上无需微调即可生成可执行计划</li>
+  <li><strong>开源贡献</strong>：公开模型和 LVP-1M 数据集，促进可复现研究</li>
+</ul>
+
+<h3 id="局限">局限</h3>
+
+<ul>
+  <li><strong>相机运动控制</strong>：尽管进行了微调，生成视频仍可能存在一定相机漂移</li>
+  <li><strong>重定向误差</strong>：从人体动作到机器人动作的重定向可能引入误差</li>
+  <li><strong>计算成本</strong>：训练需要 128 块 H100 GPU，约 14 天</li>
+  <li><strong>视频长度限制</strong>：当前支持 3 秒视频，长时任务需自回归扩展</li>
+</ul>
+
+<h2 id="6-总结">6. 总结</h2>
+
+<p>本文提出了一种基于视频生成的机器人规划新范式，通过大规模视频预训练实现了强大的零样本泛化能力。与 VLA 方法相比，该方法利用丰富的在线视频数据，避免了机器人动作数据稀缺的问题。实验结果证明了该方法在指令跟随、泛化能力和物理可行性方面的优势。</p>
+
+<blockquote>
+  <p>“我们发布模型和数据集，以支持开放、可复现的基于视频的机器人学习。”</p>
+</blockquote>
+
+<h2 id="参考文献">参考文献</h2>
+
+<ol>
+  <li>Chen, B., Zhang, T., Geng, H., et al. Large Video Planner Enables Generalizable Robot Control. arXiv preprint arXiv:2512.15840, 2025.</li>
+  <li>Du, Y., Yang, M., Florence, P., et al. Video Language Planning. arXiv preprint arXiv:2310.10625, 2023.</li>
+  <li>Du, Y., Yang, S., Dai, B., et al. Learning Universal Policies via Text-Guided Video Generation. NeurIPS, 2023.</li>
+  <li>Brohan, A., Brown, N., Carbajal, J., et al. RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control. arXiv preprint arXiv:2307.15818, 2023.</li>
+  <li>Black, K., Brown, N., Carroll, D., et al. Open X-Embodiment: Robotic Learning Datasets and RT-X Models. arXiv preprint arXiv:2310.08864, 2023.</li>
+</ol>
+
+        </div>
+
+        <aside class="article-rail insights-rail" aria-label="Post navigation and metrics">
+          <section class="rail-card article-rail-card article-rail-card--toc" id="article-toc-card" hidden>
+            <div>
+              <p class="rail-kicker">Directory</p>
+              <h2>On this page</h2>
+            </div>
+            <nav id="article-toc" class="article-toc" aria-label="Table of contents"></nav>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="View count">
+            <div>
+              <p class="rail-kicker">Views</p>
+              <h2 id="article-views">—</h2>
+            </div>
+            <p id="article-views-note">Shared views across visitors.</p>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="Post rating">
+            <div>
+              <p class="rail-kicker">Rating</p>
+              <h2 id="article-rating-average">—</h2>
+            </div>
+            <p id="article-rating-summary">Rate this post from 1 to 5 stars.</p>
+            <div class="article-rating-stars" id="article-rating-stars" role="radiogroup" aria-label="Rate this post">
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="1"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 1 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="2"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 2 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="3"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 3 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="4"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 4 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="5"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 5 out of 5"
+                >
+                  ★
+                </button>
+              
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </article>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const articleShell = document.querySelector('.article-shell');
+    const articleContent = document.getElementById('article-content');
+    const tocCard = document.getElementById('article-toc-card');
+    const tocContainer = document.getElementById('article-toc');
+    const viewsElement = document.getElementById('article-views');
+    const viewsNote = document.getElementById('article-views-note');
+    const ratingAverage = document.getElementById('article-rating-average');
+    const ratingSummary = document.getElementById('article-rating-summary');
+    const ratingStarsContainer = document.getElementById('article-rating-stars');
+    const ratingButtons = Array.from(document.querySelectorAll('.article-rating-star'));
+
+    if (!articleShell || !articleContent) return;
+
+    const postId = articleShell.dataset.postId;
+    const metricsEndpoint = (articleShell.dataset.metricsEndpoint || '').replace(/\/$/, '');
+    const sessionViewKey = `post-viewed:${postId}`;
+    const sessionRatingKey = `post-rated:${postId}`;
+
+    function slugify(text) {
+      return (text || '')
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    function ensureHeadingIds(headings) {
+      const seenIds = new Set();
+      headings.forEach((heading, index) => {
+        let nextId = heading.id || slugify(heading.textContent) || `section-${index + 1}`;
+        while (seenIds.has(nextId)) {
+          nextId = `${nextId}-${index + 1}`;
+        }
+        heading.id = nextId;
+        seenIds.add(nextId);
+      });
+    }
+
+    function buildToc() {
+      if (!tocCard || !tocContainer) return;
+
+      const headings = Array.from(articleContent.querySelectorAll('h2, h3'));
+      if (headings.length < 2) {
+        tocCard.hidden = true;
+        return;
+      }
+
+      ensureHeadingIds(headings);
+
+      const list = document.createElement('ul');
+      list.className = 'article-toc-list';
+
+      headings.forEach((heading) => {
+        const item = document.createElement('li');
+        item.className = `article-toc-item article-toc-item--${heading.tagName.toLowerCase()}`;
+
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = heading.textContent.trim();
+
+        item.appendChild(link);
+        list.appendChild(item);
+      });
+
+      tocContainer.innerHTML = '';
+      tocContainer.appendChild(list);
+      tocCard.hidden = false;
+    }
+
+    function formatNumber(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue)) return '—';
+      return new Intl.NumberFormat().format(numericValue);
+    }
+
+    function formatAverage(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue) || numericValue <= 0) return '—';
+      return `${numericValue.toFixed(1)} / 5`;
+    }
+
+    function setRatingSelection(selectedValue) {
+      ratingButtons.forEach((button) => {
+        const value = Number(button.dataset.ratingValue);
+        const isActive = Number.isFinite(selectedValue) && value <= selectedValue;
+        const isChecked = Number.isFinite(selectedValue) && value === selectedValue;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-checked', isChecked ? 'true' : 'false');
+      });
+    }
+
+    function disableRatingButtons(disabled) {
+      ratingButtons.forEach((button) => {
+        button.disabled = disabled;
+        button.tabIndex = disabled ? -1 : 0;
+      });
+      if (ratingStarsContainer) {
+        ratingStarsContainer.classList.toggle('is-disabled', disabled);
+      }
+    }
+
+    function getStoredRating() {
+      const storedRating = Number(window.localStorage.getItem(sessionRatingKey));
+      return storedRating >= 1 && storedRating <= 5 ? storedRating : null;
+    }
+
+    function applyStoredRatingSummary(count) {
+      const normalizedCount = Number(count);
+      if (!ratingSummary) return;
+      ratingSummary.textContent = `${normalizedCount || 0} rating${normalizedCount === 1 ? '' : 's'} submitted. Your rating has been saved.`;
+    }
+
+    function updateMetrics(metrics) {
+      if (viewsElement) viewsElement.textContent = formatNumber(metrics.views);
+      if (ratingAverage) ratingAverage.textContent = formatAverage(metrics.ratingAverage);
+
+      if (ratingSummary) {
+        const count = Number(metrics.ratingCount);
+        if (Number.isFinite(count) && count > 0) {
+          ratingSummary.textContent = `${count} rating${count === 1 ? '' : 's'} submitted.`;
+        } else {
+          ratingSummary.textContent = 'Be the first to rate this post.';
+        }
+      }
+    }
+
+    function setMetricsUnavailable() {
+      if (viewsElement) viewsElement.textContent = '—';
+      if (viewsNote) viewsNote.textContent = 'Metrics API not configured yet.';
+      if (ratingAverage) ratingAverage.textContent = '—';
+      if (ratingSummary) ratingSummary.textContent = 'Ratings will appear when the metrics API is connected.';
+      disableRatingButtons(true);
+    }
+
+    async function fetchJson(url, options) {
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        ...options
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      return response.json();
+    }
+
+    async function loadMetrics() {
+      if (!metricsEndpoint || !postId) {
+        setMetricsUnavailable();
+        return null;
+      }
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-metrics?id=${encodeURIComponent(postId)}`);
+        updateMetrics(metrics);
+        if (viewsNote) viewsNote.textContent = 'Shared views across visitors.';
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to load shared metrics right now.';
+        if (ratingSummary) ratingSummary.textContent = 'Unable to load ratings right now.';
+        return null;
+      }
+    }
+
+    async function trackView() {
+      if (!metricsEndpoint || !postId || window.sessionStorage.getItem(sessionViewKey)) return null;
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-view`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId })
+        });
+        updateMetrics(metrics);
+        window.sessionStorage.setItem(sessionViewKey, 'true');
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to update views right now.';
+        return null;
+      }
+    }
+
+    async function initializeMetrics() {
+      const metrics = await loadMetrics();
+      if (metrics) {
+        await trackView();
+        return;
+      }
+
+      if (metricsEndpoint && postId) {
+        await trackView();
+      }
+    }
+
+    function handleRatingKeydown(event) {
+      const currentValue = Number(event.currentTarget.dataset.ratingValue);
+      if (!Number.isInteger(currentValue)) return;
+
+      if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const nextButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.min(5, currentValue + 1));
+        if (nextButton) nextButton.focus();
+      }
+
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        const previousButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.max(1, currentValue - 1));
+        if (previousButton) previousButton.focus();
+      }
+    }
+
+    const storedRating = getStoredRating();
+    if (storedRating) {
+      setRatingSelection(storedRating);
+      disableRatingButtons(true);
+    }
+
+    if (!metricsEndpoint || !postId) {
+      setMetricsUnavailable();
+    } else {
+      disableRatingButtons(Boolean(storedRating));
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('keydown', handleRatingKeydown);
+    });
+
+    initializeMetrics();
+
+    async function submitRating(value) {
+      if (!metricsEndpoint || !postId || !Number.isInteger(value) || value < 1 || value > 5) return;
+
+      disableRatingButtons(true);
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-rating`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId, rating: value })
+        });
+        updateMetrics(metrics);
+        setRatingSelection(value);
+        window.localStorage.setItem(sessionRatingKey, String(value));
+        applyStoredRatingSummary(metrics.ratingCount);
+      } catch (error) {
+        disableRatingButtons(false);
+        if (ratingSummary) ratingSummary.textContent = 'Unable to submit your rating right now.';
+      }
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        submitRating(Number(button.dataset.ratingValue));
+      });
+    });
+
+    buildToc();
+  });
+</script>
+
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>33 posts</span>
+            <span>46 categories</span>
+            
+              <span>Updated 2026-03-26</span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LLM 推理硬件的挑战与研究方向：内存与互连是核心瓶颈 | ROM4AI Research Ideas</title>
+    <meta name="description" content="LLM 推理硬件的挑战与研究方向：内存与互连是核心瓶颈">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+
+  </head>
+  <body class="layout-post">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="/" aria-label="ROM4AI Research Ideas">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>ROM4AI Research Ideas</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/" class="">Home</a>
+            
+              <a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Latest note</a>
+            
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main article-page">
+  <article
+    class="article-shell"
+    data-post-id="/research/ai/hardware/datacenter/mobile/2026/03/13/llm-inference-hardware-challenges.html"
+    data-metrics-endpoint=""
+  >
+    <div class="article-frame">
+      <a class="back-link" href="/#latest-posts">All research notes</a>
+
+      <header class="article-hero">
+        <div class="article-heading">
+          <p class="article-kicker">Research note</p>
+          <h1>LLM 推理硬件的挑战与研究方向：内存与互连是核心瓶颈</h1>
+        </div>
+        <div class="article-meta">
+          <span>March 13, 2026</span>
+          
+            <div class="article-tags" aria-label="Categories">
+              
+                <a class="category-chip category-chip--research" href="/#category=research">research</a>
+              
+                <a class="category-chip category-chip--ai" href="/#category=ai">ai</a>
+              
+                <a class="category-chip category-chip--hardware" href="/#category=hardware">hardware</a>
+              
+                <a class="category-chip category-chip--datacenter" href="/#category=datacenter">datacenter</a>
+              
+                <a class="category-chip category-chip--mobile" href="/#category=mobile">mobile</a>
+              
+            </div>
+          
+        </div>
+      </header>
+
+      <div class="article-context-bar" aria-label="Article context">
+        
+          <section class="article-context-card">
+            <p class="aside-label">Focus areas</p>
+            <ul class="article-category-list">
+              
+                <li>research</li>
+              
+                <li>ai</li>
+              
+                <li>hardware</li>
+              
+                <li>datacenter</li>
+              
+                <li>mobile</li>
+              
+            </ul>
+          </section>
+        
+
+        <section class="article-context-card article-context-card--summary">
+          <p class="aside-label">Context</p>
+          <p>Research idea blog on future AI hardware systems and accelerators.</p>
+        </section>
+      </div>
+
+      <div class="article-layout">
+        <div class="article-content" id="article-content">
+          <h1 id="llm-推理硬件的挑战与研究方向内存与互连是核心瓶颈">LLM 推理硬件的挑战与研究方向：内存与互连是核心瓶颈</h1>
+
+<blockquote>
+  <p><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2601.05047">arXiv:2601.05047</a> | <a href="https://arxiv.org/pdf/2601.05047.pdf">PDF</a><br />
+<strong>作者</strong>: Xiaoyu Ma, David Patterson（加州大学伯克利分校）<br />
+<strong>DOI</strong>: 10.1109/MC.2026.3652916<br />
+<strong>发布日期</strong>: 2026 年 1 月 8 日提交，2026 年 2 月 6 日在线发表</p>
+</blockquote>
+
+<hr />
+
+<h2 id="摘要">摘要</h2>
+
+<p>大语言模型（LLM）推理是困难的。底层 Transformer 模型的自回归解码（Decode）阶段使 LLM 推理与训练根本不同。受近期 AI 趋势加剧的影响，主要挑战是<strong>内存和互连而非计算</strong>。为应对这些挑战，我们强调了四个架构研究机会：<strong>高带宽闪存（High Bandwidth Flash）</strong> 实现 10 倍内存容量并具备 HBM 级带宽；<strong>近内存处理（Processing-Near-Memory）和 3D 内存 - 逻辑堆叠</strong>实现高内存带宽；以及<strong>低延迟互连</strong>加速通信。尽管我们的重点是数据中心 AI，但我们也回顾了它们在移动设备中的适用性。</p>
+
+<hr />
+
+<h2 id="1-问题定义">1. 问题定义</h2>
+
+<blockquote>
+  <p>“LLM 推理与训练根本不同：自回归解码阶段使推理成为内存和互连受限而非计算受限的任务。”</p>
+</blockquote>
+
+<p><strong>核心挑战</strong>：</p>
+
+<p><strong>（1）自回归解码的内存瓶颈</strong>：</p>
+<ul>
+  <li>Transformer 训练是计算密集型的（矩阵乘法主导）</li>
+  <li>LLM 推理的解码阶段是<strong>内存带宽密集型</strong>的（每个 token 生成都需要访问整个模型权重）</li>
+  <li>随着模型规模增长（从 7B 到 70B 再到 700B），内存需求呈线性增长，而计算需求增长较慢</li>
+</ul>
+
+<p><strong>（2）近期 AI 趋势的加剧效应</strong>：</p>
+<ul>
+  <li><strong>模型规模指数增长</strong>：从 GPT-3（175B）到 GPT-4（~1T 参数），内存需求增长 5-10 倍</li>
+  <li><strong>长上下文窗口</strong>：从 4K 到 128K tokens，KV 缓存内存需求增长 32 倍</li>
+  <li><strong>多租户并发</strong>：生产环境需要同时服务数百个请求，进一步放大内存压力</li>
+</ul>
+
+<p><strong>（3）传统架构的局限</strong>：</p>
+<ul>
+  <li><strong>GPU 主导的推理</strong>：针对计算优化，内存带宽相对不足</li>
+  <li><strong>HBM 容量受限</strong>：当前 HBM3E 单栈最高 36GB，多栈配置成本高昂</li>
+  <li><strong>互连延迟</strong>：多 GPU/多节点通信成为分布式推理的瓶颈</li>
+</ul>
+
+<p><strong>关键洞察</strong>：</p>
+<blockquote>
+  <p>“LLM 推理的主要挑战是内存和互连而非计算。”</p>
+</blockquote>
+
+<hr />
+
+<h2 id="2-四个架构研究方向">2. 四个架构研究方向</h2>
+
+<h3 id="21-高带宽闪存high-bandwidth-flash-hbf">2.1 高带宽闪存（High Bandwidth Flash, HBF）</h3>
+
+<p><strong>目标</strong>：实现 10 倍内存容量，同时保持 HBM 级带宽。</p>
+
+<p><strong>技术原理</strong>：</p>
+<ul>
+  <li><strong>3D 堆叠 NAND 闪存</strong>：通过硅通孔（TSV）垂直互联多层 NAND die</li>
+  <li><strong>逻辑层集成</strong>：底部集成控制器管理并行 I/O 通道</li>
+  <li><strong>共中介层封装</strong>：与 HBM 在同一中介层上集成，形成混合内存架构</li>
+</ul>
+
+<p><strong>性能目标</strong>：
+| 指标 | HBM3E | HBF（目标） | 提升 |
+|——|——-|————-|——|
+| 容量密度 | 36GB/栈 | 360GB/栈 | <strong>10×</strong> |
+| 读取带宽 | 1.2TB/s | 1.0TB/s | 0.83× |
+| 延迟 | 纳秒级 | 微秒级 | 1000× |
+| 成本 | 高 | 中 | 显著降低 |</p>
+
+<p><strong>适用场景</strong>：</p>
+<ul>
+  <li><strong>数据中心</strong>：存储模型权重、低频 KV 缓存、共享上下文</li>
+  <li><strong>移动设备</strong>：扩展片上内存容量，支持更大模型本地部署</li>
+</ul>
+
+<p><strong>挑战</strong>：</p>
+<ul>
+  <li>延迟较高（微秒级 vs 纳秒级），需精细的数据预取和调度策略</li>
+  <li>写耐久性限制（约 100,000 次循环），需磨损均衡算法</li>
+  <li>标准化进程：SK 海力士与闪迪在 OCP 框架下推进，预计 2026 年下半年首批样品</li>
+</ul>
+
+<h3 id="22-近内存处理processing-near-memory-pnm">2.2 近内存处理（Processing-Near-Memory, PNM）</h3>
+
+<p><strong>目标</strong>：将计算单元移至内存附近，减少数据移动开销。</p>
+
+<p><strong>技术原理</strong>：</p>
+<ul>
+  <li><strong>内存内计算（Processing-in-Memory, PIM）</strong>：在 DRAM 或 NVM 中集成简单计算逻辑</li>
+  <li><strong>近内存加速</strong>：在内存堆栈底部集成专用加速器（如 Tensor Core）</li>
+  <li><strong>3D 堆叠优势</strong>：通过 TSV 实现内存与计算单元的紧密耦合，带宽达 TB/s 级</li>
+</ul>
+
+<p><strong>性能优势</strong>：</p>
+<ul>
+  <li><strong>减少数据移动</strong>：传统架构中 60-80% 能耗消耗在数据搬运，PNM 可显著降低</li>
+  <li><strong>带宽提升</strong>：3D 堆叠提供 TB/s 级带宽，远超传统内存接口</li>
+  <li><strong>延迟优化</strong>：计算单元与内存紧密耦合，减少访问延迟</li>
+</ul>
+
+<p><strong>适用场景</strong>：</p>
+<ul>
+  <li><strong>矩阵 - 向量乘法（GEMV）</strong>：LLM 解码阶段的核心操作</li>
+  <li><strong>注意力机制</strong>：QKV 投影、注意力分数计算</li>
+  <li><strong>量化推理</strong>：低比特（INT4/INT8）计算可在内存附近高效执行</li>
+</ul>
+
+<p><strong>挑战</strong>：</p>
+<ul>
+  <li>散热管理：3D 堆叠中计算单元产生的热量难以散发</li>
+  <li>制造复杂度：TSV 工艺和异质集成增加制造成本</li>
+  <li>编程模型：需开发新的编程抽象和编译器支持</li>
+</ul>
+
+<h3 id="23-3d-内存---逻辑堆叠">2.3 3D 内存 - 逻辑堆叠</h3>
+
+<p><strong>目标</strong>：通过 3D 集成实现内存与计算单元的紧密耦合。</p>
+
+<p><strong>技术原理</strong>：</p>
+<ul>
+  <li><strong>晶圆级键合</strong>：将内存晶圆与逻辑晶圆直接键合，实现超高密度互连</li>
+  <li><strong>混合键合（Hybrid Bonding）</strong>：铜 - 铜直接键合，互连间距&lt;1μm</li>
+  <li><strong>多层堆叠</strong>：支持 4-8 层堆叠，每层可独立优化（内存层、计算层、缓存层）</li>
+</ul>
+
+<p><strong>性能优势</strong>：
+| 指标 | 2.5D 封装 | 3D 堆叠 | 提升 |
+|——|———-|——–|——|
+| 互连密度 | 10⁴/cm² | 10⁶/cm² | <strong>100×</strong> |
+| 带宽 | 500GB/s | 2TB/s | <strong>4×</strong> |
+| 延迟 | 10ns | 2ns | <strong>5×</strong> |
+| 能效 | 10pJ/bit | 1pJ/bit | <strong>10×</strong> |</p>
+
+<p><strong>适用场景</strong>：</p>
+<ul>
+  <li><strong>LLM 推理加速器</strong>：将权重存储在内存层，计算单元在逻辑层</li>
+  <li><strong>KV 缓存优化</strong>：3D 堆叠 SRAM 提供高带宽低延迟缓存</li>
+  <li><strong>边缘设备</strong>：小尺寸封装支持高能效推理</li>
+</ul>
+
+<p><strong>挑战</strong>：</p>
+<ul>
+  <li>热管理：多层堆叠中热量积聚，需先进散热方案</li>
+  <li>良率问题：多层堆叠良率呈指数下降，成本高昂</li>
+  <li>设计工具：需开发 3D 感知的 EDA 工具和设计方法学</li>
+</ul>
+
+<h3 id="24-低延迟互连">2.4 低延迟互连</h3>
+
+<p><strong>目标</strong>：加速多 GPU/多节点通信，减少分布式推理延迟。</p>
+
+<p><strong>技术原理</strong>：</p>
+<ul>
+  <li><strong>片上网络（Network-on-Chip, NoC）</strong>：优化芯片内多核通信</li>
+  <li><strong>芯片间互连</strong>：NVLink、UCIe 等高速接口，带宽&gt;100GB/s</li>
+  <li><strong>节点间互连</strong>：InfiniBand、RoCE 等，延迟&lt;1μs</li>
+</ul>
+
+<p><strong>性能要求</strong>：
+| 场景 | 带宽需求 | 延迟要求 | 当前水平 | 缺口 |
+|——|———-|———-|———-|——|
+| 单 GPU 内 | 2TB/s | &lt;10ns | 1TB/s | 2× |
+| 多 GPU（同节点） | 500GB/s | &lt;100ns | 200GB/s | 2.5× |
+| 多节点 | 100GB/s | &lt;1μs | 50GB/s, 5μs | 2-5× |</p>
+
+<p><strong>适用场景</strong>：</p>
+<ul>
+  <li><strong>张量并行</strong>：大模型切分到多 GPU，需频繁通信</li>
+  <li><strong>流水线并行</strong>：层间数据传递，延迟敏感</li>
+  <li><strong>专家混合（MoE）</strong>：动态路由到不同专家，通信模式复杂</li>
+</ul>
+
+<p><strong>挑战</strong>：</p>
+<ul>
+  <li>协议开销：现有网络协议（如 TCP/IP）开销大，需专用协议</li>
+  <li>拓扑优化：网状、环状、树状拓扑的选择影响通信效率</li>
+  <li>拥塞控制：多租户场景下需公平调度，避免拥塞</li>
+</ul>
+
+<hr />
+
+<h2 id="3-移动设备适用性">3. 移动设备适用性</h2>
+
+<blockquote>
+  <p>“尽管我们的重点是数据中心 AI，但这些技术在移动设备中同样具有适用性。”</p>
+</blockquote>
+
+<h3 id="31-移动场景的特殊约束">3.1 移动场景的特殊约束</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>约束</th>
+      <th>数据中心</th>
+      <th>移动设备</th>
+      <th>影响</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>功耗</td>
+      <td>100-1000W</td>
+      <td>1-10W</td>
+      <td><strong>100-1000× 限制</strong></td>
+    </tr>
+    <tr>
+      <td>散热</td>
+      <td>主动液冷</td>
+      <td>被动散热</td>
+      <td>热预算严格</td>
+    </tr>
+    <tr>
+      <td>面积</td>
+      <td>500-1000mm²</td>
+      <td>50-100mm²</td>
+      <td><strong>10× 限制</strong></td>
+    </tr>
+    <tr>
+      <td>成本</td>
+      <td>$10,000+</td>
+      <td>$100-500</td>
+      <td><strong>20-100× 限制</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="32-技术适用性分析">3.2 技术适用性分析</h3>
+
+<p><strong>（1）高带宽闪存（HBF）</strong>：</p>
+<ul>
+  <li><strong>适用性</strong>：高</li>
+  <li><strong>优势</strong>：容量密度高，成本低于 HBM，适合移动设备有限预算</li>
+  <li><strong>挑战</strong>：微秒级延迟可能影响实时交互体验，需预取优化</li>
+</ul>
+
+<p><strong>（2）近内存处理（PNM）</strong>：</p>
+<ul>
+  <li><strong>适用性</strong>：中 - 高</li>
+  <li><strong>优势</strong>：减少数据移动，降低功耗，适合电池供电设备</li>
+  <li><strong>挑战</strong>：散热管理，需限制峰值功耗</li>
+</ul>
+
+<p><strong>（3）3D 内存 - 逻辑堆叠</strong>：</p>
+<ul>
+  <li><strong>适用性</strong>：中</li>
+  <li><strong>优势</strong>：小尺寸封装，高带宽低延迟</li>
+  <li><strong>挑战</strong>：成本高，可能仅适用于高端旗舰设备</li>
+</ul>
+
+<p><strong>（4）低延迟互连</strong>：</p>
+<ul>
+  <li><strong>适用性</strong>：低 - 中</li>
+  <li><strong>优势</strong>：多核 SoC 内通信优化</li>
+  <li><strong>挑战</strong>：移动设备通常单芯片，多节点互连需求低</li>
+</ul>
+
+<h3 id="33-移动-llm-推理优化策略">3.3 移动 LLM 推理优化策略</h3>
+
+<p><strong>模型优化</strong>：</p>
+<ul>
+  <li><strong>量化</strong>：INT4/INT8 量化减少内存占用和带宽需求</li>
+  <li><strong>剪枝</strong>：结构化剪枝减少计算量和内存访问</li>
+  <li><strong>蒸馏</strong>：小模型蒸馏大模型知识，适合移动部署</li>
+</ul>
+
+<p><strong>系统优化</strong>：</p>
+<ul>
+  <li><strong>异构计算</strong>：CPU+NPU+GPU 协同，任务调度优化</li>
+  <li><strong>内存分层</strong>：SRAM（热数据）+ LPDDR（温数据）+ 存储（冷数据）</li>
+  <li><strong>增量推理</strong>：利用上下文局部性，减少重复计算</li>
+</ul>
+
+<hr />
+
+<h2 id="4-技术可行性评估">4. 技术可行性评估</h2>
+
+<h3 id="可行性分析">可行性分析</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>技术方向</th>
+      <th>技术成熟度</th>
+      <th>性能收益</th>
+      <th>成本效益</th>
+      <th>商业化时间</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>HBF</strong></td>
+      <td>[MEDIUM]</td>
+      <td>[HIGH]</td>
+      <td>[HIGH]</td>
+      <td>2026-2027</td>
+    </tr>
+    <tr>
+      <td><strong>PNM</strong></td>
+      <td>[MEDIUM]</td>
+      <td>[HIGH]</td>
+      <td>[MEDIUM]</td>
+      <td>2027-2028</td>
+    </tr>
+    <tr>
+      <td><strong>3D 堆叠</strong></td>
+      <td>[MEDIUM-HIGH]</td>
+      <td>[HIGH]</td>
+      <td>[MEDIUM]</td>
+      <td>2026-2028</td>
+    </tr>
+    <tr>
+      <td><strong>低延迟互连</strong></td>
+      <td>[HIGH]</td>
+      <td>[MEDIUM]</td>
+      <td>[HIGH]</td>
+      <td>2025-2026</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="风险与挑战">风险与挑战</h3>
+
+<p><strong>技术风险</strong>：</p>
+<ol>
+  <li>HBF 延迟（微秒级）远高于 HBM（纳秒级），需精细的数据预取和调度策略</li>
+  <li>3D 堆叠散热复杂，尤其是近内存处理中计算单元产生的热量</li>
+  <li>制造良率问题，多层堆叠良率呈指数下降</li>
+</ol>
+
+<p><strong>工程挑战</strong>：</p>
+<ol>
+  <li>编程模型和编译器支持需同步发展</li>
+  <li>与现有软件栈（如 PyTorch、TensorFlow）的兼容性</li>
+  <li>系统级集成和验证复杂度</li>
+</ol>
+
+<p><strong>商业化不确定性</strong>：</p>
+<ol>
+  <li>市场需求与成本的平衡</li>
+  <li>生态系统建设（工具链、开发社区）</li>
+  <li>与竞品技术（如 CXL、Mobile HBM）的竞争</li>
+</ol>
+
+<hr />
+
+<h2 id="5-总结">5. 总结</h2>
+
+<p>本文系统性地分析了 LLM 推理硬件面临的核心挑战，指出<strong>内存和互连而非计算</strong>是主要瓶颈。受近期 AI 趋势（模型规模增长、长上下文窗口、多租户并发）加剧的影响，传统 GPU 主导的架构已难以满足需求。</p>
+
+<p>为应对这些挑战，作者强调了四个架构研究方向：</p>
+<ol>
+  <li><strong>高带宽闪存（HBF）</strong>：实现 10 倍内存容量，同时保持 HBM 级带宽</li>
+  <li><strong>近内存处理（PNM）和 3D 内存 - 逻辑堆叠</strong>：减少数据移动，提供 TB/s 级带宽</li>
+  <li><strong>低延迟互连</strong>：加速多 GPU/多节点通信</li>
+</ol>
+
+<p>这些技术在数据中心和移动设备中均具有适用性，但需根据具体场景的功耗、散热、面积和成本约束进行优化。预计 2026-2028 年间，这些技术将逐步商业化，为 LLM 推理提供更高能效和更低成本的硬件平台。</p>
+
+<p>未来研究可能包括：HBF 原型验证、3D 堆叠散热优化、近内存处理编程模型、以及面向 LLM 工作负载的专用互连协议设计。</p>
+
+<hr />
+
+<h2 id="参考文献">参考文献</h2>
+
+<p>[1] Ma, X., &amp; Patterson, D. (2026). Challenges and Research Directions for Large Language Model Inference Hardware. IEEE Computer. https://doi.org/10.1109/MC.2026.3652916</p>
+
+<p>[2] SK Hynix. (2025). H³ (Hybrid Memory Architecture) for AI Inference. OCP Global Summit 2025.</p>
+
+<p>[3] Nvidia. (2025). HBM3E Memory Solutions for AI Accelerators. Technical Brief.</p>
+
+<p>[4] Samsung. (2025). HBM4: Next-Generation High Bandwidth Memory. ISSCC 2025.</p>
+
+<p>[5] Nvidia Corporation. (2024). Jetson AGX Thor Technical Specifications. Developer Documentation.</p>
+
+<p>[6] Wang, W., et al. (2025). ROMA: A Read-Only-Memory-Based Accelerator for QLoRA-Based On-Device LLM. arXiv preprint arXiv:2503.12988.</p>
+
+<p>[7] Guan, H., et al. (2026). TOM: A Ternary Read-Only Memory Accelerator for LLM-Powered Edge Intelligence. arXiv preprint arXiv:2602.20662.</p>
+
+<p>[8] Lin, T., et al. (2025). LEGOSim: A Unified Parallel Simulation Framework for Multi-Chiplet Heterogeneous Integration. MICRO ‘25.</p>
+
+<p>[9] Gunawardana, K., et al. (2026). SNAP-V: A RISC-V SoC with Configurable Neuromorphic Acceleration for Small-Scale Spiking Neural Networks. arXiv preprint arXiv:2603.11939.</p>
+
+<p>[10] Hossain, E., et al. (2025). MedBayes-Lite: Bayesian Uncertainty Quantification for Safe Clinical Decision Support. arXiv preprint arXiv:2511.16625.</p>
+
+<hr />
+
+<p><em>本文基于 arXiv:2601.05047 论文自动生成，采用 paper_to_blog 工作流转换。</em></p>
+
+        </div>
+
+        <aside class="article-rail insights-rail" aria-label="Post navigation and metrics">
+          <section class="rail-card article-rail-card article-rail-card--toc" id="article-toc-card" hidden>
+            <div>
+              <p class="rail-kicker">Directory</p>
+              <h2>On this page</h2>
+            </div>
+            <nav id="article-toc" class="article-toc" aria-label="Table of contents"></nav>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="View count">
+            <div>
+              <p class="rail-kicker">Views</p>
+              <h2 id="article-views">—</h2>
+            </div>
+            <p id="article-views-note">Shared views across visitors.</p>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="Post rating">
+            <div>
+              <p class="rail-kicker">Rating</p>
+              <h2 id="article-rating-average">—</h2>
+            </div>
+            <p id="article-rating-summary">Rate this post from 1 to 5 stars.</p>
+            <div class="article-rating-stars" id="article-rating-stars" role="radiogroup" aria-label="Rate this post">
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="1"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 1 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="2"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 2 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="3"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 3 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="4"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 4 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="5"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 5 out of 5"
+                >
+                  ★
+                </button>
+              
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </article>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const articleShell = document.querySelector('.article-shell');
+    const articleContent = document.getElementById('article-content');
+    const tocCard = document.getElementById('article-toc-card');
+    const tocContainer = document.getElementById('article-toc');
+    const viewsElement = document.getElementById('article-views');
+    const viewsNote = document.getElementById('article-views-note');
+    const ratingAverage = document.getElementById('article-rating-average');
+    const ratingSummary = document.getElementById('article-rating-summary');
+    const ratingStarsContainer = document.getElementById('article-rating-stars');
+    const ratingButtons = Array.from(document.querySelectorAll('.article-rating-star'));
+
+    if (!articleShell || !articleContent) return;
+
+    const postId = articleShell.dataset.postId;
+    const metricsEndpoint = (articleShell.dataset.metricsEndpoint || '').replace(/\/$/, '');
+    const sessionViewKey = `post-viewed:${postId}`;
+    const sessionRatingKey = `post-rated:${postId}`;
+
+    function slugify(text) {
+      return (text || '')
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    function ensureHeadingIds(headings) {
+      const seenIds = new Set();
+      headings.forEach((heading, index) => {
+        let nextId = heading.id || slugify(heading.textContent) || `section-${index + 1}`;
+        while (seenIds.has(nextId)) {
+          nextId = `${nextId}-${index + 1}`;
+        }
+        heading.id = nextId;
+        seenIds.add(nextId);
+      });
+    }
+
+    function buildToc() {
+      if (!tocCard || !tocContainer) return;
+
+      const headings = Array.from(articleContent.querySelectorAll('h2, h3'));
+      if (headings.length < 2) {
+        tocCard.hidden = true;
+        return;
+      }
+
+      ensureHeadingIds(headings);
+
+      const list = document.createElement('ul');
+      list.className = 'article-toc-list';
+
+      headings.forEach((heading) => {
+        const item = document.createElement('li');
+        item.className = `article-toc-item article-toc-item--${heading.tagName.toLowerCase()}`;
+
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = heading.textContent.trim();
+
+        item.appendChild(link);
+        list.appendChild(item);
+      });
+
+      tocContainer.innerHTML = '';
+      tocContainer.appendChild(list);
+      tocCard.hidden = false;
+    }
+
+    function formatNumber(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue)) return '—';
+      return new Intl.NumberFormat().format(numericValue);
+    }
+
+    function formatAverage(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue) || numericValue <= 0) return '—';
+      return `${numericValue.toFixed(1)} / 5`;
+    }
+
+    function setRatingSelection(selectedValue) {
+      ratingButtons.forEach((button) => {
+        const value = Number(button.dataset.ratingValue);
+        const isActive = Number.isFinite(selectedValue) && value <= selectedValue;
+        const isChecked = Number.isFinite(selectedValue) && value === selectedValue;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-checked', isChecked ? 'true' : 'false');
+      });
+    }
+
+    function disableRatingButtons(disabled) {
+      ratingButtons.forEach((button) => {
+        button.disabled = disabled;
+        button.tabIndex = disabled ? -1 : 0;
+      });
+      if (ratingStarsContainer) {
+        ratingStarsContainer.classList.toggle('is-disabled', disabled);
+      }
+    }
+
+    function getStoredRating() {
+      const storedRating = Number(window.localStorage.getItem(sessionRatingKey));
+      return storedRating >= 1 && storedRating <= 5 ? storedRating : null;
+    }
+
+    function applyStoredRatingSummary(count) {
+      const normalizedCount = Number(count);
+      if (!ratingSummary) return;
+      ratingSummary.textContent = `${normalizedCount || 0} rating${normalizedCount === 1 ? '' : 's'} submitted. Your rating has been saved.`;
+    }
+
+    function updateMetrics(metrics) {
+      if (viewsElement) viewsElement.textContent = formatNumber(metrics.views);
+      if (ratingAverage) ratingAverage.textContent = formatAverage(metrics.ratingAverage);
+
+      if (ratingSummary) {
+        const count = Number(metrics.ratingCount);
+        if (Number.isFinite(count) && count > 0) {
+          ratingSummary.textContent = `${count} rating${count === 1 ? '' : 's'} submitted.`;
+        } else {
+          ratingSummary.textContent = 'Be the first to rate this post.';
+        }
+      }
+    }
+
+    function setMetricsUnavailable() {
+      if (viewsElement) viewsElement.textContent = '—';
+      if (viewsNote) viewsNote.textContent = 'Metrics API not configured yet.';
+      if (ratingAverage) ratingAverage.textContent = '—';
+      if (ratingSummary) ratingSummary.textContent = 'Ratings will appear when the metrics API is connected.';
+      disableRatingButtons(true);
+    }
+
+    async function fetchJson(url, options) {
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        ...options
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      return response.json();
+    }
+
+    async function loadMetrics() {
+      if (!metricsEndpoint || !postId) {
+        setMetricsUnavailable();
+        return null;
+      }
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-metrics?id=${encodeURIComponent(postId)}`);
+        updateMetrics(metrics);
+        if (viewsNote) viewsNote.textContent = 'Shared views across visitors.';
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to load shared metrics right now.';
+        if (ratingSummary) ratingSummary.textContent = 'Unable to load ratings right now.';
+        return null;
+      }
+    }
+
+    async function trackView() {
+      if (!metricsEndpoint || !postId || window.sessionStorage.getItem(sessionViewKey)) return null;
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-view`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId })
+        });
+        updateMetrics(metrics);
+        window.sessionStorage.setItem(sessionViewKey, 'true');
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to update views right now.';
+        return null;
+      }
+    }
+
+    async function initializeMetrics() {
+      const metrics = await loadMetrics();
+      if (metrics) {
+        await trackView();
+        return;
+      }
+
+      if (metricsEndpoint && postId) {
+        await trackView();
+      }
+    }
+
+    function handleRatingKeydown(event) {
+      const currentValue = Number(event.currentTarget.dataset.ratingValue);
+      if (!Number.isInteger(currentValue)) return;
+
+      if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const nextButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.min(5, currentValue + 1));
+        if (nextButton) nextButton.focus();
+      }
+
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        const previousButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.max(1, currentValue - 1));
+        if (previousButton) previousButton.focus();
+      }
+    }
+
+    const storedRating = getStoredRating();
+    if (storedRating) {
+      setRatingSelection(storedRating);
+      disableRatingButtons(true);
+    }
+
+    if (!metricsEndpoint || !postId) {
+      setMetricsUnavailable();
+    } else {
+      disableRatingButtons(Boolean(storedRating));
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('keydown', handleRatingKeydown);
+    });
+
+    initializeMetrics();
+
+    async function submitRating(value) {
+      if (!metricsEndpoint || !postId || !Number.isInteger(value) || value < 1 || value > 5) return;
+
+      disableRatingButtons(true);
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-rating`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId, rating: value })
+        });
+        updateMetrics(metrics);
+        setRatingSelection(value);
+        window.localStorage.setItem(sessionRatingKey, String(value));
+        applyStoredRatingSummary(metrics.ratingCount);
+      } catch (error) {
+        disableRatingButtons(false);
+        if (ratingSummary) ratingSummary.textContent = 'Unable to submit your rating right now.';
+      }
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        submitRating(Number(button.dataset.ratingValue));
+      });
+    });
+
+    buildToc();
+  });
+</script>
+
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>33 posts</span>
+            <span>46 categories</span>
+            
+              <span>Updated 2026-03-26</span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

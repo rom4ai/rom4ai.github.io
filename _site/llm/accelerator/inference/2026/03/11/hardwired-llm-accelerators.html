@@ -1,54 +1,124 @@
----
-layout: base
----
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hardwired LLM Accelerators: From Programmable Kernels to Fixed-Flow Inference | ROM4AI Research Ideas</title>
+    <meta name="description" content="Motivation">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
 
-<main class="site-main article-page">
+  </head>
+  <body class="layout-post">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="/" aria-label="ROM4AI Research Ideas">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>ROM4AI Research Ideas</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/" class="">Home</a>
+            
+              <a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Latest note</a>
+            
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main article-page">
   <article
     class="article-shell"
-    data-post-id="{{ page.post_id | default: page.url }}"
-    data-metrics-endpoint="{{ site.post_metrics_endpoint | default: '' }}"
+    data-post-id="/llm/accelerator/inference/2026/03/11/hardwired-llm-accelerators.html"
+    data-metrics-endpoint=""
   >
     <div class="article-frame">
-      <a class="back-link" href="{{ '/' | relative_url }}#latest-posts">All research notes</a>
+      <a class="back-link" href="/#latest-posts">All research notes</a>
 
       <header class="article-hero">
         <div class="article-heading">
           <p class="article-kicker">Research note</p>
-          <h1>{{ page.title }}</h1>
+          <h1>Hardwired LLM Accelerators: From Programmable Kernels to Fixed-Flow Inference</h1>
         </div>
         <div class="article-meta">
-          <span>{{ page.date | date: "%B %-d, %Y" }}</span>
-          {% if page.categories %}
+          <span>March 11, 2026</span>
+          
             <div class="article-tags" aria-label="Categories">
-              {% for category in page.categories %}
-                <a class="category-chip category-chip--{{ category | slugify }}" href="{{ '/' | relative_url }}#category={{ category | slugify }}">{{ category }}</a>
-              {% endfor %}
+              
+                <a class="category-chip category-chip--llm" href="/#category=llm">llm</a>
+              
+                <a class="category-chip category-chip--accelerator" href="/#category=accelerator">accelerator</a>
+              
+                <a class="category-chip category-chip--inference" href="/#category=inference">inference</a>
+              
             </div>
-          {% endif %}
+          
         </div>
       </header>
 
       <div class="article-context-bar" aria-label="Article context">
-        {% if page.categories %}
+        
           <section class="article-context-card">
             <p class="aside-label">Focus areas</p>
             <ul class="article-category-list">
-              {% for category in page.categories %}
-                <li>{{ category }}</li>
-              {% endfor %}
+              
+                <li>llm</li>
+              
+                <li>accelerator</li>
+              
+                <li>inference</li>
+              
             </ul>
           </section>
-        {% endif %}
+        
 
         <section class="article-context-card article-context-card--summary">
           <p class="aside-label">Context</p>
-          <p>{{ site.description }}</p>
+          <p>Research idea blog on future AI hardware systems and accelerators.</p>
         </section>
       </div>
 
       <div class="article-layout">
         <div class="article-content" id="article-content">
-          {{ content }}
+          <h2 id="motivation">Motivation</h2>
+
+<p>Current LLM inference stacks rely on general-purpose GPU kernels and runtime orchestration, causing excess overhead for token-by-token decoding. For edge and low-latency deployment, a hardwired path for dominant compute patterns could be far more efficient.</p>
+
+<h2 id="research-concept">Research concept</h2>
+
+<p>Build a <strong>fixed-flow decoder accelerator</strong> that hardwires:</p>
+
+<ul>
+  <li>attention score computation and normalization,</li>
+  <li>KV-cache fetch/update,</li>
+  <li>MLP expansion/projection,</li>
+  <li>quantized activation pipelines.</li>
+</ul>
+
+<p>Rather than supporting all model variants, target a constrained family of decoder architectures and co-design models to match hardware templates.</p>
+
+<h2 id="key-opportunities">Key opportunities</h2>
+
+<ol>
+  <li><strong>Control-plane minimization</strong>: replace software launch overhead with finite-state scheduling.</li>
+  <li><strong>Memory determinism</strong>: static KV-cache tiling to reduce random access penalties.</li>
+  <li><strong>Aggressive quantization</strong>: native support for mixed precision (e.g., W4A8/W8A8).</li>
+</ol>
+
+<h2 id="open-questions">Open questions</h2>
+
+<ul>
+  <li>How much flexibility can be preserved while keeping the datapath mostly fixed?</li>
+  <li>What is the best compile-time mapping from transformer graphs to hardwired blocks?</li>
+  <li>How should speculative decoding be integrated in a fixed-flow pipeline?</li>
+</ul>
+
         </div>
 
         <aside class="article-rail insights-rail" aria-label="Post navigation and metrics">
@@ -75,18 +145,62 @@ layout: base
             </div>
             <p id="article-rating-summary">Rate this post from 1 to 5 stars.</p>
             <div class="article-rating-stars" id="article-rating-stars" role="radiogroup" aria-label="Rate this post">
-              {% for score in (1..5) %}
+              
                 <button
                   type="button"
                   class="article-rating-star"
-                  data-rating-value="{{ score }}"
+                  data-rating-value="1"
                   role="radio"
                   aria-checked="false"
-                  aria-label="Rate {{ score }} out of 5"
+                  aria-label="Rate 1 out of 5"
                 >
                   ★
                 </button>
-              {% endfor %}
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="2"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 2 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="3"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 3 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="4"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 4 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="5"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 5 out of 5"
+                >
+                  ★
+                </button>
+              
             </div>
           </section>
         </aside>
@@ -375,3 +489,23 @@ layout: base
     buildToc();
   });
 </script>
+
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>33 posts</span>
+            <span>46 categories</span>
+            
+              <span>Updated 2026-03-26</span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

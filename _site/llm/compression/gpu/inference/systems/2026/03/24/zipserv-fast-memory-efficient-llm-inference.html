@@ -1,54 +1,198 @@
----
-layout: base
----
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ZipServ: Fast and Memory-Efficient LLM Inference with Hardware-Aware Lossless Compression | ROM4AI Research Ideas</title>
+    <meta name="description" content="            原文链接: arXiv      PDF      ">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
 
-<main class="site-main article-page">
+  </head>
+  <body class="layout-post">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="/" aria-label="ROM4AI Research Ideas">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>ROM4AI Research Ideas</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/" class="">Home</a>
+            
+              <a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Latest note</a>
+            
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main article-page">
   <article
     class="article-shell"
-    data-post-id="{{ page.post_id | default: page.url }}"
-    data-metrics-endpoint="{{ site.post_metrics_endpoint | default: '' }}"
+    data-post-id="/llm/compression/gpu/inference/systems/2026/03/24/zipserv-fast-memory-efficient-llm-inference.html"
+    data-metrics-endpoint=""
   >
     <div class="article-frame">
-      <a class="back-link" href="{{ '/' | relative_url }}#latest-posts">All research notes</a>
+      <a class="back-link" href="/#latest-posts">All research notes</a>
 
       <header class="article-hero">
         <div class="article-heading">
           <p class="article-kicker">Research note</p>
-          <h1>{{ page.title }}</h1>
+          <h1>ZipServ: Fast and Memory-Efficient LLM Inference with Hardware-Aware Lossless Compression</h1>
         </div>
         <div class="article-meta">
-          <span>{{ page.date | date: "%B %-d, %Y" }}</span>
-          {% if page.categories %}
+          <span>March 24, 2026</span>
+          
             <div class="article-tags" aria-label="Categories">
-              {% for category in page.categories %}
-                <a class="category-chip category-chip--{{ category | slugify }}" href="{{ '/' | relative_url }}#category={{ category | slugify }}">{{ category }}</a>
-              {% endfor %}
+              
+                <a class="category-chip category-chip--llm" href="/#category=llm">llm</a>
+              
+                <a class="category-chip category-chip--compression" href="/#category=compression">compression</a>
+              
+                <a class="category-chip category-chip--gpu" href="/#category=gpu">gpu</a>
+              
+                <a class="category-chip category-chip--inference" href="/#category=inference">inference</a>
+              
+                <a class="category-chip category-chip--systems" href="/#category=systems">systems</a>
+              
             </div>
-          {% endif %}
+          
         </div>
       </header>
 
       <div class="article-context-bar" aria-label="Article context">
-        {% if page.categories %}
+        
           <section class="article-context-card">
             <p class="aside-label">Focus areas</p>
             <ul class="article-category-list">
-              {% for category in page.categories %}
-                <li>{{ category }}</li>
-              {% endfor %}
+              
+                <li>llm</li>
+              
+                <li>compression</li>
+              
+                <li>gpu</li>
+              
+                <li>inference</li>
+              
+                <li>systems</li>
+              
             </ul>
           </section>
-        {% endif %}
+        
 
         <section class="article-context-card article-context-card--summary">
           <p class="aside-label">Context</p>
-          <p>{{ site.description }}</p>
+          <p>Research idea blog on future AI hardware systems and accelerators.</p>
         </section>
       </div>
 
       <div class="article-layout">
         <div class="article-content" id="article-content">
-          {{ content }}
+          <table>
+  <tbody>
+    <tr>
+      <td><strong>原文链接:</strong> <a href="https://arxiv.org/abs/2603.17435">arXiv</a></td>
+      <td><a href="https://arxiv.org/pdf/2603.17435.pdf">PDF</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="zipserv-fast-and-memory-efficient-llm-inference-with-hardware-aware-lossless-compression">ZipServ: Fast and Memory-Efficient LLM Inference with Hardware-Aware Lossless Compression</h1>
+
+<h2 id="摘要">摘要</h2>
+
+<p>Lossless model compression holds tremendous promise for alleviating the memory and bandwidth bottlenecks in bit-exact Large Language Model (LLM) serving. However, existing approaches often result in substantial inference slowdowns due to fundamental design mismatches with GPU architectures. We present ZipServ, a lossless compression framework co-designed for efficient LLM inference. ZipServ introduces Tensor-Core-Aware Triple Bitmap Encoding (TCA-TBE), a novel fixed-length format that enables constant-time, parallel decoding, together with a fused decompression-GEMM (ZipGEMM) kernel that decompresses weights on-the-fly directly into Tensor Core registers. Experiments show that ZipServ reduces the model size by up to 30%, achieves up to 2.21× kernel-level speedup over NVIDIA’s cuBLAS, and expedites end-to-end inference by an average of 1.22× over vLLM.</p>
+
+<h2 id="研究问题">研究问题</h2>
+
+<p>LLM 部署面临 GPU 内存和带宽瓶颈。现有的无损压缩方法由于与 GPU 架构不匹配导致推理速度显著下降：在内核级别，传统熵编码器产生的可变长度比特流破坏了 SIMT 并行性；在系统级别，解耦的流水线导致冗余的内存流量。有损压缩方法（如量化）会导致精度损失，例如激进的 4-bit 量化在 LiveCodeBench 上准确率从 56.0% 降至 36.2%。</p>
+
+<h2 id="方法框架">方法框架</h2>
+
+<p>ZipServ 采用”加载压缩、计算解压”（load-compressed, compute-decompressed）设计。核心创新包括：1）Tensor-Core-Aware Triple Bitmap Encoding (TCA-TBE)：一种新颖的固定长度编码格式，支持常数时间并行解码；2）ZipGEMM 内核：融合解压和 GEMM 计算，直接将权重解压到 Tensor Core 寄存器中，消除中间缓冲区，最大化计算强度。</p>
+
+<h2 id="核心模块">核心模块</h2>
+
+<p>TCA-TBE 编码：利用三个位图（非零位图、符号位图、指数位图）对权重进行固定长度编码，保持 GPU SIMT 并行性。ZipGEMM 内核：融合解压和矩阵乘法，支持 FP16/BF16 输出精度，直接在 Tensor Core 中完成计算。</p>
+
+<h2 id="实验设置">实验设置</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>配置项</th>
+      <th>值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>GPU</td>
+      <td>NVIDIA L40S, A100, H100</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="实验结果">实验结果</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>数值</th>
+      <th>条件/说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>-</td>
+      <td>模型大小减少：30%</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>内核级加速：2.21× (vs cuBLAS)</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>端到端推理加速：1.22× (vs vLLM)</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>内存带宽节省：显著减少内存访问</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>精度损失：0% (无损压缩)</td>
+      <td>-</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="优点">优点</h2>
+
+<ol>
+  <li>无损压缩：保证 bit-exact 精度，无数值误差。2. 硬件感知设计：针对 GPU Tensor Core 优化，支持并行解码。3. 融合内核：消除中间缓冲区，减少内存流量。4. 通用性：适用于各种 LLM 架构，无需重新训练。5. 首个同时提供存储节省和显著加速的无损压缩系统。</li>
+</ol>
+
+<h2 id="局限">局限</h2>
+
+<ol>
+  <li>需要特定的 GPU 架构支持（Tensor Core）。2. 压缩率相比有损压缩方法较低（30% vs 量化可达 75%）。3. 实现复杂度较高，需要自定义 CUDA 内核。4. 对于已经使用低精度训练的场景收益有限。</li>
+</ol>
+
+<h2 id="总结">总结</h2>
+
+<p>ZipServ 通过硬件感知的无损压缩设计，首次实现了在 GPU 上同时获得存储节省和推理加速。TCA-TBE 编码和 ZipGEMM 融合内核的创新设计，为 LLM 部署提供了新的优化方向，特别适用于对精度要求严格的生产环境。</p>
+
         </div>
 
         <aside class="article-rail insights-rail" aria-label="Post navigation and metrics">
@@ -75,18 +219,62 @@ layout: base
             </div>
             <p id="article-rating-summary">Rate this post from 1 to 5 stars.</p>
             <div class="article-rating-stars" id="article-rating-stars" role="radiogroup" aria-label="Rate this post">
-              {% for score in (1..5) %}
+              
                 <button
                   type="button"
                   class="article-rating-star"
-                  data-rating-value="{{ score }}"
+                  data-rating-value="1"
                   role="radio"
                   aria-checked="false"
-                  aria-label="Rate {{ score }} out of 5"
+                  aria-label="Rate 1 out of 5"
                 >
                   ★
                 </button>
-              {% endfor %}
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="2"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 2 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="3"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 3 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="4"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 4 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="5"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 5 out of 5"
+                >
+                  ★
+                </button>
+              
             </div>
           </section>
         </aside>
@@ -375,3 +563,23 @@ layout: base
     buildToc();
   });
 </script>
+
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>33 posts</span>
+            <span>46 categories</span>
+            
+              <span>Updated 2026-03-26</span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

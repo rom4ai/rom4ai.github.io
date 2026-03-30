@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks | ROM4AI Research Ideas</title>
+    <meta name="description" content="The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+
+  </head>
+  <body class="layout-post">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="/" aria-label="ROM4AI Research Ideas">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>ROM4AI Research Ideas</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/" class="">Home</a>
+            
+              <a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Latest note</a>
+            
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main article-page">
+  <article
+    class="article-shell"
+    data-post-id="/robotics/neuro-symbolic/vla/manipulation/energy-efficiency/2026/03/26/price-is-not-right-neuro-symbolic-vs-vla.html"
+    data-metrics-endpoint=""
+  >
+    <div class="article-frame">
+      <a class="back-link" href="/#latest-posts">All research notes</a>
+
+      <header class="article-hero">
+        <div class="article-heading">
+          <p class="article-kicker">Research note</p>
+          <h1>The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks</h1>
+        </div>
+        <div class="article-meta">
+          <span>March 26, 2026</span>
+          
+            <div class="article-tags" aria-label="Categories">
+              
+                <a class="category-chip category-chip--robotics" href="/#category=robotics">robotics</a>
+              
+                <a class="category-chip category-chip--neuro-symbolic" href="/#category=neuro-symbolic">neuro-symbolic</a>
+              
+                <a class="category-chip category-chip--vla" href="/#category=vla">VLA</a>
+              
+                <a class="category-chip category-chip--manipulation" href="/#category=manipulation">manipulation</a>
+              
+                <a class="category-chip category-chip--energy-efficiency" href="/#category=energy-efficiency">energy-efficiency</a>
+              
+            </div>
+          
+        </div>
+      </header>
+
+      <div class="article-context-bar" aria-label="Article context">
+        
+          <section class="article-context-card">
+            <p class="aside-label">Focus areas</p>
+            <ul class="article-category-list">
+              
+                <li>robotics</li>
+              
+                <li>neuro-symbolic</li>
+              
+                <li>VLA</li>
+              
+                <li>manipulation</li>
+              
+                <li>energy-efficiency</li>
+              
+            </ul>
+          </section>
+        
+
+        <section class="article-context-card article-context-card--summary">
+          <p class="aside-label">Context</p>
+          <p>Research idea blog on future AI hardware systems and accelerators.</p>
+        </section>
+      </div>
+
+      <div class="article-layout">
+        <div class="article-content" id="article-content">
+          <h1 id="the-price-is-not-right-neuro-symbolic-methods-outperform-vlas-on-structured-long-horizon-manipulation-tasks">The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks</h1>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2602.19260">arXiv:2602.19260</a></td>
+        <td><a href="https://arxiv.org/pdf/2602.19260.pdf">PDF</a></td>
+        <td><a href="https://price-is-not-right.github.io">项目主页</a></td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<h2 id="摘要">摘要</h2>
+
+<p>Vision-Language-Action (VLA) 模型最近被提出作为通用机器人策略的途径，能够解释自然语言和视觉输入以生成操作动作。然而，它们在结构化、长视野操作任务上的有效性和效率仍不清楚。本文展示了微调的开放权重 VLA 模型 (π₀) 与结合 PDDL 符号规划和学习型低级控制的神经符号架构之间的直接经验比较。在 3 块 Towers of Hanoi 任务上，神经符号模型实现了 95% 的成功率，而表现最好的 VLA 仅为 34%。神经符号模型还能泛化到未见过的 4 块变体（78% 成功率），而两个 VLA 都无法完成任务。在训练期间，VLA 微调消耗的能量几乎是神经符号方法的两个数量级。</p>
+
+<h2 id="1-问题定义">1. 问题定义</h2>
+
+<blockquote>
+  <p>“Vision-Language-Action (VLA) models have recently been proposed as a pathway toward generalist robotic policies capable of interpreting natural language and visual inputs to generate manipulation actions. However, their effectiveness and efficiency on structured, long-horizon manipulation tasks remain unclear.”</p>
+</blockquote>
+
+<p>随着 VLA 模型在机器人领域的兴起，一个关键问题尚未得到解答：这些端到端的基础模型方法在需要顺序推理的结构化长视野任务上是否真的优于传统的结构化方法？特别是，考虑到微调和部署相关的巨大计算和能源成本，这种优势是否合理？</p>
+
+<p>本文通过一个受控的实验设置来回答这个问题：在 Robosuite 模拟环境中设计的 Towers of Hanoi 操作任务，用于全面基准测试多步机器人操作能力。</p>
+
+<h2 id="2-方法框架">2. 方法框架</h2>
+
+<p><img src="/assets/price-is-not-right/fig1-overview.jpg" alt="Overview of the experimental comparison between VLA models and the NSM" />
+<em>图 1：VLA 模型和神经符号模型 (NSM) 之间的实验比较概述。两者都从模拟中接收相同的感官输入。VLA 产生基于高级任务描述或规划器指导的动作，而 NSM 进行符号规划并通过学习到的策略执行。在训练和推理期间监控功率和能量。（来源：原文 Figure 1）</em></p>
+
+<p>本文比较了三种方法：</p>
+
+<h3 id="21-end-to-end-vla-e2e-vla">2.1 End-to-End VLA (E2E-VLA)</h3>
+
+<blockquote>
+  <p>“A vision-language-action model fine-tuned on the training datasets using a single high-level command, ‘Play Towers of Hanoi’, applied at every frame of the training episodes. This model learns the task as a monolithic sequence without explicit decomposition into sub-tasks and does not use any external planning mechanism.”</p>
+</blockquote>
+
+<p>E2E-VLA 使用单一高级命令”Play Towers of Hanoi”进行微调，将整个任务作为单一序列学习，没有明确的子任务分解，也不使用任何外部规划机制。</p>
+
+<h3 id="22-planner-guided-vla-pg-vla">2.2 Planner-Guided VLA (PG-VLA)</h3>
+
+<blockquote>
+  <p>“A vision-language-action model fine-tuned on our datasets using structured subtask commands, in combination with an external planner. This approach decomposes the overall task into smaller natural language sub-goals, enabling stepwise guidance during execution.”</p>
+</blockquote>
+
+<p>PG-VLA 使用结构化的子任务命令进行微调，结合外部规划器。这种方法将整体任务分解为更小的自然语言子目标，在执行期间实现逐步指导。</p>
+
+<h3 id="23-neuro-symbolic-model-nsm">2.3 Neuro-Symbolic Model (NSM)</h3>
+
+<blockquote>
+  <p>“A baseline method that learns both high-level symbolic planning and low-level continuous control directly from demonstrations. The NSM extracts abstract operators and builds a PDDL domain from a small number of demonstrations, executing the task by sequencing learned neural policies according to the planned operator sequence.”</p>
+</blockquote>
+
+<p>NSM 直接从演示中学习高级符号规划和低级连续控制。它从少量演示中提取抽象操作符并构建 PDDL 域，根据规划的操作符序列执行学习到的神经策略。</p>
+
+<h2 id="3-核心模块">3. 核心模块</h2>
+
+<h3 id="31-vla-架构">3.1 VLA 架构</h3>
+
+<p>VLA 模型使用 π₀ (OpenPi) 作为代表性的开放权重 VLA 模型，采用以下配置：</p>
+<ul>
+  <li><strong>视觉 - 语言主干</strong>: PaliGemma 2B LoRA</li>
+  <li><strong>动作头</strong>: Gemma 300M LoRA</li>
+  <li><strong>微调方法</strong>: LoRA 微调 30k 步</li>
+  <li><strong>训练数据</strong>: 300 集 Towers of Hanoi 演示</li>
+</ul>
+
+<h3 id="32-神经符号架构">3.2 神经符号架构</h3>
+
+<p>NSM 采用分层架构，结合符号规划和神经控制：</p>
+
+<blockquote>
+  <p>“Neuro-symbolic architectures combine symbolic reasoning with neural control. A planner solves a STRIPS task to produce a plan, where each operator is refined into a neural skill. Each skill interacts with the environment to realize the operator’s effects, transitioning the system from a state to a new state.”</p>
+</blockquote>
+
+<p><strong>符号抽象</strong>: 从原始演示轨迹中提取节点转换，形成表示抽象状态的图。使用基于 ASP 的求解器推断 PDDL 形式的符号域。</p>
+
+<p><strong>目标检测</strong>: 训练 YOLOv8 边界框检测器结合轻量级梯度提升回归器，从两个摄像头视图（静态摄像头和腕部安装摄像头）估计 3D 物体姿态。</p>
+
+<p><strong>训练控制</strong>: 每个操作符关联一个神经策略，使用扩散模型训练，捕获多模态动作分布并提高鲁棒性。</p>
+
+<p><img src="/assets/price-is-not-right/fig2-observations.jpg" alt="Example observations from the dataset" />
+<em>图 2：数据集中的示例观测。左：代理视图 RGB 图像。右：腕部安装摄像头 RGB 图像。（来源：原文 Figure 2）</em></p>
+
+<h2 id="4-实验设置">4. 实验设置</h2>
+
+<h3 id="41-硬件配置">4.1 硬件配置</h3>
+
+<p>所有微调、训练、推理和实验均在单个 NVIDIA GeForce RTX 4090（24GB 内存）上执行。</p>
+<ul>
+  <li>GPU 功耗使用 Weights &amp; Biases 测量</li>
+  <li>CPU 功耗通过访问 RAPL 日志测量</li>
+  <li>空闲 GPU 功耗平均约 25W，空闲 CPU 功耗约 2.5W</li>
+</ul>
+
+<h3 id="42-任务环境">4.2 任务环境</h3>
+
+<p>实验在三个不同的任务环境中进行：</p>
+
+<ol>
+  <li><strong>Individual Move</strong>: 基本的抓取和放置任务，代理必须将单个块放置到另一个指定块或区域上</li>
+  <li><strong>3-Block Towers of Hanoi</strong>: 三块 Towers of Hanoi 任务，需要将塔从左平台重建到右平台，同时遵守较大的块永远不能放在较小块上的约束</li>
+  <li><strong>4-Block Towers of Hanoi</strong>: 最具挑战性的变体，四块 Towers of Hanoi 任务</li>
+</ol>
+
+<h3 id="43-训练数据">4.3 训练数据</h3>
+
+<p><strong>VLA 训练数据集</strong>: 300 集演示</p>
+<ul>
+  <li>前 150 集：完整的 Towers of Hanoi 运行，随机选择 4 个可能块中的 3 个</li>
+  <li>后 150 集：从块的随机有效配置开始，同时遵守任务规则</li>
+</ul>
+
+<p><strong>NSM 训练数据集</strong>: 仅 50 集随机采样的 Stacking 任务（抓取和放置对）演示</p>
+<ul>
+  <li>关键：NSM 在演示期间从未直接观察 Towers of Hanoi 解析，而是从这些更简单的堆叠演示中推断规则和符号规划域</li>
+</ul>
+
+<h3 id="44-评估指标">4.4 评估指标</h3>
+
+<p><strong>任务指标</strong>:</p>
+<ul>
+  <li>成功率（主要指标）</li>
+  <li>任务进展率（完成的子任务百分比）</li>
+  <li>泛化能力（4 块变体）</li>
+</ul>
+
+<p><strong>能源指标</strong>:</p>
+<ul>
+  <li>训练期间：总 GPU 能量消耗、平均 GPU 功率、平均 CPU 利用率、总训练时间</li>
+  <li>执行期间：平均 GPU 和 CPU 利用率、平均执行时间、每集能量消耗</li>
+</ul>
+
+<h2 id="5-实验结果">5. 实验结果</h2>
+
+<h3 id="51-能源消耗">5.1 能源消耗</h3>
+
+<h4 id="训练和微调">训练和微调</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>E2E-VLA</th>
+      <th>PG-VLA</th>
+      <th>NSM</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>训练时间</strong></td>
+      <td>1d 16h 26m</td>
+      <td>1d 15h 42m</td>
+      <td><strong>34m</strong></td>
+    </tr>
+    <tr>
+      <td><strong>GPU 平均功率 (W)</strong></td>
+      <td>423.6</td>
+      <td>409.1</td>
+      <td><strong>316.5</strong></td>
+    </tr>
+    <tr>
+      <td><strong>GPU 能量 (MJ)</strong></td>
+      <td>61.7</td>
+      <td>58.5</td>
+      <td><strong>0.65</strong></td>
+    </tr>
+    <tr>
+      <td><strong>CPU 平均功率 (W)</strong></td>
+      <td>46.6</td>
+      <td>44.7</td>
+      <td><strong>97.7</strong></td>
+    </tr>
+    <tr>
+      <td><strong>CPU 能量 (MJ)</strong></td>
+      <td>6.8</td>
+      <td>6.4</td>
+      <td><strong>0.2</strong></td>
+    </tr>
+    <tr>
+      <td><strong>总能量 (MJ)</strong></td>
+      <td>68.5</td>
+      <td>64.9</td>
+      <td><strong>0.85</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>关键发现</strong>: VLA LoRA 微调消耗的能量几乎是 NSM 训练的两个数量级（68.5 MJ vs 0.85 MJ）。每个 VLA 微调需要超过 1.5 天，而 NSM 在 34 分钟内完成训练。</p>
+
+<h4 id="推理和执行">推理和执行</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>设置</th>
+      <th>指标</th>
+      <th>E2E-VLA</th>
+      <th>PG-VLA</th>
+      <th>NSM</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>所有任务</strong></td>
+      <td>GPU 功率 (W)</td>
+      <td>72.4</td>
+      <td>70.8</td>
+      <td><strong>0</strong></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>CPU 功率 (W)</td>
+      <td>42.8</td>
+      <td>43.2</td>
+      <td><strong>19.4</strong></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>总功率 (W)</td>
+      <td>115.2</td>
+      <td>114.0</td>
+      <td><strong>19.4</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Individual Move</strong></td>
+      <td>成功率 (%)</td>
+      <td>87.0</td>
+      <td>59.6</td>
+      <td><strong>99.0</strong></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>持续时间 (s)</td>
+      <td>13.8</td>
+      <td>12.4</td>
+      <td><strong>6.3</strong></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>能量 (kJ)</td>
+      <td>1.59</td>
+      <td>1.41</td>
+      <td><strong>0.12</strong></td>
+    </tr>
+    <tr>
+      <td><strong>3-Block Hanoi</strong></td>
+      <td>成功率 (%)</td>
+      <td>34.0</td>
+      <td>0.0</td>
+      <td><strong>95.0</strong></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>进展率 (%)</td>
+      <td>49.6</td>
+      <td>23.9</td>
+      <td><strong>97.3</strong></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>每集能量 (kJ)</td>
+      <td>7.96</td>
+      <td>6.94</td>
+      <td><strong>0.83</strong></td>
+    </tr>
+    <tr>
+      <td><strong>4-Block Hanoi</strong></td>
+      <td>成功率 (%)</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td><strong>78.0</strong></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>进展率 (%)</td>
+      <td>2.5</td>
+      <td>3.6</td>
+      <td><strong>84.4</strong></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>每集能量 (kJ)</td>
+      <td>5.77</td>
+      <td>4.96</td>
+      <td><strong>1.44</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>关键发现</strong>:</p>
+<ul>
+  <li>NSM 在所有任务上的成功率都显著高于 VLA 模型</li>
+  <li>VLA 需要 GPU 支持的推理，而 NSM 不需要</li>
+  <li>VLA 的总功率超过 NSM 的 5 倍，每集能量消耗大约是一个数量级</li>
+  <li>在 4 块 Hanoi 任务上，只有 NSM 能够完成任务（78% 成功率）</li>
+</ul>
+
+<h3 id="52-vlm-规划器比较">5.2 VLM 规划器比较</h3>
+
+<p>本文还评估了三个 VLM 作为规划器的能力：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>GPT-5</th>
+      <th>Qwen (7B)</th>
+      <th>PaLI-Gemma (3B)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>最优计划 (%)</strong></td>
+      <td><strong>84</strong></td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td><strong>次优计划 (%)</strong></td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td><strong>无效计划 (%)</strong></td>
+      <td><strong>16</strong></td>
+      <td>100</td>
+      <td>100</td>
+    </tr>
+    <tr>
+      <td><strong>延迟 (s)</strong></td>
+      <td>63.1</td>
+      <td>1.83</td>
+      <td><strong>0.22</strong></td>
+    </tr>
+    <tr>
+      <td><strong>每查询总能量 (J)</strong></td>
+      <td>-</td>
+      <td>269.2</td>
+      <td><strong>28.8</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>“These results indicate that VLMs are not reliable and energy-efficient planners. This is consistent with Kambhampati’s finding that large language models cannot reliably plan.”</p>
+</blockquote>
+
+<p>GPT-5 在生成有效和最优计划方面远优于 Qwen 和 PaliGemma，但由于其规模更大，预计能源消耗也更大。</p>
+
+<h2 id="6-优点与局限">6. 优点与局限</h2>
+
+<h3 id="优点">优点</h3>
+
+<p><strong>神经符号方法的优势</strong>:</p>
+
+<ol>
+  <li><strong>更高的任务成功率</strong>: 在 3 块 Hanoi 任务上达到 95% 成功率，而 VLA 最佳为 34%</li>
+  <li><strong>更好的泛化能力</strong>: 能够泛化到未见过的 4 块变体（78% 成功率），而 VLA 完全失败</li>
+  <li><strong>显著的能源效率</strong>: 训练能量消耗减少近两个数量级（0.85 MJ vs 68.5 MJ）</li>
+  <li><strong>更快的训练速度</strong>: 34 分钟 vs 1.5 天</li>
+  <li><strong>更低的推理成本</strong>: 不需要 GPU 支持的推理</li>
+  <li><strong>数据效率</strong>: 仅使用 50 集演示（vs VLA 的 300 集）</li>
+</ol>
+
+<h3 id="局限">局限</h3>
+
+<p><strong>神经符号方法的限制</strong>:</p>
+
+<ol>
+  <li><strong>适用范围</strong>: 主要适用于具有明确程序约束的结构化任务域</li>
+  <li><strong>符号抽象学习</strong>: 需要从演示中学习符号抽象，可能在更开放的任务域中更具挑战性</li>
+  <li><strong>对象检测依赖</strong>: 依赖 YOLOv8 检测器进行对象姿态估计，可能受检测质量影响</li>
+</ol>
+
+<p><strong>VLA 方法的限制</strong>:</p>
+
+<ol>
+  <li><strong>能源密集型</strong>: 微调和推理都需要大量能源</li>
+  <li><strong>泛化能力差</strong>: 难以泛化到训练分布外的任务变体</li>
+  <li><strong>长视野规划困难</strong>: 在需要顺序推理的任务上表现不佳</li>
+  <li><strong>训练时间长</strong>: 需要大量时间和计算资源进行微调</li>
+</ol>
+
+<h2 id="7-总结">7. 总结</h2>
+
+<blockquote>
+  <p>“The neuro-symbolic model outperforms the fine-tuned VLAs on the Towers of Hanoi task in both task success and energy consumption. It also generalizes to the 4-block variant despite not being trained on it, demonstrating robustness on structured, multi-step manipulation.”</p>
+</blockquote>
+
+<p>本文展示了在结构化长视野机器人操作任务上，神经符号方法相对于端到端 VLA 模型的显著优势。关键发现包括：</p>
+
+<ul>
+  <li>在 3 块 Towers of Hanoi 基准测试中，神经符号方法实现了 95% 的成功率，而表现最好的 VLA 仅为 34%</li>
+  <li>神经符号模型在训练期间消耗的能量几乎少两个数量级</li>
+  <li>神经符号模型能够泛化到未见过的 4 块变体（78% 成功率），而两个 VLA 都无法完成任何一集</li>
+</ul>
+
+<blockquote>
+  <p>“For manipulation tasks governed by explicit procedural constraints, incorporating symbolic structure can yield substantial advantages in reliability, data efficiency, and energy consumption.”</p>
+</blockquote>
+
+<p>这些结果强调了在具有明确程序约束的操作任务中，结合符号结构可以在可靠性、数据效率和能源消耗方面带来显著优势。</p>
+
+<h2 id="参考文献">参考文献</h2>
+
+<ol>
+  <li>
+    <p>Duggan T, Lorang P, Lu H, Scheutz M. The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks with Significantly Lower Energy Consumption. arXiv:2602.19260, 2026.</p>
+  </li>
+  <li>
+    <p>Lorang P, Lu H, Huemer J, Zips P, Scheutz M. Few-shot neuro-symbolic imitation learning for long-horizon planning and acting. arXiv:2508.21501, 2025.</p>
+  </li>
+  <li>
+    <p>Black K, et al. π₀: A vision-language-action flow model for general robot control. arXiv:2410.24164, 2024.</p>
+  </li>
+  <li>
+    <p>Kim MJ, et al. OpenVLA: An open-source vision-language-action model. arXiv:2406.09246, 2024.</p>
+  </li>
+  <li>
+    <p>Kambhampati S, et al. LLMs can’t plan, but can help planning in LLM-modulo frameworks. 2024.</p>
+  </li>
+</ol>
+
+        </div>
+
+        <aside class="article-rail insights-rail" aria-label="Post navigation and metrics">
+          <section class="rail-card article-rail-card article-rail-card--toc" id="article-toc-card" hidden>
+            <div>
+              <p class="rail-kicker">Directory</p>
+              <h2>On this page</h2>
+            </div>
+            <nav id="article-toc" class="article-toc" aria-label="Table of contents"></nav>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="View count">
+            <div>
+              <p class="rail-kicker">Views</p>
+              <h2 id="article-views">—</h2>
+            </div>
+            <p id="article-views-note">Shared views across visitors.</p>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="Post rating">
+            <div>
+              <p class="rail-kicker">Rating</p>
+              <h2 id="article-rating-average">—</h2>
+            </div>
+            <p id="article-rating-summary">Rate this post from 1 to 5 stars.</p>
+            <div class="article-rating-stars" id="article-rating-stars" role="radiogroup" aria-label="Rate this post">
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="1"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 1 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="2"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 2 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="3"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 3 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="4"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 4 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="5"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 5 out of 5"
+                >
+                  ★
+                </button>
+              
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </article>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const articleShell = document.querySelector('.article-shell');
+    const articleContent = document.getElementById('article-content');
+    const tocCard = document.getElementById('article-toc-card');
+    const tocContainer = document.getElementById('article-toc');
+    const viewsElement = document.getElementById('article-views');
+    const viewsNote = document.getElementById('article-views-note');
+    const ratingAverage = document.getElementById('article-rating-average');
+    const ratingSummary = document.getElementById('article-rating-summary');
+    const ratingStarsContainer = document.getElementById('article-rating-stars');
+    const ratingButtons = Array.from(document.querySelectorAll('.article-rating-star'));
+
+    if (!articleShell || !articleContent) return;
+
+    const postId = articleShell.dataset.postId;
+    const metricsEndpoint = (articleShell.dataset.metricsEndpoint || '').replace(/\/$/, '');
+    const sessionViewKey = `post-viewed:${postId}`;
+    const sessionRatingKey = `post-rated:${postId}`;
+
+    function slugify(text) {
+      return (text || '')
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    function ensureHeadingIds(headings) {
+      const seenIds = new Set();
+      headings.forEach((heading, index) => {
+        let nextId = heading.id || slugify(heading.textContent) || `section-${index + 1}`;
+        while (seenIds.has(nextId)) {
+          nextId = `${nextId}-${index + 1}`;
+        }
+        heading.id = nextId;
+        seenIds.add(nextId);
+      });
+    }
+
+    function buildToc() {
+      if (!tocCard || !tocContainer) return;
+
+      const headings = Array.from(articleContent.querySelectorAll('h2, h3'));
+      if (headings.length < 2) {
+        tocCard.hidden = true;
+        return;
+      }
+
+      ensureHeadingIds(headings);
+
+      const list = document.createElement('ul');
+      list.className = 'article-toc-list';
+
+      headings.forEach((heading) => {
+        const item = document.createElement('li');
+        item.className = `article-toc-item article-toc-item--${heading.tagName.toLowerCase()}`;
+
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = heading.textContent.trim();
+
+        item.appendChild(link);
+        list.appendChild(item);
+      });
+
+      tocContainer.innerHTML = '';
+      tocContainer.appendChild(list);
+      tocCard.hidden = false;
+    }
+
+    function formatNumber(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue)) return '—';
+      return new Intl.NumberFormat().format(numericValue);
+    }
+
+    function formatAverage(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue) || numericValue <= 0) return '—';
+      return `${numericValue.toFixed(1)} / 5`;
+    }
+
+    function setRatingSelection(selectedValue) {
+      ratingButtons.forEach((button) => {
+        const value = Number(button.dataset.ratingValue);
+        const isActive = Number.isFinite(selectedValue) && value <= selectedValue;
+        const isChecked = Number.isFinite(selectedValue) && value === selectedValue;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-checked', isChecked ? 'true' : 'false');
+      });
+    }
+
+    function disableRatingButtons(disabled) {
+      ratingButtons.forEach((button) => {
+        button.disabled = disabled;
+        button.tabIndex = disabled ? -1 : 0;
+      });
+      if (ratingStarsContainer) {
+        ratingStarsContainer.classList.toggle('is-disabled', disabled);
+      }
+    }
+
+    function getStoredRating() {
+      const storedRating = Number(window.localStorage.getItem(sessionRatingKey));
+      return storedRating >= 1 && storedRating <= 5 ? storedRating : null;
+    }
+
+    function applyStoredRatingSummary(count) {
+      const normalizedCount = Number(count);
+      if (!ratingSummary) return;
+      ratingSummary.textContent = `${normalizedCount || 0} rating${normalizedCount === 1 ? '' : 's'} submitted. Your rating has been saved.`;
+    }
+
+    function updateMetrics(metrics) {
+      if (viewsElement) viewsElement.textContent = formatNumber(metrics.views);
+      if (ratingAverage) ratingAverage.textContent = formatAverage(metrics.ratingAverage);
+
+      if (ratingSummary) {
+        const count = Number(metrics.ratingCount);
+        if (Number.isFinite(count) && count > 0) {
+          ratingSummary.textContent = `${count} rating${count === 1 ? '' : 's'} submitted.`;
+        } else {
+          ratingSummary.textContent = 'Be the first to rate this post.';
+        }
+      }
+    }
+
+    function setMetricsUnavailable() {
+      if (viewsElement) viewsElement.textContent = '—';
+      if (viewsNote) viewsNote.textContent = 'Metrics API not configured yet.';
+      if (ratingAverage) ratingAverage.textContent = '—';
+      if (ratingSummary) ratingSummary.textContent = 'Ratings will appear when the metrics API is connected.';
+      disableRatingButtons(true);
+    }
+
+    async function fetchJson(url, options) {
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        ...options
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      return response.json();
+    }
+
+    async function loadMetrics() {
+      if (!metricsEndpoint || !postId) {
+        setMetricsUnavailable();
+        return null;
+      }
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-metrics?id=${encodeURIComponent(postId)}`);
+        updateMetrics(metrics);
+        if (viewsNote) viewsNote.textContent = 'Shared views across visitors.';
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to load shared metrics right now.';
+        if (ratingSummary) ratingSummary.textContent = 'Unable to load ratings right now.';
+        return null;
+      }
+    }
+
+    async function trackView() {
+      if (!metricsEndpoint || !postId || window.sessionStorage.getItem(sessionViewKey)) return null;
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-view`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId })
+        });
+        updateMetrics(metrics);
+        window.sessionStorage.setItem(sessionViewKey, 'true');
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to update views right now.';
+        return null;
+      }
+    }
+
+    async function initializeMetrics() {
+      const metrics = await loadMetrics();
+      if (metrics) {
+        await trackView();
+        return;
+      }
+
+      if (metricsEndpoint && postId) {
+        await trackView();
+      }
+    }
+
+    function handleRatingKeydown(event) {
+      const currentValue = Number(event.currentTarget.dataset.ratingValue);
+      if (!Number.isInteger(currentValue)) return;
+
+      if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const nextButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.min(5, currentValue + 1));
+        if (nextButton) nextButton.focus();
+      }
+
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        const previousButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.max(1, currentValue - 1));
+        if (previousButton) previousButton.focus();
+      }
+    }
+
+    const storedRating = getStoredRating();
+    if (storedRating) {
+      setRatingSelection(storedRating);
+      disableRatingButtons(true);
+    }
+
+    if (!metricsEndpoint || !postId) {
+      setMetricsUnavailable();
+    } else {
+      disableRatingButtons(Boolean(storedRating));
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('keydown', handleRatingKeydown);
+    });
+
+    initializeMetrics();
+
+    async function submitRating(value) {
+      if (!metricsEndpoint || !postId || !Number.isInteger(value) || value < 1 || value > 5) return;
+
+      disableRatingButtons(true);
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-rating`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId, rating: value })
+        });
+        updateMetrics(metrics);
+        setRatingSelection(value);
+        window.localStorage.setItem(sessionRatingKey, String(value));
+        applyStoredRatingSummary(metrics.ratingCount);
+      } catch (error) {
+        disableRatingButtons(false);
+        if (ratingSummary) ratingSummary.textContent = 'Unable to submit your rating right now.';
+      }
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        submitRating(Number(button.dataset.ratingValue));
+      });
+    });
+
+    buildToc();
+  });
+</script>
+
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>33 posts</span>
+            <span>46 categories</span>
+            
+              <span>Updated 2026-03-26</span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,54 +1,208 @@
----
-layout: base
----
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MINISA: Minimal Instruction Set Architecture for Next-gen Reconfigurable Inference Accelerator | ROM4AI Research Ideas</title>
+    <meta name="description" content="            原文链接: arXiv      PDF      ">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
 
-<main class="site-main article-page">
+  </head>
+  <body class="layout-post">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="/" aria-label="ROM4AI Research Ideas">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>ROM4AI Research Ideas</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/" class="">Home</a>
+            
+              <a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Latest note</a>
+            
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main article-page">
   <article
     class="article-shell"
-    data-post-id="{{ page.post_id | default: page.url }}"
-    data-metrics-endpoint="{{ site.post_metrics_endpoint | default: '' }}"
+    data-post-id="/accelerator/isa/hardware/ai/reconfigurable/2026/03/24/minisa-reconfigurable-inference-accelerator.html"
+    data-metrics-endpoint=""
   >
     <div class="article-frame">
-      <a class="back-link" href="{{ '/' | relative_url }}#latest-posts">All research notes</a>
+      <a class="back-link" href="/#latest-posts">All research notes</a>
 
       <header class="article-hero">
         <div class="article-heading">
           <p class="article-kicker">Research note</p>
-          <h1>{{ page.title }}</h1>
+          <h1>MINISA: Minimal Instruction Set Architecture for Next-gen Reconfigurable Inference Accelerator</h1>
         </div>
         <div class="article-meta">
-          <span>{{ page.date | date: "%B %-d, %Y" }}</span>
-          {% if page.categories %}
+          <span>March 24, 2026</span>
+          
             <div class="article-tags" aria-label="Categories">
-              {% for category in page.categories %}
-                <a class="category-chip category-chip--{{ category | slugify }}" href="{{ '/' | relative_url }}#category={{ category | slugify }}">{{ category }}</a>
-              {% endfor %}
+              
+                <a class="category-chip category-chip--accelerator" href="/#category=accelerator">accelerator</a>
+              
+                <a class="category-chip category-chip--isa" href="/#category=isa">isa</a>
+              
+                <a class="category-chip category-chip--hardware" href="/#category=hardware">hardware</a>
+              
+                <a class="category-chip category-chip--ai" href="/#category=ai">ai</a>
+              
+                <a class="category-chip category-chip--reconfigurable" href="/#category=reconfigurable">reconfigurable</a>
+              
             </div>
-          {% endif %}
+          
         </div>
       </header>
 
       <div class="article-context-bar" aria-label="Article context">
-        {% if page.categories %}
+        
           <section class="article-context-card">
             <p class="aside-label">Focus areas</p>
             <ul class="article-category-list">
-              {% for category in page.categories %}
-                <li>{{ category }}</li>
-              {% endfor %}
+              
+                <li>accelerator</li>
+              
+                <li>isa</li>
+              
+                <li>hardware</li>
+              
+                <li>ai</li>
+              
+                <li>reconfigurable</li>
+              
             </ul>
           </section>
-        {% endif %}
+        
 
         <section class="article-context-card article-context-card--summary">
           <p class="aside-label">Context</p>
-          <p>{{ site.description }}</p>
+          <p>Research idea blog on future AI hardware systems and accelerators.</p>
         </section>
       </div>
 
       <div class="article-layout">
         <div class="article-content" id="article-content">
-          {{ content }}
+          <table>
+  <tbody>
+    <tr>
+      <td><strong>原文链接:</strong> <a href="https://arxiv.org/abs/2603.20623">arXiv</a></td>
+      <td><a href="https://arxiv.org/pdf/2603.20623.pdf">PDF</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="minisa-minimal-instruction-set-architecture-for-next-gen-reconfigurable-inference-accelerator">MINISA: Minimal Instruction Set Architecture for Next-gen Reconfigurable Inference Accelerator</h1>
+
+<h2 id="摘要">摘要</h2>
+
+<p>MINISA 是一种最小化的指令集架构，专为下一代可重构推理加速器设计。现代可重构 AI 加速器依赖丰富的映射和数据布局灵活性来维持高利用率，但通过细粒度微控制暴露这种灵活性会导致从片外存储器获取配置位的控制开销过大。MINISA 在 Virtual Neurons (VNs) 粒度上对可重构加速器进行编程，这是保留硬件灵活性的最粗控制粒度，同时也是避免不必要控制成本的最细粒度。配合 FEATHER+ 架构，MINISA 仅用 8 条指令就实现了数据流和布局的运行时协同切换，将指令流量减少 35 倍到 40 万倍，消除占微指令周期 96.9% 的指令获取停顿，实现高达 31.6 倍的端到端加速。</p>
+
+<h2 id="研究问题">研究问题</h2>
+
+<p>现代可重构 AI 加速器面临严重的控制开销问题。FEATHER 作为最先进的加速器，支持每个工作负载的 (dataflow, layout) 协同切换，但其编程接口暴露了细粒度或微码控制的缓冲布局、片上路由和数据到 PE 映射。虽然表达性强，但这种范式会膨胀指令轨迹，增加片外指令获取流量，并消耗有限的宝贵片上存储器来存储指令。由此产生的控制足迹会直接限制芯片上适合的计算块大小，降低算术强度并损害端到端吞吐量。随着加速器在阵列维度上的扩展和工作负载多样性的增加，这种控制开销成为一级瓶颈。研究显示，指令获取停顿比例从 0%（小于 8×8 PE 阵列的 FEATHER+）上升到 96.9%（16×256 FEATHER+）。</p>
+
+<h2 id="方法框架">方法框架</h2>
+
+<p>本文提出 MINISA，一个紧凑的 VN 抽象指令集架构，仅用 8 条指令就能捕捉 FEATHER 在映射和布局方面的灵活性。布局设置指令参数化片上缓冲中 VNs 的嵌套循环顺序。映射指令指定数据流并在当前布局配置下触发计算块的执行。对于单层，程序轨迹由三条布局指令后跟一系列 ExecuteMapping 和 ExecuteStreaming 调用组成。对于连续层，第一层的输出成为下一层的输入，允许使用下一层的 SetIVNLayout 来指定下一层的输出布局，从而跳过当前层的 SetOVNLayout。MINISA 将控制从单个元素提升到硬件原子点积单元的粒度，在不增加额外冗余成本的情况下精确捕捉硬件的可重构性。</p>
+
+<h2 id="核心模块">核心模块</h2>
+
+<p>FEATHER+ 架构包含三个关键组件：(1) NEST：列独立的 AH×AW PE 阵列，每个 PE 持有 2×AH 局部寄存器（双缓冲以隐藏加载延迟）并执行 AH 元素点积；(2) BIRRD：多级重排序 - 归约网络，在数据归约期间改变目标银行；(3) 存储系统包括 Streaming Buffer（存储”流式张量”，在每个 NEST 列内从上到下流水线化）、Stationary Buffer（在局部 PE 寄存器中存储”固定张量”）和 Output Buffer（存储需要未来更新的部分和）。FEATHER+ 通过全互连分发网络、简化的流式缓冲银行和从输出缓冲到固定缓冲的链路这三项架构改进，消除了片上缓冲中的数据重复，支持动态工作负载。</p>
+
+<h2 id="实验设置">实验设置</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>配置项</th>
+      <th>值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>评估设置</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="实验结果">实验结果</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>数值</th>
+      <th>条件/说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>-</td>
+      <td>指令流量减少：几何平均减少 35 倍到 (4×10^5) 倍</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>指令获取停顿：从 96.9% 降至 &lt;0.1%</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>端到端加速：16×256 FEATHER+ 最高 31.6 倍加速</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>指令 - 数据比：从 ~100 倍 (微指令编程) 降至可忽略不计 (MINISA)</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>面积开销：FEATHER+ 相比 FEATHER 仅增加最多 7% 资源</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>计算利用率：所有不规则工作负载形状下都能成功利用可用 PEs</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>可扩展性：AW 从 64 扩展到 256 实现近线性 4 倍加速；AH 从 4 扩展到 16 实现 2.6 倍 -4 倍加速</td>
+      <td>-</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="优点">优点</h2>
+
+<ol>
+  <li>最小化控制开销：VN 抽象精确捕捉硬件灵活性，不增加冗余成本。2. 指令效率高：仅 8 条指令实现完整的映射和布局控制。3. 支持动态工作负载：FEATHER+ 支持输入和权重在运行时到达或变化，适用于 LLM 推理等场景。4. 消除数据重复：全互连分发网络允许任意驻留数据灵活多播到任意 PE 列。5. 高可扩展性：增加 AW 可扩展独立并行性，增加 AH 可提高峰值吞吐量。6. 广泛适用性：支持 AI、FHE、ZKP 等多领域的不规则矩阵乘法。</li>
+</ol>
+
+<h2 id="局限">局限</h2>
+
+<ol>
+  <li>硬件修改需求：需要 FEATHER+ 的架构改进（全互连分发网络等）才能充分发挥 MINISA 优势。2. 粒度限制：VN 大小必须 ≤ AH 才能充分利用 PE 列，对于 VN 大小 &lt; AH 的工作负载，只能激活部分 PEs。3. 编译复杂度：需要编译器框架（如 ACT 生态系统）进行布局约束的映射搜索。4. 面积开销：虽然仅 7%，但对于极小规模配置（如 4×4）仍需额外互连资源。</li>
+</ol>
+
+<h2 id="总结">总结</h2>
+
+<p>MINISA 是首个能够在可忽略指令开销下实现数据流和数据布局运行时协同切换的 ISA，使一个加速器能够高效支持具有广泛变化和不规则形状的工作负载。其核心洞见是 Virtual Neuron (VN) 抽象，将重配置从单个元素提升到硬件原子点积单元的粒度。这种抽象精确捕捉硬件的可重构性而不增加额外冗余成本，并以编译器友好的形式统一映射和布局控制。配合 FEATHER+ 架构，MINISA 使重配置在实践中变得可行，能够在 FHE、ZKP 和 AI 等多领域的不同形状矩阵乘法中实现高效计算。代码开源：https://github.com/maeri-project/FEATHER/tree/main/minisa</p>
+
         </div>
 
         <aside class="article-rail insights-rail" aria-label="Post navigation and metrics">
@@ -75,18 +229,62 @@ layout: base
             </div>
             <p id="article-rating-summary">Rate this post from 1 to 5 stars.</p>
             <div class="article-rating-stars" id="article-rating-stars" role="radiogroup" aria-label="Rate this post">
-              {% for score in (1..5) %}
+              
                 <button
                   type="button"
                   class="article-rating-star"
-                  data-rating-value="{{ score }}"
+                  data-rating-value="1"
                   role="radio"
                   aria-checked="false"
-                  aria-label="Rate {{ score }} out of 5"
+                  aria-label="Rate 1 out of 5"
                 >
                   ★
                 </button>
-              {% endfor %}
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="2"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 2 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="3"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 3 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="4"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 4 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="5"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 5 out of 5"
+                >
+                  ★
+                </button>
+              
             </div>
           </section>
         </aside>
@@ -375,3 +573,23 @@ layout: base
     buildToc();
   });
 </script>
+
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>33 posts</span>
+            <span>46 categories</span>
+            
+              <span>Updated 2026-03-26</span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

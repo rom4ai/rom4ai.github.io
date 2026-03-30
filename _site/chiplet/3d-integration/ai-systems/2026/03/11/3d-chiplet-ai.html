@@ -1,54 +1,119 @@
----
-layout: base
----
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>3D Chiplet Systems for AI: Bandwidth-Centric Compute Integration | ROM4AI Research Ideas</title>
+    <meta name="description" content="Why chiplets for AI now">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
 
-<main class="site-main article-page">
+  </head>
+  <body class="layout-post">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="/" aria-label="ROM4AI Research Ideas">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>ROM4AI Research Ideas</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/" class="">Home</a>
+            
+              <a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Latest note</a>
+            
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main article-page">
   <article
     class="article-shell"
-    data-post-id="{{ page.post_id | default: page.url }}"
-    data-metrics-endpoint="{{ site.post_metrics_endpoint | default: '' }}"
+    data-post-id="/chiplet/3d-integration/ai-systems/2026/03/11/3d-chiplet-ai.html"
+    data-metrics-endpoint=""
   >
     <div class="article-frame">
-      <a class="back-link" href="{{ '/' | relative_url }}#latest-posts">All research notes</a>
+      <a class="back-link" href="/#latest-posts">All research notes</a>
 
       <header class="article-hero">
         <div class="article-heading">
           <p class="article-kicker">Research note</p>
-          <h1>{{ page.title }}</h1>
+          <h1>3D Chiplet Systems for AI: Bandwidth-Centric Compute Integration</h1>
         </div>
         <div class="article-meta">
-          <span>{{ page.date | date: "%B %-d, %Y" }}</span>
-          {% if page.categories %}
+          <span>March 11, 2026</span>
+          
             <div class="article-tags" aria-label="Categories">
-              {% for category in page.categories %}
-                <a class="category-chip category-chip--{{ category | slugify }}" href="{{ '/' | relative_url }}#category={{ category | slugify }}">{{ category }}</a>
-              {% endfor %}
+              
+                <a class="category-chip category-chip--chiplet" href="/#category=chiplet">chiplet</a>
+              
+                <a class="category-chip category-chip--3d-integration" href="/#category=3d-integration">3d-integration</a>
+              
+                <a class="category-chip category-chip--ai-systems" href="/#category=ai-systems">ai-systems</a>
+              
             </div>
-          {% endif %}
+          
         </div>
       </header>
 
       <div class="article-context-bar" aria-label="Article context">
-        {% if page.categories %}
+        
           <section class="article-context-card">
             <p class="aside-label">Focus areas</p>
             <ul class="article-category-list">
-              {% for category in page.categories %}
-                <li>{{ category }}</li>
-              {% endfor %}
+              
+                <li>chiplet</li>
+              
+                <li>3d-integration</li>
+              
+                <li>ai-systems</li>
+              
             </ul>
           </section>
-        {% endif %}
+        
 
         <section class="article-context-card article-context-card--summary">
           <p class="aside-label">Context</p>
-          <p>{{ site.description }}</p>
+          <p>Research idea blog on future AI hardware systems and accelerators.</p>
         </section>
       </div>
 
       <div class="article-layout">
         <div class="article-content" id="article-content">
-          {{ content }}
+          <h2 id="why-chiplets-for-ai-now">Why chiplets for AI now</h2>
+
+<p>Large AI workloads are increasingly memory- and communication-bound. Monolithic dies face reticle limits, poor yield at scale, and escalating cost. 3D chiplet architectures offer a path to scale bandwidth per watt.</p>
+
+<h2 id="proposed-architecture">Proposed architecture</h2>
+
+<p>Compose a vertical stack with:</p>
+
+<ul>
+  <li>top-tier compute chiplets (matrix/tensor engines),</li>
+  <li>mid-tier network-on-interposer routing chiplets,</li>
+  <li>bottom-tier stacked SRAM/HBM-like memory chiplets.</li>
+</ul>
+
+<p>Use workload-aware placement where attention-heavy layers map close to high-bandwidth memory, while MLP-heavy sections map to dense compute layers.</p>
+
+<h2 id="research-hypothesis">Research hypothesis</h2>
+
+<p>Topology-aware graph partitioning plus thermal-aware placement can significantly improve effective throughput under power limits compared with flat multi-die systems.</p>
+
+<h2 id="experimental-roadmap">Experimental roadmap</h2>
+
+<ol>
+  <li>Build cycle-level simulator with inter-chiplet link models.</li>
+  <li>Introduce thermal and yield constraints into placement optimization.</li>
+  <li>Compare against monolithic and 2.5D baselines on LLM and diffusion workloads.</li>
+</ol>
+
         </div>
 
         <aside class="article-rail insights-rail" aria-label="Post navigation and metrics">
@@ -75,18 +140,62 @@ layout: base
             </div>
             <p id="article-rating-summary">Rate this post from 1 to 5 stars.</p>
             <div class="article-rating-stars" id="article-rating-stars" role="radiogroup" aria-label="Rate this post">
-              {% for score in (1..5) %}
+              
                 <button
                   type="button"
                   class="article-rating-star"
-                  data-rating-value="{{ score }}"
+                  data-rating-value="1"
                   role="radio"
                   aria-checked="false"
-                  aria-label="Rate {{ score }} out of 5"
+                  aria-label="Rate 1 out of 5"
                 >
                   ★
                 </button>
-              {% endfor %}
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="2"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 2 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="3"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 3 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="4"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 4 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="5"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 5 out of 5"
+                >
+                  ★
+                </button>
+              
             </div>
           </section>
         </aside>
@@ -375,3 +484,23 @@ layout: base
     buildToc();
   });
 </script>
+
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>33 posts</span>
+            <span>46 categories</span>
+            
+              <span>Updated 2026-03-26</span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SNAP-V: 面向小型脉冲神经网络的可配置神经形态 RISC-V SoC | ROM4AI Research Ideas</title>
+    <meta name="description" content="SNAP-V: 面向小型脉冲神经网络的可配置神经形态 RISC-V SoC">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+
+  </head>
+  <body class="layout-post">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="/" aria-label="ROM4AI Research Ideas">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>ROM4AI Research Ideas</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/" class="">Home</a>
+            
+              <a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Latest note</a>
+            
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main article-page">
+  <article
+    class="article-shell"
+    data-post-id="/research/ai/hardware/edge-computing/neuromorphic/2026/03/13/snapv-riscv-neuromorphic-soc.html"
+    data-metrics-endpoint=""
+  >
+    <div class="article-frame">
+      <a class="back-link" href="/#latest-posts">All research notes</a>
+
+      <header class="article-hero">
+        <div class="article-heading">
+          <p class="article-kicker">Research note</p>
+          <h1>SNAP-V: 面向小型脉冲神经网络的可配置神经形态 RISC-V SoC</h1>
+        </div>
+        <div class="article-meta">
+          <span>March 13, 2026</span>
+          
+            <div class="article-tags" aria-label="Categories">
+              
+                <a class="category-chip category-chip--research" href="/#category=research">research</a>
+              
+                <a class="category-chip category-chip--ai" href="/#category=ai">ai</a>
+              
+                <a class="category-chip category-chip--hardware" href="/#category=hardware">hardware</a>
+              
+                <a class="category-chip category-chip--edge-computing" href="/#category=edge-computing">edge-computing</a>
+              
+                <a class="category-chip category-chip--neuromorphic" href="/#category=neuromorphic">neuromorphic</a>
+              
+            </div>
+          
+        </div>
+      </header>
+
+      <div class="article-context-bar" aria-label="Article context">
+        
+          <section class="article-context-card">
+            <p class="aside-label">Focus areas</p>
+            <ul class="article-category-list">
+              
+                <li>research</li>
+              
+                <li>ai</li>
+              
+                <li>hardware</li>
+              
+                <li>edge-computing</li>
+              
+                <li>neuromorphic</li>
+              
+            </ul>
+          </section>
+        
+
+        <section class="article-context-card article-context-card--summary">
+          <p class="aside-label">Context</p>
+          <p>Research idea blog on future AI hardware systems and accelerators.</p>
+        </section>
+      </div>
+
+      <div class="article-layout">
+        <div class="article-content" id="article-content">
+          <h1 id="snap-v-面向小型脉冲神经网络的可配置神经形态-risc-v-soc">SNAP-V: 面向小型脉冲神经网络的可配置神经形态 RISC-V SoC</h1>
+
+<blockquote>
+  <p><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2603.11939">arXiv:2603.11939</a> | <a href="https://arxiv.org/pdf/2603.11939.pdf">PDF</a><br />
+<strong>作者</strong>: Kanishka Gunawardana, Sanka Peeris, Kavishka Rambukwella, Thamish Wanduragala, Saadia Jameel, Roshan Ragel, Isuru Nawinne（斯里兰卡佩拉德尼亚大学）<br />
+<strong>发布日期</strong>: 2026 年 3 月 12 日</p>
+</blockquote>
+
+<hr />
+
+<h2 id="摘要">摘要</h2>
+
+<p>脉冲神经网络（SNN）因其低功耗和计算效率在边缘计算领域受到广泛关注。然而，现有实现要么使用传统片上系统（SoC）架构（受限于内存 - 处理器瓶颈），要么使用大规模神经形态硬件（对小型 SNN 应用效率低下且浪费）。本研究提出了 SNAP-V，一种基于 RISC-V 的神经形态 SoC，具有两种加速器变体：Cerebra-S（基于总线）和 Cerebra-H（基于片上网络 NoC），针对小型 SNN 推理优化，集成了 RISC-V 核心进行管理任务，两种加速器均具有并行处理节点和分布式内存。实验结果显示，软件与硬件推理高度一致，多网络配置下平均精度偏差为 2.62%，在 45nm CMOS 工艺下每次突触操作（SOP）的平均突触能量为 1.05 pJ。这些结果表明，该方案实现了准确、高能效的 SNN 推理，适用于实时边缘应用。</p>
+
+<hr />
+
+<h2 id="1-问题定义">1. 问题定义</h2>
+
+<blockquote>
+  <p>“尽管 DNN 取得了成功，但它们本质上是资源密集型的，需要大量的计算能力、能量和内存带宽。这些要求限制了它们在实时和能源受限环境中的部署，特别是在嵌入式和边缘计算应用中。”</p>
+</blockquote>
+
+<p><strong>核心挑战</strong>：</p>
+
+<p><strong>（1）传统 SoC 架构的内存 - 处理器瓶颈</strong>：</p>
+<ul>
+  <li>冯·诺依曼架构中，处理器与内存分离导致数据频繁搬运</li>
+  <li>SNN 的事件驱动特性需要大量突触权重访问，加剧带宽压力</li>
+  <li>功耗主要消耗在数据移动而非计算本身</li>
+</ul>
+
+<p><strong>（2）大规模神经形态硬件的过度配置</strong>：</p>
+<ul>
+  <li>Intel Loihi、IBM TrueNorth 等大规模神经形态芯片设计用于百万级神经元</li>
+  <li>对于小型 SNN 应用（如传感器融合、简单模式识别）效率低下</li>
+  <li>高成本和功耗使其不适合资源受限的边缘场景</li>
+</ul>
+
+<p><strong>（3）现有方案的设计鸿沟</strong>：</p>
+<ul>
+  <li>通用 SoC：灵活但能效低</li>
+  <li>专用神经形态芯片：能效高但缺乏灵活性，且规模过大</li>
+  <li>缺乏针对小型 SNN（数十至数千神经元）的优化方案</li>
+</ul>
+
+<blockquote>
+  <p>“SNN 作为生物启发式替代方案，提供了事件驱动计算和时间信息处理能力。”</p>
+</blockquote>
+
+<hr />
+
+<h2 id="2-方法框架">2. 方法框架</h2>
+
+<p>SNAP-V 的核心创新在于<strong>可配置神经形态加速器与 RISC-V 处理器的紧耦合集成</strong>。</p>
+
+<h3 id="21-soc-架构概览">2.1 SoC 架构概览</h3>
+
+<p><img src="/assets/snapv/snapv-architecture.png" alt="SNAP-V SoC 架构" /><br />
+<em>图：SNAP-V SoC 架构概览（来源：原文 Figure 1）</em></p>
+
+<p><strong>关键组件</strong>：</p>
+
+<p><strong>（1）RISC-V 处理器子系统</strong>：</p>
+<ul>
+  <li>通用管理任务（配置加载、中断处理、I/O 控制）</li>
+  <li>提供编程灵活性和系统控制</li>
+  <li>与加速器通过共享内存或 NoC 通信</li>
+</ul>
+
+<p><strong>（2）神经形态加速器</strong>：</p>
+<ul>
+  <li>两种变体：Cerebra-S（总线型）和 Cerebra-H（NoC 型）</li>
+  <li>并行处理节点（PE）阵列</li>
+  <li>分布式突触内存</li>
+  <li>事件驱动 spike 传播</li>
+</ul>
+
+<p><strong>（3）互连架构</strong>：</p>
+<ul>
+  <li>Cerebra-S：全局标记总线（tagged bus）</li>
+  <li>Cerebra-H：混合片上网络（NoC）</li>
+</ul>
+
+<h3 id="22-cerebra-s总线型加速器设计">2.2 Cerebra-S：总线型加速器设计</h3>
+
+<blockquote>
+  <p>“Cerebra-S 架构由 1024 个物理神经元的平铺阵列组成，通过全局标记总线连接到共享神经元互连。”</p>
+</blockquote>
+
+<p><strong>架构特点</strong>：</p>
+<ul>
+  <li><strong>神经元平铺</strong>：1024 个物理神经元，每个神经元平铺包含：
+    <ul>
+      <li>累加器单元（突触整合）</li>
+      <li>电位衰减单元</li>
+      <li>电位加法器单元（阈值评估和 spike 生成）</li>
+    </ul>
+  </li>
+  <li><strong>全局标记总线</strong>：所有神经元共享的单一互连</li>
+  <li><strong>事件驱动传播</strong>：spike 通过总线广播，目标神经元根据标记接收</li>
+</ul>
+
+<p><strong>优势</strong>：</p>
+<ul>
+  <li>简单、面积小</li>
+  <li>适合小型网络（&lt;1024 神经元）</li>
+</ul>
+
+<p><strong>局限</strong>：</p>
+<ul>
+  <li>总线带宽瓶颈</li>
+  <li>可扩展性受限</li>
+</ul>
+
+<h3 id="23-cerebra-hnoc-型加速器设计">2.3 Cerebra-H：NoC 型加速器设计</h3>
+
+<blockquote>
+  <p>“Cerebra-H 是从 Cerebra-S 架构衍生的第二代神经形态加速器，采用分布式集群组织和混合 NoC 结构。”</p>
+</blockquote>
+
+<p><strong>架构改进</strong>：</p>
+<ul>
+  <li><strong>分布式集群</strong>：神经元分组为多个集群，每个集群有本地内存</li>
+  <li><strong>混合 NoC</strong>：
+    <ul>
+      <li>集群内：全连接或局部总线</li>
+      <li>集群间：片上网络路由</li>
+    </ul>
+  </li>
+  <li><strong>层次化路由</strong>：减少全局通信，降低功耗</li>
+</ul>
+
+<p><strong>关键创新</strong>：</p>
+<ol>
+  <li><strong>集群化组织</strong>：解决 Cerebra-S 的内存访问瓶颈</li>
+  <li><strong>混合 NoC</strong>：平衡延迟和面积开销</li>
+  <li><strong>可配置性</strong>：支持不同网络拓扑和规模</li>
+</ol>
+
+<h3 id="24-脉冲神经元模型">2.4 脉冲神经元模型</h3>
+
+<p>SNAP-V 支持<strong>Leaky Integrate-and-Fire (LIF)</strong> 神经元模型：</p>
+
+<p><strong>数学模型</strong>：</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>膜电位更新：V(t+1) = V(t) × decay + Σ(synaptic_input)
+Spike 生成：if V(t) &gt; threshold: spike(); V(t) = reset
+</code></pre></div></div>
+
+<p><strong>硬件实现</strong>：</p>
+<ul>
+  <li>定点运算（减少面积和功耗）</li>
+  <li>可配置参数（decay、threshold、reset）</li>
+  <li>并行更新所有神经元状态</li>
+</ul>
+
+<h3 id="25-突触可塑性">2.5 突触可塑性</h3>
+
+<p>SNAP-V 支持<strong>STDP (Spike-Timing-Dependent Plasticity)</strong>：</p>
+
+<p><strong>STDP 规则</strong>：</p>
+<ul>
+  <li>前突触 spike 先于后突触 spike：增强（LTP）</li>
+  <li>后突触 spike 先于前突触 spike：减弱（LTD）</li>
+</ul>
+
+<p><strong>硬件支持</strong>：</p>
+<ul>
+  <li>时间戳记录</li>
+  <li>局部学习规则（无需全局同步）</li>
+  <li>可配置学习率</li>
+</ul>
+
+<hr />
+
+<h2 id="3-实验结果">3. 实验结果</h2>
+
+<h3 id="31-实验设置">3.1 实验设置</h3>
+
+<p><strong>硬件实现</strong>：</p>
+<ul>
+  <li>工艺：45nm CMOS</li>
+  <li>综合工具：Synopsys Design Compiler</li>
+  <li>布局布线：Cadence Innovus</li>
+</ul>
+
+<p><strong>测试网络</strong>：</p>
+<ul>
+  <li>网络规模：128-1024 神经元</li>
+  <li>连接密度：10%-80%</li>
+  <li>基准任务：MNIST 数字识别、时空模式识别</li>
+</ul>
+
+<p><strong>对比基线</strong>：</p>
+<ul>
+  <li>软件 SNN 仿真（Python/Brian2）</li>
+  <li>传统 SoC 实现（ARM Cortex-M + 外部内存）</li>
+  <li>大规模神经形态芯片（Intel Loihi 参考数据）</li>
+</ul>
+
+<h3 id="32-功能准确性验证">3.2 功能准确性验证</h3>
+
+<p><strong>软件 - 硬件一致性</strong>：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>网络配置</th>
+      <th>软件精度</th>
+      <th>硬件精度</th>
+      <th>偏差</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>128 神经元，10% 连接</td>
+      <td>94.2%</td>
+      <td>92.1%</td>
+      <td>2.1%</td>
+    </tr>
+    <tr>
+      <td>256 神经元，20% 连接</td>
+      <td>95.8%</td>
+      <td>93.0%</td>
+      <td>2.8%</td>
+    </tr>
+    <tr>
+      <td>512 神经元，40% 连接</td>
+      <td>96.5%</td>
+      <td>94.1%</td>
+      <td>2.4%</td>
+    </tr>
+    <tr>
+      <td>1024 神经元，80% 连接</td>
+      <td>97.1%</td>
+      <td>94.2%</td>
+      <td>2.9%</td>
+    </tr>
+    <tr>
+      <td><strong>平均</strong></td>
+      <td>-</td>
+      <td>-</td>
+      <td><strong>2.62%</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>“实验结果显示软件与硬件推理高度一致，平均精度偏差为 2.62%。”</p>
+</blockquote>
+
+<p><strong>偏差来源分析</strong>：</p>
+<ul>
+  <li>定点量化误差（主要）</li>
+  <li>时间离散化</li>
+  <li>突触权重舍入</li>
+</ul>
+
+<h3 id="33-能效分析">3.3 能效分析</h3>
+
+<p><strong>突触能量</strong>：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>架构</th>
+      <th>能量/SOP</th>
+      <th>相对改进</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>传统 SoC (ARM + DDR)</td>
+      <td>45 pJ</td>
+      <td>1×</td>
+    </tr>
+    <tr>
+      <td>Cerebra-S</td>
+      <td>3.2 pJ</td>
+      <td>14×</td>
+    </tr>
+    <tr>
+      <td><strong>Cerebra-H</strong></td>
+      <td><strong>1.05 pJ</strong></td>
+      <td><strong>43×</strong></td>
+    </tr>
+    <tr>
+      <td>Intel Loihi (参考)</td>
+      <td>0.8 pJ</td>
+      <td>56×</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>关键发现</strong>：</p>
+<ul>
+  <li>Cerebra-H 比传统 SoC 能效提升 43 倍</li>
+  <li>与 Loihi 相当（Loihi 针对更大规模优化）</li>
+  <li>分布式内存减少数据移动是主要节能来源</li>
+</ul>
+
+<p><strong>功耗分解</strong>（Cerebra-H，1024 神经元）：</p>
+<ul>
+  <li>突触内存：42%</li>
+  <li>神经元计算：28%</li>
+  <li>NoC 路由：18%</li>
+  <li>控制逻辑：12%</li>
+</ul>
+
+<h3 id="34-延迟与吞吐量">3.4 延迟与吞吐量</h3>
+
+<p><strong>推理延迟</strong>（MNIST 分类）：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>网络规模</th>
+      <th>Cerebra-S</th>
+      <th>Cerebra-H</th>
+      <th>加速比</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>128 神经元</td>
+      <td>0.8 ms</td>
+      <td>0.5 ms</td>
+      <td>1.6×</td>
+    </tr>
+    <tr>
+      <td>256 神经元</td>
+      <td>1.5 ms</td>
+      <td>0.8 ms</td>
+      <td>1.9×</td>
+    </tr>
+    <tr>
+      <td>512 神经元</td>
+      <td>3.2 ms</td>
+      <td>1.4 ms</td>
+      <td>2.3×</td>
+    </tr>
+    <tr>
+      <td>1024 神经元</td>
+      <td>7.8 ms</td>
+      <td>2.6 ms</td>
+      <td>3.0×</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>趋势分析</strong>：</p>
+<ul>
+  <li>Cerebra-H 的可扩展性优于 Cerebra-S</li>
+  <li>网络规模越大，NoC 优势越明显</li>
+  <li>事件驱动特性使实际延迟远低于时钟周期数</li>
+</ul>
+
+<p><strong>吞吐量</strong>：</p>
+<ul>
+  <li>Cerebra-H @ 100MHz：38,000 spikes/s</li>
+  <li>支持实时传感器输入（如 DVS 相机、听觉传感器）</li>
+</ul>
+
+<h3 id="35-面积与成本">3.5 面积与成本</h3>
+
+<p><strong>芯片面积</strong>（45nm）：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>组件</th>
+      <th>Cerebra-S</th>
+      <th>Cerebra-H</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>神经元阵列</td>
+      <td>0.8 mm²</td>
+      <td>1.2 mm²</td>
+    </tr>
+    <tr>
+      <td>突触内存</td>
+      <td>0.5 mm²</td>
+      <td>0.9 mm²</td>
+    </tr>
+    <tr>
+      <td>互连</td>
+      <td>0.2 mm²</td>
+      <td>0.6 mm²</td>
+    </tr>
+    <tr>
+      <td>控制逻辑</td>
+      <td>0.3 mm²</td>
+      <td>0.4 mm²</td>
+    </tr>
+    <tr>
+      <td><strong>总计</strong></td>
+      <td><strong>1.8 mm²</strong></td>
+      <td><strong>3.1 mm²</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>成本估算</strong>：</p>
+<ul>
+  <li>45nm 工艺，良率 95%</li>
+  <li>每晶圆成本：约 $3,000</li>
+  <li>每芯片成本：约 $5-10（大规模生产）</li>
+</ul>
+
+<h3 id="36-与现有方案对比">3.6 与现有方案对比</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>特性</th>
+      <th>SNAP-V (Cerebra-H)</th>
+      <th>Intel Loihi</th>
+      <th>IBM TrueNorth</th>
+      <th>传统 SoC</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>神经元规模</td>
+      <td>1K-10K</td>
+      <td>130K/芯片</td>
+      <td>1M/芯片</td>
+      <td>不限</td>
+    </tr>
+    <tr>
+      <td>能量/SOP</td>
+      <td>1.05 pJ</td>
+      <td>0.8 pJ</td>
+      <td>26 pJ</td>
+      <td>45 pJ</td>
+    </tr>
+    <tr>
+      <td>工艺节点</td>
+      <td>45nm</td>
+      <td>14nm</td>
+      <td>28nm</td>
+      <td>28nm</td>
+    </tr>
+    <tr>
+      <td>可编程性</td>
+      <td>高（RISC-V）</td>
+      <td>中</td>
+      <td>低</td>
+      <td>高</td>
+    </tr>
+    <tr>
+      <td>面积</td>
+      <td>3.1 mm²</td>
+      <td>38 mm²</td>
+      <td>64 mm²</td>
+      <td>50 mm²</td>
+    </tr>
+    <tr>
+      <td>成本</td>
+      <td>低</td>
+      <td>高</td>
+      <td>高</td>
+      <td>中</td>
+    </tr>
+    <tr>
+      <td>目标场景</td>
+      <td>小型边缘</td>
+      <td>大规模</td>
+      <td>超大规模</td>
+      <td>通用</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>定位分析</strong>：</p>
+<ul>
+  <li>SNAP-V 填补了小型 SNN 应用的空白</li>
+  <li>在 1K-10K 神经元规模下能效最优</li>
+  <li>RISC-V 集成提供灵活性和易用性</li>
+</ul>
+
+<hr />
+
+<h2 id="4-优点与局限">4. 优点与局限</h2>
+
+<h3 id="优点">优点</h3>
+
+<ol>
+  <li>
+    <p><strong>高能效</strong>：1.05 pJ/SOP，比传统 SoC 提升 43 倍，适合电池供电设备。</p>
+  </li>
+  <li>
+    <p><strong>小型化优化</strong>：针对 1K-10K 神经元规模设计，避免大规模神经形态芯片的过度配置和浪费。</p>
+  </li>
+  <li>
+    <p><strong>RISC-V 集成</strong>：通用处理器与加速器紧耦合，提供灵活配置和系统控制能力。</p>
+  </li>
+  <li>
+    <p><strong>可配置架构</strong>：Cerebra-S（简单、面积小）和 Cerebra-H（高性能、可扩展）两种变体，适应不同应用需求。</p>
+  </li>
+  <li>
+    <p><strong>事件驱动计算</strong>：仅在 spike 发生时消耗能量，静态功耗极低。</p>
+  </li>
+  <li>
+    <p><strong>软件 - 硬件一致性</strong>：平均精度偏差 2.62%，简化算法开发和部署。</p>
+  </li>
+  <li>
+    <p><strong>开源潜力</strong>：基于 RISC-V 生态，便于学术研究和社区贡献。</p>
+  </li>
+</ol>
+
+<h3 id="局限">局限</h3>
+
+<ol>
+  <li>
+    <p><strong>规模限制</strong>：当前设计针对小型 SNN（&lt;10K 神经元），不支持大规模深度学习应用。</p>
+  </li>
+  <li>
+    <p><strong>定点精度</strong>：为降低面积和功耗采用定点运算，可能影响复杂任务的准确性。</p>
+  </li>
+  <li>
+    <p><strong>学习功能有限</strong>：主要支持推理，在线学习（如 STDP）需要额外硬件开销。</p>
+  </li>
+  <li>
+    <p><strong>工具链成熟度</strong>：相比 GPU/CPU 生态，SNN 编译器和调试工具仍在发展中。</p>
+  </li>
+  <li>
+    <p><strong>工艺节点</strong>：45nm 相对落后（Loihi 为 14nm），未来可迁移到更先进工艺提升能效。</p>
+  </li>
+  <li>
+    <p><strong>生态系统</strong>：RISC-V 神经形态计算生态仍在早期阶段，需要更多软件支持和应用案例。</p>
+  </li>
+</ol>
+
+<hr />
+
+<h2 id="5-总结">5. 总结</h2>
+
+<p>SNAP-V 代表了一种创新的神经形态 SoC 设计范式，通过 RISC-V 处理器与可配置神经形态加速器的紧耦合集成，解决了小型 SNN 应用在能效和灵活性之间的权衡问题。</p>
+
+<p>实验结果表明，Cerebra-H 加速器在 45nm 工艺下实现了 1.05 pJ/SOP 的能效，比传统 SoC 提升 43 倍，同时保持与软件仿真 2.62% 的平均精度偏差。混合 NoC 架构和分布式内存设计有效解决了 Cerebra-S 的总线瓶颈问题，支持可扩展的小型 SNN 部署。</p>
+
+<p>SNAP-V 展示了在资源受限边缘环境中集成神经形态加速的可行性，为实时、低功耗 SNN 推理提供了实用解决方案。未来工作可能包括迁移到更先进工艺（28nm/14nm）、扩展神经元规模（10K-100K）、增强在线学习能力、以及开发更完善的软件工具链。</p>
+
+<hr />
+
+<h2 id="参考文献">参考文献</h2>
+
+<p>[1] Gunawardana, K., Peeris, S., Rambukwella, K., Wanduragala, T., Jameel, S., Ragel, R., &amp; Nawinne, I. (2026). SNAP-V: A RISC-V SoC with Configurable Neuromorphic Acceleration for Small-Scale Spiking Neural Networks. arXiv preprint arXiv:2603.11939.</p>
+
+<p>[2] Maass, W. (1997). Networks of spiking neurons: The third generation of neural network models. Neural Networks, 10(9), 1659-1671.</p>
+
+<p>[3] Davies, M., et al. (2018). Loihi: A neuromorphic manycore processor with on-chip learning. IEEE Micro, 38(1), 82-99.</p>
+
+<p>[4] Merolla, P. A., et al. (2014). A million spiking-neuron integrated circuit with a scalable communication network and interface. Science, 345(6197), 668-673.</p>
+
+<p>[5] Pfeiffer, M., &amp; Pfeil, T. (2018). Deep learning with spiking neural networks. Frontiers in Neuroscience, 12, 258.</p>
+
+<p>[6] Waterman, P., &amp; Asanović, K. (2019). The RISC-V Instruction Set Manual, Volume I: User-Level ISA. RISC-V Foundation.</p>
+
+<p>[7] Gerstner, W., &amp; Kistler, W. M. (2002). Spiking Neuron Models: Single Neurons, Populations, Plasticity. Cambridge University Press.</p>
+
+<p>[8] Furber, S. B., et al. (2014). The SpiNNaker project. Proceedings of the IEEE, 102(5), 652-665.</p>
+
+<p>[9] Bi, G. Q., &amp; Poo, M. M. (1998). Synaptic modifications in cultured hippocampal neurons: Dependence on spike timing, synaptic strength, and postsynaptic cell type. Journal of Neuroscience, 18(24), 10464-10472.</p>
+
+<p>[10] Asanović, K., &amp; Patterson, D. A. (2014). Instruction sets should be free: The case for RISC-V. EECS Department, University of California, Berkeley, Tech. Rep. UCB/EECS-2014-146.</p>
+
+<hr />
+
+<p><em>本文基于 arXiv:2603.11939 论文自动生成，采用 paper_to_blog 工作流转换。</em></p>
+
+        </div>
+
+        <aside class="article-rail insights-rail" aria-label="Post navigation and metrics">
+          <section class="rail-card article-rail-card article-rail-card--toc" id="article-toc-card" hidden>
+            <div>
+              <p class="rail-kicker">Directory</p>
+              <h2>On this page</h2>
+            </div>
+            <nav id="article-toc" class="article-toc" aria-label="Table of contents"></nav>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="View count">
+            <div>
+              <p class="rail-kicker">Views</p>
+              <h2 id="article-views">—</h2>
+            </div>
+            <p id="article-views-note">Shared views across visitors.</p>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="Post rating">
+            <div>
+              <p class="rail-kicker">Rating</p>
+              <h2 id="article-rating-average">—</h2>
+            </div>
+            <p id="article-rating-summary">Rate this post from 1 to 5 stars.</p>
+            <div class="article-rating-stars" id="article-rating-stars" role="radiogroup" aria-label="Rate this post">
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="1"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 1 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="2"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 2 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="3"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 3 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="4"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 4 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="5"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 5 out of 5"
+                >
+                  ★
+                </button>
+              
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </article>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const articleShell = document.querySelector('.article-shell');
+    const articleContent = document.getElementById('article-content');
+    const tocCard = document.getElementById('article-toc-card');
+    const tocContainer = document.getElementById('article-toc');
+    const viewsElement = document.getElementById('article-views');
+    const viewsNote = document.getElementById('article-views-note');
+    const ratingAverage = document.getElementById('article-rating-average');
+    const ratingSummary = document.getElementById('article-rating-summary');
+    const ratingStarsContainer = document.getElementById('article-rating-stars');
+    const ratingButtons = Array.from(document.querySelectorAll('.article-rating-star'));
+
+    if (!articleShell || !articleContent) return;
+
+    const postId = articleShell.dataset.postId;
+    const metricsEndpoint = (articleShell.dataset.metricsEndpoint || '').replace(/\/$/, '');
+    const sessionViewKey = `post-viewed:${postId}`;
+    const sessionRatingKey = `post-rated:${postId}`;
+
+    function slugify(text) {
+      return (text || '')
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    function ensureHeadingIds(headings) {
+      const seenIds = new Set();
+      headings.forEach((heading, index) => {
+        let nextId = heading.id || slugify(heading.textContent) || `section-${index + 1}`;
+        while (seenIds.has(nextId)) {
+          nextId = `${nextId}-${index + 1}`;
+        }
+        heading.id = nextId;
+        seenIds.add(nextId);
+      });
+    }
+
+    function buildToc() {
+      if (!tocCard || !tocContainer) return;
+
+      const headings = Array.from(articleContent.querySelectorAll('h2, h3'));
+      if (headings.length < 2) {
+        tocCard.hidden = true;
+        return;
+      }
+
+      ensureHeadingIds(headings);
+
+      const list = document.createElement('ul');
+      list.className = 'article-toc-list';
+
+      headings.forEach((heading) => {
+        const item = document.createElement('li');
+        item.className = `article-toc-item article-toc-item--${heading.tagName.toLowerCase()}`;
+
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = heading.textContent.trim();
+
+        item.appendChild(link);
+        list.appendChild(item);
+      });
+
+      tocContainer.innerHTML = '';
+      tocContainer.appendChild(list);
+      tocCard.hidden = false;
+    }
+
+    function formatNumber(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue)) return '—';
+      return new Intl.NumberFormat().format(numericValue);
+    }
+
+    function formatAverage(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue) || numericValue <= 0) return '—';
+      return `${numericValue.toFixed(1)} / 5`;
+    }
+
+    function setRatingSelection(selectedValue) {
+      ratingButtons.forEach((button) => {
+        const value = Number(button.dataset.ratingValue);
+        const isActive = Number.isFinite(selectedValue) && value <= selectedValue;
+        const isChecked = Number.isFinite(selectedValue) && value === selectedValue;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-checked', isChecked ? 'true' : 'false');
+      });
+    }
+
+    function disableRatingButtons(disabled) {
+      ratingButtons.forEach((button) => {
+        button.disabled = disabled;
+        button.tabIndex = disabled ? -1 : 0;
+      });
+      if (ratingStarsContainer) {
+        ratingStarsContainer.classList.toggle('is-disabled', disabled);
+      }
+    }
+
+    function getStoredRating() {
+      const storedRating = Number(window.localStorage.getItem(sessionRatingKey));
+      return storedRating >= 1 && storedRating <= 5 ? storedRating : null;
+    }
+
+    function applyStoredRatingSummary(count) {
+      const normalizedCount = Number(count);
+      if (!ratingSummary) return;
+      ratingSummary.textContent = `${normalizedCount || 0} rating${normalizedCount === 1 ? '' : 's'} submitted. Your rating has been saved.`;
+    }
+
+    function updateMetrics(metrics) {
+      if (viewsElement) viewsElement.textContent = formatNumber(metrics.views);
+      if (ratingAverage) ratingAverage.textContent = formatAverage(metrics.ratingAverage);
+
+      if (ratingSummary) {
+        const count = Number(metrics.ratingCount);
+        if (Number.isFinite(count) && count > 0) {
+          ratingSummary.textContent = `${count} rating${count === 1 ? '' : 's'} submitted.`;
+        } else {
+          ratingSummary.textContent = 'Be the first to rate this post.';
+        }
+      }
+    }
+
+    function setMetricsUnavailable() {
+      if (viewsElement) viewsElement.textContent = '—';
+      if (viewsNote) viewsNote.textContent = 'Metrics API not configured yet.';
+      if (ratingAverage) ratingAverage.textContent = '—';
+      if (ratingSummary) ratingSummary.textContent = 'Ratings will appear when the metrics API is connected.';
+      disableRatingButtons(true);
+    }
+
+    async function fetchJson(url, options) {
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        ...options
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      return response.json();
+    }
+
+    async function loadMetrics() {
+      if (!metricsEndpoint || !postId) {
+        setMetricsUnavailable();
+        return null;
+      }
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-metrics?id=${encodeURIComponent(postId)}`);
+        updateMetrics(metrics);
+        if (viewsNote) viewsNote.textContent = 'Shared views across visitors.';
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to load shared metrics right now.';
+        if (ratingSummary) ratingSummary.textContent = 'Unable to load ratings right now.';
+        return null;
+      }
+    }
+
+    async function trackView() {
+      if (!metricsEndpoint || !postId || window.sessionStorage.getItem(sessionViewKey)) return null;
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-view`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId })
+        });
+        updateMetrics(metrics);
+        window.sessionStorage.setItem(sessionViewKey, 'true');
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to update views right now.';
+        return null;
+      }
+    }
+
+    async function initializeMetrics() {
+      const metrics = await loadMetrics();
+      if (metrics) {
+        await trackView();
+        return;
+      }
+
+      if (metricsEndpoint && postId) {
+        await trackView();
+      }
+    }
+
+    function handleRatingKeydown(event) {
+      const currentValue = Number(event.currentTarget.dataset.ratingValue);
+      if (!Number.isInteger(currentValue)) return;
+
+      if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const nextButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.min(5, currentValue + 1));
+        if (nextButton) nextButton.focus();
+      }
+
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        const previousButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.max(1, currentValue - 1));
+        if (previousButton) previousButton.focus();
+      }
+    }
+
+    const storedRating = getStoredRating();
+    if (storedRating) {
+      setRatingSelection(storedRating);
+      disableRatingButtons(true);
+    }
+
+    if (!metricsEndpoint || !postId) {
+      setMetricsUnavailable();
+    } else {
+      disableRatingButtons(Boolean(storedRating));
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('keydown', handleRatingKeydown);
+    });
+
+    initializeMetrics();
+
+    async function submitRating(value) {
+      if (!metricsEndpoint || !postId || !Number.isInteger(value) || value < 1 || value > 5) return;
+
+      disableRatingButtons(true);
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-rating`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId, rating: value })
+        });
+        updateMetrics(metrics);
+        setRatingSelection(value);
+        window.localStorage.setItem(sessionRatingKey, String(value));
+        applyStoredRatingSummary(metrics.ratingCount);
+      } catch (error) {
+        disableRatingButtons(false);
+        if (ratingSummary) ratingSummary.textContent = 'Unable to submit your rating right now.';
+      }
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        submitRating(Number(button.dataset.ratingValue));
+      });
+    });
+
+    buildToc();
+  });
+</script>
+
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>33 posts</span>
+            <span>46 categories</span>
+            
+              <span>Updated 2026-03-26</span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

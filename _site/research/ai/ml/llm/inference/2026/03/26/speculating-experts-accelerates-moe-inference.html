@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Speculating Experts Accelerates Inference for Mixture-of-Experts: 通过专家预取加速 MoE 推理 | ROM4AI Research Ideas</title>
+    <meta name="description" content="Speculating Experts Accelerates Inference for Mixture-of-Experts: 通过专家预取加速 MoE 推理">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+
+  </head>
+  <body class="layout-post">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="/" aria-label="ROM4AI Research Ideas">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>ROM4AI Research Ideas</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/" class="">Home</a>
+            
+              <a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Latest note</a>
+            
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main article-page">
+  <article
+    class="article-shell"
+    data-post-id="/research/ai/ml/llm/inference/2026/03/26/speculating-experts-accelerates-moe-inference.html"
+    data-metrics-endpoint=""
+  >
+    <div class="article-frame">
+      <a class="back-link" href="/#latest-posts">All research notes</a>
+
+      <header class="article-hero">
+        <div class="article-heading">
+          <p class="article-kicker">Research note</p>
+          <h1>Speculating Experts Accelerates Inference for Mixture-of-Experts: 通过专家预取加速 MoE 推理</h1>
+        </div>
+        <div class="article-meta">
+          <span>March 26, 2026</span>
+          
+            <div class="article-tags" aria-label="Categories">
+              
+                <a class="category-chip category-chip--research" href="/#category=research">research</a>
+              
+                <a class="category-chip category-chip--ai" href="/#category=ai">ai</a>
+              
+                <a class="category-chip category-chip--ml" href="/#category=ml">ml</a>
+              
+                <a class="category-chip category-chip--llm" href="/#category=llm">llm</a>
+              
+                <a class="category-chip category-chip--inference" href="/#category=inference">inference</a>
+              
+            </div>
+          
+        </div>
+      </header>
+
+      <div class="article-context-bar" aria-label="Article context">
+        
+          <section class="article-context-card">
+            <p class="aside-label">Focus areas</p>
+            <ul class="article-category-list">
+              
+                <li>research</li>
+              
+                <li>ai</li>
+              
+                <li>ml</li>
+              
+                <li>llm</li>
+              
+                <li>inference</li>
+              
+            </ul>
+          </section>
+        
+
+        <section class="article-context-card article-context-card--summary">
+          <p class="aside-label">Context</p>
+          <p>Research idea blog on future AI hardware systems and accelerators.</p>
+        </section>
+      </div>
+
+      <div class="article-layout">
+        <div class="article-content" id="article-content">
+          <h1 id="speculating-experts-accelerates-inference-for-mixture-of-experts-通过专家预取加速-moe-推理">Speculating Experts Accelerates Inference for Mixture-of-Experts: 通过专家预取加速 MoE 推理</h1>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2603.19289">arXiv:2603.19289</a></td>
+        <td><a href="https://arxiv.org/pdf/2603.19289.pdf">PDF</a></td>
+        <td><a href="https://github.com/axonn-ai/yalis/tree/offload_prefetch">代码</a></td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<h2 id="摘要">摘要</h2>
+
+<p>本文提出了一种<strong>专家预取方案（expert prefetching scheme）</strong>，通过利用当前计算的内部模型表示来预测未来专家，使得 CPU-GPU 内存传输能够与计算重叠。在多个 MoE 架构上的实验表明，该方法可以实现<strong>5-14% 的每输出令牌时间（TPOT）降低</strong>，同时在大多数情况下保持下游任务准确性。</p>
+
+<h2 id="技术总结">技术总结</h2>
+
+<h3 id="问题定义">问题定义</h3>
+
+<p>Mixture-of-Experts (MoE) 模型通过稀疏激活在保持每令牌计算量减少的同时扩展了大语言模型的容量。然而，在内存受限的推理设置中，专家权重必须卸载到 CPU，导致解码过程中 CPU-GPU 传输成为性能瓶颈。</p>
+
+<blockquote>
+  <p>“In memory-constrained inference settings, expert weights must be offloaded to CPU, creating a performance bottleneck from CPU-GPU transfers during decoding.”</p>
+</blockquote>
+
+<p>以 Qwen3-30B-A3B 在 A6000 GPU 上为例，CPU-GPU 内存传输占每输出令牌时间（TPOT）的<strong>84-88%</strong>，而计算仅占很小一部分。因此，通过减少这些昂贵的内存传输可以实现显著的推理速度提升。</p>
+
+<h3 id="方法框架">方法框架</h3>
+
+<p>本文提出了一种推理时专家预取方案，利用内部模型表示来预测近期的专家选择。核心思想是使用当前层的归一化残差流和默认向量构建<strong>准隐藏状态（quasi-hidden state）</strong>，用于预测下一层的专家。</p>
+
+<p><img src="/assets/speculating-experts/figure_1_1.png" alt="专家预取在 pre-norm MoE 块中的工作流程" />
+<em>图 1：专家预取在 pre-norm MoE 块中的工作流程。第 l 层的归一化残差流 s_l 和默认向量 d_l 形成准隐藏状态 q_l，用于预测下一层的专家，使 CPU-GPU 内存传输能够与计算重叠。（来源：原文 Figure 1）</em></p>
+
+<p>该方法的关键优势在于：</p>
+<ul>
+  <li><strong>无需额外参数</strong>：直接利用现有的内部模型表示</li>
+  <li><strong>适用于预训练模型</strong>：无需微调即可应用于现有 MoE 模型</li>
+  <li><strong>即插即用</strong>：已集成到开源推理引擎 YALIS 中</li>
+</ul>
+
+<h3 id="核心模块">核心模块</h3>
+
+<p><strong>1. 默认向量（Default Vector）</strong></p>
+
+<blockquote>
+  <p>“The default vector d_{l,e} represents the average activation associated with expert e at layer l.”</p>
+</blockquote>
+
+<p>默认向量表示与每个专家相关的平均激活，通过离线聚合推理期间观察到的激活计算得到。对于给定的令牌，路由器选择专家子集并分配门控权重，层级别的默认表示定义为所选专家默认向量的加权组合。</p>
+
+<p><strong>2. 准隐藏状态（Quasi-Hidden State）</strong></p>
+
+<p>在 pre-norm MoE 架构中，专家路由是通过对注意力后的归一化残差流计算得到的。准隐藏状态定义为：</p>
+
+<blockquote>
+  <p>“q_l = LN_{l+1}(d_l + r_l)”</p>
+</blockquote>
+
+<p>其中 r_l 是第 l 层的注意力后残差，d_l 是层级别的默认向量，LN_{l+1} 表示应用于下一层专家路由前的归一化。</p>
+
+<p><strong>3. 轻量级神经估计器（Lightweight Neural Estimator）</strong></p>
+
+<p>对于准隐藏状态预测效果不佳的架构（如 Qwen3-30B-A3B 的早期层），作者训练了一个轻量级神经估计器来直接预测路由决策。</p>
+
+<blockquote>
+  <p>“The estimator learns a mapping from the quasi-hidden state q_l to the router logits at layer l+1.”</p>
+</blockquote>
+
+<p>该估计器是一个前馈网络，带有学习的位置嵌入以考虑层特定的路由行为。通过蒸馏训练，最小化估计器预测的 logits 与真实路由器产生的 logits 之间的 KL 散度。</p>
+
+<h3 id="实验设置">实验设置</h3>
+
+<p><strong>模型配置：</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>模型</th>
+      <th>层数 (L)</th>
+      <th>专家数 (E)</th>
+      <th>隐藏维度 (H)</th>
+      <th>专家隐藏维度 (H_MoE)</th>
+      <th>专家内存</th>
+      <th>其他参数内存</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Qwen3-30B-A3B</td>
+      <td>48</td>
+      <td>128</td>
+      <td>2048</td>
+      <td>768</td>
+      <td>~54 GB</td>
+      <td>~3 GB</td>
+    </tr>
+    <tr>
+      <td>GLM-4.7-Flash</td>
+      <td>47</td>
+      <td>64</td>
+      <td>2048</td>
+      <td>1536</td>
+      <td>~53 GB</td>
+      <td>~3 GB</td>
+    </tr>
+    <tr>
+      <td>GPT-OSS-120B</td>
+      <td>24</td>
+      <td>32</td>
+      <td>2880</td>
+      <td>2880</td>
+      <td>~213 GB</td>
+      <td>~4 GB</td>
+    </tr>
+    <tr>
+      <td>Qwen3-235B-A22B</td>
+      <td>94</td>
+      <td>128</td>
+      <td>4096</td>
+      <td>1536</td>
+      <td>~230 GB</td>
+      <td>~14 GB</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>硬件配置：</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>GPU</th>
+      <th>HBM</th>
+      <th>CPU DRAM</th>
+      <th>CPU↔GPU 链路</th>
+      <th>评估模型</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>A6000</td>
+      <td>48 GB</td>
+      <td>128 GB</td>
+      <td>PCIe 4.0</td>
+      <td>Qwen3-30B-A3B, GLM-4.7-Flash</td>
+    </tr>
+    <tr>
+      <td>A100</td>
+      <td>80 GB</td>
+      <td>256 GB</td>
+      <td>PCIe 4.0</td>
+      <td>GPT-OSS-120B</td>
+    </tr>
+    <tr>
+      <td>GH200</td>
+      <td>96 GB</td>
+      <td>480 GB</td>
+      <td>NVLink C2C</td>
+      <td>Qwen3-235B-A22B</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>评估指标：</strong></p>
+<ul>
+  <li><strong>TPOT (Time Per Output Token)</strong>：生成每个输出令牌的平均时间</li>
+  <li><strong>专家预测命中率 (Hit Rate)</strong>：预测专家与真实路由器选择专家的重合度</li>
+  <li><strong>下游任务准确性</strong>：在多个基准测试上的表现</li>
+</ul>
+
+<h3 id="优点">优点</h3>
+
+<p><strong>1. 显著的性能提升</strong></p>
+
+<p><img src="/assets/speculating-experts/figure_8_1.png" alt="不同模型和序列长度下的 TPOT 对比" />
+<em>图 8：不同模型的每输出令牌时间（TPOT）对比，比较了按需专家加载和专家预取在不同序列长度下的表现。（来源：原文 Figure 8）</em></p>
+
+<p>在 Qwen3-30B-A3B 上，预取方案实现了<strong>9-14% 的 TPOT 降低</strong>，且在更长序列长度下收益更大。在更强大的 GPU（A100 和 GH200）上，最大 TPOT 改进为<strong>5-8%</strong>，表明预取在较弱 GPU 上提供更大收益。</p>
+
+<p><strong>2. 保持任务准确性</strong></p>
+
+<p>对于 GPT-OSS 系列模型，执行预取专家在大多数任务上保持了与基线相当的性能：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>HumanEval</th>
+      <th>MBPP+</th>
+      <th>GSM8k</th>
+      <th>AIME24</th>
+      <th>AIME25</th>
+      <th>StrategyQA</th>
+      <th>平均</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>GPT-OSS-120B (基线)</strong></td>
+      <td>0.970</td>
+      <td>0.815</td>
+      <td>0.955</td>
+      <td>0.800</td>
+      <td>0.767</td>
+      <td>0.789</td>
+      <td><strong>0.849</strong></td>
+    </tr>
+    <tr>
+      <td>GPT-OSS-120B + Router-PF</td>
+      <td>0.963</td>
+      <td>0.812</td>
+      <td>0.958</td>
+      <td><strong>0.833</strong></td>
+      <td><strong>0.800</strong></td>
+      <td>0.776</td>
+      <td><strong>0.857</strong></td>
+    </tr>
+    <tr>
+      <td>GPT-OSS-120B + Est-PF</td>
+      <td>0.951</td>
+      <td>0.804</td>
+      <td>0.949</td>
+      <td>0.700</td>
+      <td>0.700</td>
+      <td>0.760</td>
+      <td>0.811</td>
+    </tr>
+    <tr>
+      <td>GPT-OSS-120B + Hybrid-PF</td>
+      <td>0.927</td>
+      <td>0.802</td>
+      <td>0.945</td>
+      <td>0.800</td>
+      <td>0.800</td>
+      <td>0.769</td>
+      <td>0.841</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>3. 高效的计算 - 内存重叠</strong></p>
+
+<p><img src="/assets/speculating-experts/figure_1_2.png" alt="Nsight Systems 追踪对比" />
+<em>图 2：使用 Qwen-30B-A3B 推理的 Nsight Systems 追踪。与按需加载活动专家（上）相比，专家预取方法（下）有效地将 CPU-GPU 内存传输与 GPU 计算重叠，减少了关键路径上的传输开销。（来源：原文 Figure 2）</em></p>
+
+<p>通过异步预取下一层专家权重，并与当前层 MoE 计算重叠，显著减少了关键路径上的时间。</p>
+
+<p><strong>4. 轻量级估计器的高命中率</strong></p>
+
+<p><img src="/assets/speculating-experts/figure_8_2.png" alt="训练估计器的验证专家命中率" />
+<em>图 9：验证专家命中率与用于训练专家估计器的令牌数量的关系。（来源：原文 Figure 9）</em></p>
+
+<p>估计器在相对较少的训练令牌下即可达到高预测精度。Qwen3-30B-A3B 的估计器在 4M 令牌后达到约<strong>90% 的平均命中率</strong>。</p>
+
+<h3 id="局限">局限</h3>
+
+<p><strong>1. 架构敏感性</strong></p>
+
+<p>Qwen3-30B-A3B 对基于路由器的推测执行表现出更高的敏感性。特别是在数学密集型任务（如 AIME24 和 GSM8k）上性能下降更明显：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>HumanEval</th>
+      <th>MBPP+</th>
+      <th>GSM8k</th>
+      <th>AIME24</th>
+      <th>AIME25</th>
+      <th>StrategyQA</th>
+      <th>平均</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Qwen3-30B-A3B (基线)</strong></td>
+      <td><strong>0.939</strong></td>
+      <td><strong>0.762</strong></td>
+      <td><strong>0.950</strong></td>
+      <td><strong>0.800</strong></td>
+      <td><strong>0.733</strong></td>
+      <td><strong>0.719</strong></td>
+      <td><strong>0.817</strong></td>
+    </tr>
+    <tr>
+      <td>Qwen3-30B-A3B + Router-PF</td>
+      <td>0.860</td>
+      <td>0.659</td>
+      <td>0.576</td>
+      <td>0.467</td>
+      <td>0.600</td>
+      <td>0.683</td>
+      <td>0.641</td>
+    </tr>
+    <tr>
+      <td>Qwen3-30B-A3B + Est-PF</td>
+      <td>0.915</td>
+      <td>0.741</td>
+      <td>0.918</td>
+      <td>0.667</td>
+      <td>0.567</td>
+      <td>0.691</td>
+      <td>0.750</td>
+    </tr>
+    <tr>
+      <td>Qwen3-30B-A3B + Hybrid-PF</td>
+      <td>0.909</td>
+      <td><strong>0.762</strong></td>
+      <td><strong>0.946</strong></td>
+      <td>0.700</td>
+      <td>0.600</td>
+      <td>0.681</td>
+      <td>0.766</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>这归因于 Qwen3-30B-A3B 早期层的高表示漂移（representational drift）。</p>
+
+<p><strong>2. 预填充阶段的限制</strong></p>
+
+<p>在预填充阶段，由于提示长度通常足够大，所有专家在每一层都有效激活，任何专家预测或预取策略都简化为加载所有专家。因此，预填充阶段的预取不涉及非平凡的专家选择决策。</p>
+
+<p><strong>3. 硬件依赖性</strong></p>
+
+<p>在更强大的 GPU 上（如 A100 和 GH200），由于更高的计算吞吐量，最大 TPOT 改进限制在 5-8%，相比 A6000 的 12-14% 较低。这表明预取方案的收益受计算 - 复制时间比例的限制。</p>
+
+<p><strong>4. 估计器训练成本</strong></p>
+
+<p>虽然估计器是轻量级的，但仍需要训练：</p>
+<ul>
+  <li>Qwen3-30B-A3B：17M 参数，需要 4M 训练令牌</li>
+  <li>GPT-OSS-20B：4M 参数，需要 5M 训练令牌</li>
+  <li>GPT-OSS-120B：45M 参数，需要 5M 训练令牌</li>
+</ul>
+
+<h2 id="实验结果">实验结果</h2>
+
+<h3 id="专家预测命中率分析">专家预测命中率分析</h3>
+
+<p><img src="/assets/speculating-experts/figure_3_1.png" alt="准隐藏状态与基线的余弦相似度对比" />
+<em>图 3：在层 l 构建的准隐藏状态 q_l 与真实路由器输入 s_{l+1} 之间的余弦相似度对比。（来源：原文 Figure 3）</em></p>
+
+<p>在 GPT-OSS 模型上，准隐藏状态显示出比基线 s_l 更高的平均余弦相似度，表明包含默认向量为近似 s_l 和 s_{l+1} 之间的漂移提供了有用的专家条件偏差。</p>
+
+<p><img src="/assets/speculating-experts/figure_3_2.png" alt="各层专家预取命中率对比" />
+<em>图 4：使用准隐藏状态 q_l 与基线 s_l 获得的各层专家预取命中率（recall@k）。（来源：原文 Figure 4）</em></p>
+
+<p>对于 Qwen3-30B-A3B，大部分层间漂移发生在前两层，导致早期机制的 recall@k 较低。在这些层之后，可忽略的漂移允许平均约<strong>90% 的 recall@k</strong>。</p>
+
+<h3 id="专家排名对齐分析">专家排名对齐分析</h3>
+
+<p><img src="/assets/speculating-experts/figure_4_1.png" alt="推测路由与真实路由的专家排名对齐" />
+<em>图 5：推测路由与真实路由在各层的专家排名对齐。对于每一层，报告给定排名（由路由权重确定）的专家在预取和真实路由之间匹配的比例。（来源：原文 Figure 5）</em></p>
+
+<p>最高排名的专家（即接收最大路由权重并对 MoE 激活贡献最大的专家）在大多数层中以高命中率被预测。这有助于解释尽管路由预测不完美，下游任务准确性仍保持稳定。</p>
+
+<h3 id="按需加载性能分解">按需加载性能分解</h3>
+
+<p><img src="/assets/speculating-experts/figure_4_1.png" alt="按需专家加载的 TPOT 分解" />
+<em>图 7：按需专家加载在不同模型和提示序列长度下的每输出令牌时间分解。（来源：原文 Figure 7）</em></p>
+
+<p>在 Qwen3-30B-A3B 上，复制时间构成主要瓶颈，占 TPOT 的<strong>~84-88%</strong>。计算时间仅占总 TPOT 的<strong>~8-13%</strong>，这形成了可实现改进的上限（根据公式 1）。</p>
+
+<h3 id="预取方案对比">预取方案对比</h3>
+
+<p>不同预取方案在下游基准测试上的准确性对比见表 1。关键发现：</p>
+
+<ol>
+  <li><strong>GPT-OSS 模型</strong>：基于路由器的预取（Router-PF）在大多数任务上保持了与基线相当的性能</li>
+  <li><strong>Qwen3-30B-A3B</strong>：混合预取（Hybrid-PF）策略恢复了大部分基线性能，同时在低命中率层应用估计器</li>
+  <li><strong>估计器效果</strong>：在 GSM8k 上，混合方法恢复了约<strong>37%</strong> 到 Router-PF 的准确性差距</li>
+</ol>
+
+<h2 id="实现细节">实现细节</h2>
+
+<p>该预取方案已集成到 <strong>YALIS</strong>（一个轻量级研究推理引擎）中，支持来自 SOTA 框架（如 vLLM）的关键优化，包括：</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">torch.compile</code></li>
+  <li>CUDA Graphs</li>
+  <li>优化的注意力后端</li>
+</ul>
+
+<p><strong>关键实现特性：</strong></p>
+
+<ol>
+  <li><strong>双缓冲</strong>：跨层交替使用 GPU 专家缓冲区，实现计算 - 复制重叠而无需额外同步</li>
+  <li><strong>固定 CPU 内存</strong>：卸载的 MoE 权重存储在固定 CPU 内存中，防止操作系统分页，实现比可分页内存更快的 CPU→GPU 传输</li>
+  <li><strong>仅卸载专家权重</strong>：非专家参数（注意力和路由器）足够小，可以保留在 GPU 上，避免不必要的传输</li>
+  <li><strong>异步预取</strong>：使用独立的 CUDA 流进行异步内存传输，与计算重叠</li>
+</ol>
+
+<h2 id="总结">总结</h2>
+
+<p>本文提出了一种推理时专家预取方案，通过利用内部模型表示来预测未来专家选择，使得专家传输能够与计算重叠。主要贡献包括：</p>
+
+<ol>
+  <li><strong>无参数预取</strong>：识别出能够跨现代 MoE 架构预测未来路由决策的内部模型表示</li>
+  <li><strong>保持准确性的推测执行</strong>：证明执行预取专家（而非将错误预测视为缓存未命中）通常能保持下游任务准确性</li>
+  <li><strong>优化的推理实现</strong>：集成到开源推理引擎中，在资源受限设置下实现<strong>5-14% 的 TPOT 降低</strong></li>
+  <li><strong>轻量级神经估计器</strong>：对于预取方案不足的架构，引入轻量级估计器显著提高专家预测命中率</li>
+</ol>
+
+<p>通过减少专家卸载带来的成本，这项工作使得大型开源 MoE 模型在消费级硬件上的本地部署更加实用。</p>
+
+<h2 id="参考文献">参考文献</h2>
+
+<ol>
+  <li>
+    <p>Madan V, Singhania P, Bhatele A, Goldstein T, Panda A. Speculating Experts Accelerates Inference for Mixture-of-Experts. arXiv preprint arXiv:2603.19289, 2026.</p>
+  </li>
+  <li>
+    <p>Panda A, et al. Default Vectors for MoE Routing. 2025.</p>
+  </li>
+  <li>
+    <p>Singhania P, et al. YALIS: A Lightweight Research Inference Engine. 2025.</p>
+  </li>
+  <li>
+    <p>Shazeer N, et al. Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer. ICLR, 2017.</p>
+  </li>
+  <li>
+    <p>Kwon W, et al. vLLM: Easy, Fast, and Cheap LLM Serving with PagedAttention. OSDI, 2023.</p>
+  </li>
+  <li>
+    <p>Dao T, et al. FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness. NeurIPS, 2022.</p>
+  </li>
+  <li>
+    <p>Chen et al. Speculative Expert Offloading for MoE Inference. 2025.</p>
+  </li>
+  <li>
+    <p>Yu et al. Layer-wise Expert Prefetching for MoE Models. 2025a.</p>
+  </li>
+  <li>
+    <p>Zhang et al. Overlapping Communication and Computation in MoE Inference. 2025a.</p>
+  </li>
+  <li>
+    <p>Hwang et al. Pre-Gating for MoE Prefetching. 2024.</p>
+  </li>
+</ol>
+
+<hr />
+
+<p><em>本文使用 <a href="https://github.com/rom4ai/paper_to_blog">paper_to_blog</a> 工具自动生成，最后更新：2026-03-26</em></p>
+
+        </div>
+
+        <aside class="article-rail insights-rail" aria-label="Post navigation and metrics">
+          <section class="rail-card article-rail-card article-rail-card--toc" id="article-toc-card" hidden>
+            <div>
+              <p class="rail-kicker">Directory</p>
+              <h2>On this page</h2>
+            </div>
+            <nav id="article-toc" class="article-toc" aria-label="Table of contents"></nav>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="View count">
+            <div>
+              <p class="rail-kicker">Views</p>
+              <h2 id="article-views">—</h2>
+            </div>
+            <p id="article-views-note">Shared views across visitors.</p>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="Post rating">
+            <div>
+              <p class="rail-kicker">Rating</p>
+              <h2 id="article-rating-average">—</h2>
+            </div>
+            <p id="article-rating-summary">Rate this post from 1 to 5 stars.</p>
+            <div class="article-rating-stars" id="article-rating-stars" role="radiogroup" aria-label="Rate this post">
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="1"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 1 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="2"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 2 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="3"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 3 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="4"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 4 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="5"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 5 out of 5"
+                >
+                  ★
+                </button>
+              
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </article>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const articleShell = document.querySelector('.article-shell');
+    const articleContent = document.getElementById('article-content');
+    const tocCard = document.getElementById('article-toc-card');
+    const tocContainer = document.getElementById('article-toc');
+    const viewsElement = document.getElementById('article-views');
+    const viewsNote = document.getElementById('article-views-note');
+    const ratingAverage = document.getElementById('article-rating-average');
+    const ratingSummary = document.getElementById('article-rating-summary');
+    const ratingStarsContainer = document.getElementById('article-rating-stars');
+    const ratingButtons = Array.from(document.querySelectorAll('.article-rating-star'));
+
+    if (!articleShell || !articleContent) return;
+
+    const postId = articleShell.dataset.postId;
+    const metricsEndpoint = (articleShell.dataset.metricsEndpoint || '').replace(/\/$/, '');
+    const sessionViewKey = `post-viewed:${postId}`;
+    const sessionRatingKey = `post-rated:${postId}`;
+
+    function slugify(text) {
+      return (text || '')
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    function ensureHeadingIds(headings) {
+      const seenIds = new Set();
+      headings.forEach((heading, index) => {
+        let nextId = heading.id || slugify(heading.textContent) || `section-${index + 1}`;
+        while (seenIds.has(nextId)) {
+          nextId = `${nextId}-${index + 1}`;
+        }
+        heading.id = nextId;
+        seenIds.add(nextId);
+      });
+    }
+
+    function buildToc() {
+      if (!tocCard || !tocContainer) return;
+
+      const headings = Array.from(articleContent.querySelectorAll('h2, h3'));
+      if (headings.length < 2) {
+        tocCard.hidden = true;
+        return;
+      }
+
+      ensureHeadingIds(headings);
+
+      const list = document.createElement('ul');
+      list.className = 'article-toc-list';
+
+      headings.forEach((heading) => {
+        const item = document.createElement('li');
+        item.className = `article-toc-item article-toc-item--${heading.tagName.toLowerCase()}`;
+
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = heading.textContent.trim();
+
+        item.appendChild(link);
+        list.appendChild(item);
+      });
+
+      tocContainer.innerHTML = '';
+      tocContainer.appendChild(list);
+      tocCard.hidden = false;
+    }
+
+    function formatNumber(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue)) return '—';
+      return new Intl.NumberFormat().format(numericValue);
+    }
+
+    function formatAverage(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue) || numericValue <= 0) return '—';
+      return `${numericValue.toFixed(1)} / 5`;
+    }
+
+    function setRatingSelection(selectedValue) {
+      ratingButtons.forEach((button) => {
+        const value = Number(button.dataset.ratingValue);
+        const isActive = Number.isFinite(selectedValue) && value <= selectedValue;
+        const isChecked = Number.isFinite(selectedValue) && value === selectedValue;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-checked', isChecked ? 'true' : 'false');
+      });
+    }
+
+    function disableRatingButtons(disabled) {
+      ratingButtons.forEach((button) => {
+        button.disabled = disabled;
+        button.tabIndex = disabled ? -1 : 0;
+      });
+      if (ratingStarsContainer) {
+        ratingStarsContainer.classList.toggle('is-disabled', disabled);
+      }
+    }
+
+    function getStoredRating() {
+      const storedRating = Number(window.localStorage.getItem(sessionRatingKey));
+      return storedRating >= 1 && storedRating <= 5 ? storedRating : null;
+    }
+
+    function applyStoredRatingSummary(count) {
+      const normalizedCount = Number(count);
+      if (!ratingSummary) return;
+      ratingSummary.textContent = `${normalizedCount || 0} rating${normalizedCount === 1 ? '' : 's'} submitted. Your rating has been saved.`;
+    }
+
+    function updateMetrics(metrics) {
+      if (viewsElement) viewsElement.textContent = formatNumber(metrics.views);
+      if (ratingAverage) ratingAverage.textContent = formatAverage(metrics.ratingAverage);
+
+      if (ratingSummary) {
+        const count = Number(metrics.ratingCount);
+        if (Number.isFinite(count) && count > 0) {
+          ratingSummary.textContent = `${count} rating${count === 1 ? '' : 's'} submitted.`;
+        } else {
+          ratingSummary.textContent = 'Be the first to rate this post.';
+        }
+      }
+    }
+
+    function setMetricsUnavailable() {
+      if (viewsElement) viewsElement.textContent = '—';
+      if (viewsNote) viewsNote.textContent = 'Metrics API not configured yet.';
+      if (ratingAverage) ratingAverage.textContent = '—';
+      if (ratingSummary) ratingSummary.textContent = 'Ratings will appear when the metrics API is connected.';
+      disableRatingButtons(true);
+    }
+
+    async function fetchJson(url, options) {
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        ...options
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      return response.json();
+    }
+
+    async function loadMetrics() {
+      if (!metricsEndpoint || !postId) {
+        setMetricsUnavailable();
+        return null;
+      }
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-metrics?id=${encodeURIComponent(postId)}`);
+        updateMetrics(metrics);
+        if (viewsNote) viewsNote.textContent = 'Shared views across visitors.';
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to load shared metrics right now.';
+        if (ratingSummary) ratingSummary.textContent = 'Unable to load ratings right now.';
+        return null;
+      }
+    }
+
+    async function trackView() {
+      if (!metricsEndpoint || !postId || window.sessionStorage.getItem(sessionViewKey)) return null;
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-view`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId })
+        });
+        updateMetrics(metrics);
+        window.sessionStorage.setItem(sessionViewKey, 'true');
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to update views right now.';
+        return null;
+      }
+    }
+
+    async function initializeMetrics() {
+      const metrics = await loadMetrics();
+      if (metrics) {
+        await trackView();
+        return;
+      }
+
+      if (metricsEndpoint && postId) {
+        await trackView();
+      }
+    }
+
+    function handleRatingKeydown(event) {
+      const currentValue = Number(event.currentTarget.dataset.ratingValue);
+      if (!Number.isInteger(currentValue)) return;
+
+      if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const nextButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.min(5, currentValue + 1));
+        if (nextButton) nextButton.focus();
+      }
+
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        const previousButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.max(1, currentValue - 1));
+        if (previousButton) previousButton.focus();
+      }
+    }
+
+    const storedRating = getStoredRating();
+    if (storedRating) {
+      setRatingSelection(storedRating);
+      disableRatingButtons(true);
+    }
+
+    if (!metricsEndpoint || !postId) {
+      setMetricsUnavailable();
+    } else {
+      disableRatingButtons(Boolean(storedRating));
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('keydown', handleRatingKeydown);
+    });
+
+    initializeMetrics();
+
+    async function submitRating(value) {
+      if (!metricsEndpoint || !postId || !Number.isInteger(value) || value < 1 || value > 5) return;
+
+      disableRatingButtons(true);
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-rating`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId, rating: value })
+        });
+        updateMetrics(metrics);
+        setRatingSelection(value);
+        window.localStorage.setItem(sessionRatingKey, String(value));
+        applyStoredRatingSummary(metrics.ratingCount);
+      } catch (error) {
+        disableRatingButtons(false);
+        if (ratingSummary) ratingSummary.textContent = 'Unable to submit your rating right now.';
+      }
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        submitRating(Number(button.dataset.ratingValue));
+      });
+    });
+
+    buildToc();
+  });
+</script>
+
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>33 posts</span>
+            <span>46 categories</span>
+            
+              <span>Updated 2026-03-26</span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

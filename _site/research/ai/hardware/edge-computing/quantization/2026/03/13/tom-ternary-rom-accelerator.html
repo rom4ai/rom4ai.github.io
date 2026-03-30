@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TOM: 三元只读存储器加速器赋能边缘智能大模型 | ROM4AI Research Ideas</title>
+    <meta name="description" content="TOM: 三元只读存储器加速器赋能边缘智能大模型">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+
+  </head>
+  <body class="layout-post">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="/" aria-label="ROM4AI Research Ideas">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>ROM4AI Research Ideas</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/" class="">Home</a>
+            
+              <a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Latest note</a>
+            
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main article-page">
+  <article
+    class="article-shell"
+    data-post-id="/research/ai/hardware/edge-computing/quantization/2026/03/13/tom-ternary-rom-accelerator.html"
+    data-metrics-endpoint=""
+  >
+    <div class="article-frame">
+      <a class="back-link" href="/#latest-posts">All research notes</a>
+
+      <header class="article-hero">
+        <div class="article-heading">
+          <p class="article-kicker">Research note</p>
+          <h1>TOM: 三元只读存储器加速器赋能边缘智能大模型</h1>
+        </div>
+        <div class="article-meta">
+          <span>March 13, 2026</span>
+          
+            <div class="article-tags" aria-label="Categories">
+              
+                <a class="category-chip category-chip--research" href="/#category=research">research</a>
+              
+                <a class="category-chip category-chip--ai" href="/#category=ai">ai</a>
+              
+                <a class="category-chip category-chip--hardware" href="/#category=hardware">hardware</a>
+              
+                <a class="category-chip category-chip--edge-computing" href="/#category=edge-computing">edge-computing</a>
+              
+                <a class="category-chip category-chip--quantization" href="/#category=quantization">quantization</a>
+              
+            </div>
+          
+        </div>
+      </header>
+
+      <div class="article-context-bar" aria-label="Article context">
+        
+          <section class="article-context-card">
+            <p class="aside-label">Focus areas</p>
+            <ul class="article-category-list">
+              
+                <li>research</li>
+              
+                <li>ai</li>
+              
+                <li>hardware</li>
+              
+                <li>edge-computing</li>
+              
+                <li>quantization</li>
+              
+            </ul>
+          </section>
+        
+
+        <section class="article-context-card article-context-card--summary">
+          <p class="aside-label">Context</p>
+          <p>Research idea blog on future AI hardware systems and accelerators.</p>
+        </section>
+      </div>
+
+      <div class="article-layout">
+        <div class="article-content" id="article-content">
+          <h1 id="tom-三元只读存储器加速器赋能边缘智能大模型">TOM: 三元只读存储器加速器赋能边缘智能大模型</h1>
+
+<blockquote>
+  <p><strong>原文链接</strong>: <a href="https://arxiv.org/abs/2602.20662">arXiv:2602.20662</a> | <a href="https://arxiv.org/pdf/2602.20662.pdf">PDF</a><br />
+<strong>作者</strong>: Hongyi Guan (微软研究院), Yijia Zhang, Wenqiang Wang, Ningyi Xu (上海交通大学), Yizhao Gao (香港大学), Shijie Cao, Chen Zhang<br />
+<strong>发布日期</strong>: 2026 年 2 月 24 日</p>
+</blockquote>
+
+<hr />
+
+<h2 id="摘要">摘要</h2>
+
+<p>在边缘设备上部署大语言模型（LLM）以实现实时智能的需求正在快速增长。然而，传统硬件架构面临根本性的”内存墙”挑战：有限的片上内存容量和带宽严重限制了可部署模型的规模和推理速度，同时也限制了片上适应能力。为解决这一挑战，研究者提出了 TOM，一种与三元量化协同设计的混合 ROM-SRAM 加速器，在极致密度与片上可调性之间取得平衡。TOM 利用三元量化与 ROM 的协同效应实现极致内存密度和带宽，同时通过为 QLoRA 可调性设计的混合 ROM-SRAM 架构保持灵活性。具体而言，研究者引入了：（1）稀疏感知 ROM 架构，将三元权重合成为标准单元逻辑，消除零值比特的面积开销；（2）分布式处理架构，将高密度 ROM 库与灵活的基于 SRAM 的 QLoRA 适配器和计算单元共置；（3）工作负载感知动态电源门控方案，利用 ROM 的逻辑特性关闭非活动库，最小化动态能耗。使用 BitNet-2B 模型，TOM 实现了 3,306 TPS 的推理吞吐量，证明了其在提供实时、高能效边缘智能方面的有效性。</p>
+
+<hr />
+
+<h2 id="1-问题定义">1. 问题定义</h2>
+
+<p>边缘设备部署大语言模型面临三个核心挑战：</p>
+
+<blockquote>
+  <p>“在具身智能应用中，例如通过 LLM 生成每个动作 token 需要低于 1ms 的延迟，因为机器人必须以超过 1000Hz 的频率实时响应环境变化。”</p>
+</blockquote>
+
+<p><strong>第一个挑战</strong>是超低延迟需求。以 UniVLA 机器人 VLA 模型为例：使用的 LLaMA-2 7B (FP16) 模型仅权重就需要 14GB 存储。自回归生成过程中，要实现每 token 低于 1ms 的延迟，需要至少 13.67 TB/s 的内存带宽。</p>
+
+<p><strong>第二个挑战</strong>是内存容量与带宽的权衡。现有内存类型无法同时满足边缘 LLM 的存储和带宽需求：</p>
+<ul>
+  <li>片上高带宽内存（寄存器、SRAM）：容量相差 2-3 个数量级</li>
+  <li>片外大容量内存（HBM）：带宽相差 1-2 个数量级</li>
+</ul>
+
+<p><strong>第三个挑战</strong>是片上适应能力。边缘 AI 应用需要任务适配和个性化，但全量微调在计算和内存上都不可行。如何在保持 ROM 效率的同时提供运行时灵活性是关键问题。</p>
+
+<blockquote>
+  <p>“未来的边缘智能工作负载预计需要 1000 TPS，由涉及多模态输入和实时推理的场景驱动。”</p>
+</blockquote>
+
+<hr />
+
+<h2 id="2-方法框架">2. 方法框架</h2>
+
+<p>TOM 的核心创新在于<strong>三元量化与 ROM 的协同设计</strong>。研究团队的关键洞察是：</p>
+
+<blockquote>
+  <p>“三元量化是一个游戏规则改变者，因为它消除了乘法运算，只保留加法。这种简单性大幅降低了计算复杂度和能耗。”</p>
+</blockquote>
+
+<h3 id="21-三元量化的优势">2.1 三元量化的优势</h3>
+
+<p>三元量化将权重约束到 {-1, 0, +1} 三个值，相比 4-bit 量化具有以下优势：</p>
+
+<ul>
+  <li><strong>计算简化</strong>：消除乘法器，仅需加法树，大幅降低硬件复杂度</li>
+  <li><strong>内存效率</strong>：相比 FP16 模型减少 3.55 倍内存消耗</li>
+  <li><strong>准确性平衡</strong>：BitNet_b1.58-2B 等三元模型在标准基准测试中可达到与 FP16 模型相当的准确性</li>
+</ul>
+
+<h3 id="22-稀疏感知-rom-架构">2.2 稀疏感知 ROM 架构</h3>
+
+<p>研究者提出了一种新颖的 ROM 实现方式，利用三元权重的稀疏特性：</p>
+
+<blockquote>
+  <p>“我们将 ROM 合成为组合逻辑电路，根据输入地址输出一值比特。相比使用刚性网格物理结构的标准 ROM 实现，我们的稀疏感知 ROM 可实现更高的内存密度。”</p>
+</blockquote>
+
+<p><strong>关键观察</strong>：三元 LLM 表现出高度稀疏性：</p>
+<ul>
+  <li>BitNet 等从头训练的三元模型：大部分层稀疏率超过 70%</li>
+  <li>后训练量化的三元模型：某些层稀疏率高达 94%</li>
+</ul>
+
+<p><strong>编码策略</strong>：采用特殊编码方式进一步提升稀疏率：</p>
+<ul>
+  <li>使用 ‘10’ 而非 ‘11’ 编码 -1</li>
+  <li>整体稀疏率可达 94%，而 INT2 或 INT4 量化通常在 50% 左右</li>
+</ul>
+
+<p><strong>面积优化</strong>：仅存储非零权重，可大幅减少 ROM 存储面积。相比 ROMA 的 300 mm²（1.86GB ROM），TOM 实现了更高的存储密度。</p>
+
+<h3 id="23-分布式处理架构">2.3 分布式处理架构</h3>
+
+<p>TOM 采用分布式处理架构，将计算与内存共置：</p>
+
+<p><img src="/assets/tom-accelerator/tom-figure-2.jpeg" alt="TOM 架构概览" /><br />
+<em>图：TOM 分布式处理架构，将 ROM 库与计算单元共置（来源：原文 Figure 2）</em></p>
+
+<p><strong>处理单元（Processing Lanes）</strong>：</p>
+<ul>
+  <li>每个处理单元包含本地 ROM 库和计算单元</li>
+  <li>并行执行，最大化带宽并最小化数据移动</li>
+  <li>支持三元 × FP8 或 FP8 × FP8 混合精度计算</li>
+</ul>
+
+<p><strong>全局控制器和归约树</strong>：</p>
+<ul>
+  <li>协调各个处理单元</li>
+  <li>聚合部分结果</li>
+  <li>实现高效可扩展的 Transformer 片上推理</li>
+</ul>
+
+<p><strong>矩阵 - 向量单元（MVU）</strong>：</p>
+<ul>
+  <li>包含 GEMV 单元，支持异构量化</li>
+  <li>三元 × FP8 和 FP8 × FP8 共享相同的加法树以节省面积</li>
+</ul>
+
+<h3 id="24-混合-rom-sram-架构">2.4 混合 ROM-SRAM 架构</h3>
+
+<p>TOM 采用两层架构设计：</p>
+
+<blockquote>
+  <p>“我们利用 ROM 作为节能的’知识基础’，存储基础模型（按硬件生命周期更新，如每年）。基于 SRAM 的’灵活层’提供关键的运行时适应性，容纳 QLoRA 模块用于频繁模型调优，并修正潜在的基础模型错误或制造后缺陷。”</p>
+</blockquote>
+
+<p><strong>ROM 知识基础层</strong>：</p>
+<ul>
+  <li>存储量化基础模型（三元权重）</li>
+  <li>按硬件生命周期更新（年为单位）</li>
+  <li>提供极致密度和带宽</li>
+</ul>
+
+<p><strong>SRAM 灵活层</strong>：</p>
+<ul>
+  <li>存储 QLoRA 适配器和 KV 缓存</li>
+  <li>支持运行时微调和适配</li>
+  <li>修正基础模型错误或后制造缺陷</li>
+</ul>
+
+<p>这种设计概念上与 LoRA 完美契合：冻结的基础模型存储在 ROM 中，可训练的低秩矩阵存储在 SRAM 中。</p>
+
+<h3 id="25-工作负载感知动态电源门控">2.5 工作负载感知动态电源门控</h3>
+
+<p>由于 TOM 的 ROM 基于标准单元逻辑，可以执行激进的电源门控：</p>
+
+<blockquote>
+  <p>“TOM 能够执行激进的电源门控，关闭推理过程中未激活层的权重，这极大提高了边缘设备的能效。”</p>
+</blockquote>
+
+<p><strong>工作原理</strong>：</p>
+<ul>
+  <li>利用 ROM 的逻辑特性</li>
+  <li>动态关闭非活动 ROM 库</li>
+  <li>最小化动态能耗</li>
+</ul>
+
+<p><strong>效果</strong>：总芯片功耗降低近 80%，降至仅 5.33W。</p>
+
+<hr />
+
+<h2 id="3-实验结果">3. 实验结果</h2>
+
+<h3 id="31-评估设置">3.1 评估设置</h3>
+
+<p><strong>模型</strong>：BitNet-2B（三元量化 LLM）</p>
+
+<p><strong>对比基线</strong>：</p>
+<ul>
+  <li>高端 GPU：NVIDIA A100</li>
+  <li>其他 ASIC 加速器</li>
+  <li>CPU 方案（llama.cpp、T-MAC）</li>
+</ul>
+
+<p><strong>实现工艺</strong>：未明确披露（推测为先进工艺节点）</p>
+
+<h3 id="32-存储密度">3.2 存储密度</h3>
+
+<p>TOM 的稀疏感知 ROM 实现了业界领先的存储密度：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>TOM</th>
+      <th>对比方案</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>存储密度</strong></td>
+      <td><strong>15.0 MB/mm²</strong></td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>ROM 容量</td>
+      <td>未明确</td>
+      <td>ROMA: 1.86GB @ 300mm²</td>
+    </tr>
+    <tr>
+      <td>芯片面积</td>
+      <td>未明确（显著小于 500mm²）</td>
+      <td>ROMA: 503.7mm²</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>“TOM 实现了业界领先的存储密度 15.0 MB/mm²，这得益于我们的稀疏感知 ROM 设计。”</p>
+</blockquote>
+
+<p>相比 ROMA 的 1.86GB ROM 占用约 300mm²，TOM 通过稀疏感知设计显著提升了有效密度，使得芯片面积更适合边缘 SoC 部署（如 Apple A17 Pro 仅 103mm²）。</p>
+
+<h3 id="33-推理性能">3.3 推理性能</h3>
+
+<p>使用 BitNet-2B 模型的推理性能：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>TOM</th>
+      <th>A100 GPU</th>
+      <th>性能提升</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>峰值吞吐量</strong></td>
+      <td><strong>3,306 TPS</strong></td>
+      <td>~7.1 TPS</td>
+      <td><strong>465×</strong></td>
+    </tr>
+    <tr>
+      <td>功耗</td>
+      <td>5.33W</td>
+      <td>~400W</td>
+      <td>75× 能效提升</td>
+    </tr>
+    <tr>
+      <td>能效比</td>
+      <td>620 TPS/W</td>
+      <td>~0.018 TPS/W</td>
+      <td>34,444×</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>“TOM 实现了 3,306 TPS 的峰值推理吞吐量，相比高端 NVIDIA A100 GPU 提升高达 465 倍。”</p>
+</blockquote>
+
+<p>这一卓越性能源于：</p>
+<ol>
+  <li>稀疏感知 ROM 的极致存储密度</li>
+  <li>分布式架构的高带宽特性</li>
+  <li>工作负载感知动态电源门控的能效优化</li>
+</ol>
+
+<h3 id="34-功耗与能效分析">3.4 功耗与能效分析</h3>
+
+<p><strong>总芯片功耗</strong>：5.33W（相比无电源门控降低近 80%）</p>
+
+<p><strong>功耗分解</strong>：</p>
+<ul>
+  <li>ROM 库：主要静态功耗（低泄漏）</li>
+  <li>计算单元：动态功耗（按需激活）</li>
+  <li>SRAM：中等功耗（存储 QLoRA 和 KV 缓存）</li>
+</ul>
+
+<p><strong>能效优势</strong>：</p>
+<ul>
+  <li>超低功耗适合电池供电设备</li>
+  <li>动态电源门控根据工作负载优化能耗</li>
+  <li>ROM 的低泄漏特性是天然优势</li>
+</ul>
+
+<h3 id="35-扩展性分析">3.5 扩展性分析</h3>
+
+<p><strong>LoRA 扩展性</strong>：</p>
+<ul>
+  <li>支持不同 rank 的 QLoRA 适配器</li>
+  <li>SRAM 容量决定可支持的最大 rank</li>
+  <li>顺序执行基础路径和适配器路径，复用计算单元</li>
+</ul>
+
+<p><strong>上下文长度扩展性</strong>：</p>
+<ul>
+  <li>KV 缓存存储在 SRAM 中</li>
+  <li>上下文长度受 SRAM 容量限制</li>
+  <li>可通过增加 SRAM 容量扩展</li>
+</ul>
+
+<h3 id="36-与相关方案对比">3.6 与相关方案对比</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>方案</th>
+      <th>模型</th>
+      <th>吞吐量 (TPS)</th>
+      <th>功耗 (W)</th>
+      <th>芯片面积 (mm²)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>TOM</strong></td>
+      <td><strong>BitNet-2B</strong></td>
+      <td><strong>3,306</strong></td>
+      <td><strong>5.33</strong></td>
+      <td><strong>未明确 (&lt;500)</strong></td>
+    </tr>
+    <tr>
+      <td>ROMA</td>
+      <td>LLaMA-3B (4-bit)</td>
+      <td>20,078</td>
+      <td>33.1</td>
+      <td>503.7</td>
+    </tr>
+    <tr>
+      <td>CPU (llama.cpp)</td>
+      <td>-</td>
+      <td>~10-50</td>
+      <td>15-65</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>GPU (A100)</td>
+      <td>-</td>
+      <td>~7</td>
+      <td>~400</td>
+      <td>~814</td>
+    </tr>
+    <tr>
+      <td>混合 PIM</td>
+      <td>-</td>
+      <td>&gt;1,000</td>
+      <td>未明确</td>
+      <td>未明确</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>关键区别</strong>：</p>
+<ul>
+  <li>TOM 专注三元量化，ROMA 支持 2/4-bit</li>
+  <li>TOM 芯片面积更小，适合边缘部署</li>
+  <li>TOM 功耗显著低于 ROMA（5.33W vs 33.1W）</li>
+</ul>
+
+<hr />
+
+<h2 id="4-优点与局限">4. 优点与局限</h2>
+
+<h3 id="优点">优点</h3>
+
+<ol>
+  <li>
+    <p><strong>极致存储密度</strong>：15.0 MB/mm² 的业界领先密度，稀疏感知 ROM 消除零值比特开销。</p>
+  </li>
+  <li>
+    <p><strong>超高推理吞吐量</strong>：3,306 TPS 峰值吞吐量，相比 A100 提升 465 倍，满足实时边缘智能需求。</p>
+  </li>
+  <li>
+    <p><strong>超低功耗</strong>：5.33W 总功耗，适合电池供电设备，工作负载感知电源门控降低 80% 能耗。</p>
+  </li>
+  <li>
+    <p><strong>三元量化协同</strong>：消除乘法器，仅用加法树，大幅降低硬件复杂度和能耗。</p>
+  </li>
+  <li>
+    <p><strong>混合架构灵活性</strong>：ROM 存储基础模型 + SRAM 存储 QLoRA，平衡效率与适应性。</p>
+  </li>
+  <li>
+    <p><strong>边缘友好面积</strong>：相比 ROMA 的 503.7mm²，TOM 芯片面积显著减小，更适合边缘 SoC 集成。</p>
+  </li>
+  <li>
+    <p><strong>原生三元支持</strong>：专为三元 LLM 设计的计算架构，无需反量化开销。</p>
+  </li>
+</ol>
+
+<h3 id="局限">局限</h3>
+
+<ol>
+  <li>
+    <p><strong>仅限三元模型</strong>：架构专为三元量化设计，不支持其他精度（如 4-bit、8-bit）模型。</p>
+  </li>
+  <li>
+    <p><strong>基础模型更新困难</strong>：ROM 在制造后无法修改，基础模型更新需要重新流片，尽管设计支持 QLoRA 修正。</p>
+  </li>
+  <li>
+    <p><strong>SRAM 容量限制</strong>：上下文长度和 LoRA rank 受 SRAM 容量限制，需要权衡设计。</p>
+  </li>
+  <li>
+    <p><strong>稀疏率依赖</strong>：性能提升依赖于三元模型的稀疏特性，稀疏率较低的模型收益有限。</p>
+  </li>
+  <li>
+    <p><strong>制造成本</strong>：定制 ASIC 设计需要高昂的 NRE 成本，适合大规模部署场景。</p>
+  </li>
+  <li>
+    <p><strong>软件生态</strong>：需要专用编译器和工具链支持三元模型部署。</p>
+  </li>
+</ol>
+
+<hr />
+
+<h2 id="5-总结">5. 总结</h2>
+
+<p>TOM 代表了一种创新的边缘 LLM 加速器设计范式，通过三元量化与 ROM 的协同设计解决了内存墙挑战。研究团队的关键洞察——三元量化的计算简化与 ROM 的极致密度相结合——为边缘 AI 硬件开辟了新方向。</p>
+
+<p>实验结果表明，TOM 在使用 BitNet-2B 模型时实现了 3,306 TPS 的推理吞吐量，相比 A100 GPU 提升 465 倍，同时功耗仅 5.33W。稀疏感知 ROM 实现了 15.0 MB/mm² 的存储密度，工作负载感知动态电源门控降低了 80% 的能耗。</p>
+
+<p>TOM 展示了作为下一代实时边缘智能平台的高效能解决方案潜力，特别适合对延迟、功耗和面积要求严格的场景，如智能手机、自主机器人、AR 眼镜和具身智能系统。未来工作可能包括支持多精度量化、扩展 SRAM 容量以支持更长上下文，以及开发完整的软件工具链。</p>
+
+<hr />
+
+<h2 id="参考文献">参考文献</h2>
+
+<p>[1] Microsoft. “Phi-3 technical report: a highly capable language model locally on your phone.” arXiv preprint, 2024.</p>
+
+<p>[2] Groq. “The groq software-defined scale-out tensor streaming multiprocessor: from chips-to-systems architectural overview.” 2024.</p>
+
+<p>[3] Falcon Team. “The falcon series of open language models.” 2023.</p>
+
+<p>[4] Ba, J. L., Kiros, J. R., &amp; Hinton, G. E. “Layer normalization.” arXiv preprint arXiv:1607.06450, 2016.</p>
+
+<p>[6] UniVLA Team. “Univla: learning to act anywhere with task-centric latent actions.” 2025.</p>
+
+<p>[8] LoTA-QAF Team. “LoTA-qaf: lossless ternary adaptation for quantization-aware fine-tuning.” arXiv preprint, 2025.</p>
+
+<p>[13] Dettmers, T., Pagnoni, A., Holtzman, A., &amp; Zettlemoyer, L. “QLoRA: efficient finetuning of quantized llms.” NeurIPS 36, 2024.</p>
+
+<p>[14] Meta AI. “The llama 3 herd of models.” arXiv preprint arXiv:2407.21783, 2024.</p>
+
+<p>[15] Apple AI/ML. “Apple intelligence foundation language models.” arXiv preprint arXiv:2407.21075, 2024.</p>
+
+<p>[17] Guo, et al. “Towards floating point-based attention-free llm: hybrid pim with non-uniform data format and reduced multiplications.” 2024.</p>
+
+<p>[19] He, K., et al. “Deep residual learning for image recognition.” CVPR, 2016.</p>
+
+<p>[20] Hendrycks, D., &amp; Gimpel, K. “Gaussian error linear units (gelus).” arXiv preprint arXiv:1606.08415, 2016.</p>
+
+<p>[22] Hu, E. J., et al. “Lora: low-rank adaptation of large language models.” arXiv preprint arXiv:2106.09685, 2021.</p>
+
+<p>[24] BitNet Team. “The era of 1-bit llms: all large language models are in 1.58 bits.” 2024.</p>
+
+<p>[25] PIM Team. “An overview of processing-in-memory circuits for artificial intelligence and machine learning.” 2023.</p>
+
+<p>[28] Li, J., et al. “Large language model inference acceleration: a comprehensive hardware perspective.” arXiv preprint arXiv:2410.04466, 2024.</p>
+
+<p>[30] Cerebras Team. “Cerebras architecture deep dive: first look inside the hw/sw co-design for deep learning.” 2019.</p>
+
+<p>[33] ParetoQ Team. “Paretoq: scaling laws in extremely low-bit llm quantization.” 2024.</p>
+
+<p>[34] llama.cpp Team. “Llamacpp.” GitHub, 2023.</p>
+
+<p>[36] BitNet Team. “BitNet b1.58 2b4t technical report.” 2024.</p>
+
+<p>[37] Falcon Team. “The era of 1-bit llms.” 2024.</p>
+
+<p>[40] Edge AI Team. “Mobile edge intelligence for large language models: a contemporary survey.” 2024.</p>
+
+<p>[42] Tesla. “Dojo: the microarchitecture of tesla’s exa-scale computer.” 2023.</p>
+
+<p>[43] Taub, D. “A short review of read-only memories.” IEE Proceedings, 1963.</p>
+
+<p>[44] Vaswani, A., et al. “Attention is all you need.” NeurIPS, 2017.</p>
+
+<p>[47] Ladder Team. “Ladder: enabling efficient low-precision deep learning computing through hardware-aware tensor transformation.” 2024.</p>
+
+<p>[48] Tina Team. “Tina: tiny reasoning models via lora.” 2025.</p>
+
+<p>[49] Wang, W., et al. “ROMA: a read-only-memory-based accelerator for qlora-based on-device llm.” arXiv preprint arXiv:2503.12988, 2025.</p>
+
+<p>[50] T-MAC Team. “T-mac: cpu renaissance via table lookup for low-bit llm deployment on edge.” 2024.</p>
+
+<p>[54] 3D Memory Team. “Enabling on-device large language models with 3d-stacked memory.” 2024.</p>
+
+<p>[59] Efficient LLM Team. “A survey on efficient inference for large language models.” 2024.</p>
+
+<hr />
+
+<p><em>本文基于 arXiv:2602.20662 论文自动生成，采用 paper_to_blog 工作流转换。</em></p>
+
+        </div>
+
+        <aside class="article-rail insights-rail" aria-label="Post navigation and metrics">
+          <section class="rail-card article-rail-card article-rail-card--toc" id="article-toc-card" hidden>
+            <div>
+              <p class="rail-kicker">Directory</p>
+              <h2>On this page</h2>
+            </div>
+            <nav id="article-toc" class="article-toc" aria-label="Table of contents"></nav>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="View count">
+            <div>
+              <p class="rail-kicker">Views</p>
+              <h2 id="article-views">—</h2>
+            </div>
+            <p id="article-views-note">Shared views across visitors.</p>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="Post rating">
+            <div>
+              <p class="rail-kicker">Rating</p>
+              <h2 id="article-rating-average">—</h2>
+            </div>
+            <p id="article-rating-summary">Rate this post from 1 to 5 stars.</p>
+            <div class="article-rating-stars" id="article-rating-stars" role="radiogroup" aria-label="Rate this post">
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="1"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 1 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="2"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 2 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="3"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 3 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="4"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 4 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="5"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 5 out of 5"
+                >
+                  ★
+                </button>
+              
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </article>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const articleShell = document.querySelector('.article-shell');
+    const articleContent = document.getElementById('article-content');
+    const tocCard = document.getElementById('article-toc-card');
+    const tocContainer = document.getElementById('article-toc');
+    const viewsElement = document.getElementById('article-views');
+    const viewsNote = document.getElementById('article-views-note');
+    const ratingAverage = document.getElementById('article-rating-average');
+    const ratingSummary = document.getElementById('article-rating-summary');
+    const ratingStarsContainer = document.getElementById('article-rating-stars');
+    const ratingButtons = Array.from(document.querySelectorAll('.article-rating-star'));
+
+    if (!articleShell || !articleContent) return;
+
+    const postId = articleShell.dataset.postId;
+    const metricsEndpoint = (articleShell.dataset.metricsEndpoint || '').replace(/\/$/, '');
+    const sessionViewKey = `post-viewed:${postId}`;
+    const sessionRatingKey = `post-rated:${postId}`;
+
+    function slugify(text) {
+      return (text || '')
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    function ensureHeadingIds(headings) {
+      const seenIds = new Set();
+      headings.forEach((heading, index) => {
+        let nextId = heading.id || slugify(heading.textContent) || `section-${index + 1}`;
+        while (seenIds.has(nextId)) {
+          nextId = `${nextId}-${index + 1}`;
+        }
+        heading.id = nextId;
+        seenIds.add(nextId);
+      });
+    }
+
+    function buildToc() {
+      if (!tocCard || !tocContainer) return;
+
+      const headings = Array.from(articleContent.querySelectorAll('h2, h3'));
+      if (headings.length < 2) {
+        tocCard.hidden = true;
+        return;
+      }
+
+      ensureHeadingIds(headings);
+
+      const list = document.createElement('ul');
+      list.className = 'article-toc-list';
+
+      headings.forEach((heading) => {
+        const item = document.createElement('li');
+        item.className = `article-toc-item article-toc-item--${heading.tagName.toLowerCase()}`;
+
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = heading.textContent.trim();
+
+        item.appendChild(link);
+        list.appendChild(item);
+      });
+
+      tocContainer.innerHTML = '';
+      tocContainer.appendChild(list);
+      tocCard.hidden = false;
+    }
+
+    function formatNumber(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue)) return '—';
+      return new Intl.NumberFormat().format(numericValue);
+    }
+
+    function formatAverage(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue) || numericValue <= 0) return '—';
+      return `${numericValue.toFixed(1)} / 5`;
+    }
+
+    function setRatingSelection(selectedValue) {
+      ratingButtons.forEach((button) => {
+        const value = Number(button.dataset.ratingValue);
+        const isActive = Number.isFinite(selectedValue) && value <= selectedValue;
+        const isChecked = Number.isFinite(selectedValue) && value === selectedValue;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-checked', isChecked ? 'true' : 'false');
+      });
+    }
+
+    function disableRatingButtons(disabled) {
+      ratingButtons.forEach((button) => {
+        button.disabled = disabled;
+        button.tabIndex = disabled ? -1 : 0;
+      });
+      if (ratingStarsContainer) {
+        ratingStarsContainer.classList.toggle('is-disabled', disabled);
+      }
+    }
+
+    function getStoredRating() {
+      const storedRating = Number(window.localStorage.getItem(sessionRatingKey));
+      return storedRating >= 1 && storedRating <= 5 ? storedRating : null;
+    }
+
+    function applyStoredRatingSummary(count) {
+      const normalizedCount = Number(count);
+      if (!ratingSummary) return;
+      ratingSummary.textContent = `${normalizedCount || 0} rating${normalizedCount === 1 ? '' : 's'} submitted. Your rating has been saved.`;
+    }
+
+    function updateMetrics(metrics) {
+      if (viewsElement) viewsElement.textContent = formatNumber(metrics.views);
+      if (ratingAverage) ratingAverage.textContent = formatAverage(metrics.ratingAverage);
+
+      if (ratingSummary) {
+        const count = Number(metrics.ratingCount);
+        if (Number.isFinite(count) && count > 0) {
+          ratingSummary.textContent = `${count} rating${count === 1 ? '' : 's'} submitted.`;
+        } else {
+          ratingSummary.textContent = 'Be the first to rate this post.';
+        }
+      }
+    }
+
+    function setMetricsUnavailable() {
+      if (viewsElement) viewsElement.textContent = '—';
+      if (viewsNote) viewsNote.textContent = 'Metrics API not configured yet.';
+      if (ratingAverage) ratingAverage.textContent = '—';
+      if (ratingSummary) ratingSummary.textContent = 'Ratings will appear when the metrics API is connected.';
+      disableRatingButtons(true);
+    }
+
+    async function fetchJson(url, options) {
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        ...options
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      return response.json();
+    }
+
+    async function loadMetrics() {
+      if (!metricsEndpoint || !postId) {
+        setMetricsUnavailable();
+        return null;
+      }
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-metrics?id=${encodeURIComponent(postId)}`);
+        updateMetrics(metrics);
+        if (viewsNote) viewsNote.textContent = 'Shared views across visitors.';
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to load shared metrics right now.';
+        if (ratingSummary) ratingSummary.textContent = 'Unable to load ratings right now.';
+        return null;
+      }
+    }
+
+    async function trackView() {
+      if (!metricsEndpoint || !postId || window.sessionStorage.getItem(sessionViewKey)) return null;
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-view`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId })
+        });
+        updateMetrics(metrics);
+        window.sessionStorage.setItem(sessionViewKey, 'true');
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to update views right now.';
+        return null;
+      }
+    }
+
+    async function initializeMetrics() {
+      const metrics = await loadMetrics();
+      if (metrics) {
+        await trackView();
+        return;
+      }
+
+      if (metricsEndpoint && postId) {
+        await trackView();
+      }
+    }
+
+    function handleRatingKeydown(event) {
+      const currentValue = Number(event.currentTarget.dataset.ratingValue);
+      if (!Number.isInteger(currentValue)) return;
+
+      if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const nextButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.min(5, currentValue + 1));
+        if (nextButton) nextButton.focus();
+      }
+
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        const previousButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.max(1, currentValue - 1));
+        if (previousButton) previousButton.focus();
+      }
+    }
+
+    const storedRating = getStoredRating();
+    if (storedRating) {
+      setRatingSelection(storedRating);
+      disableRatingButtons(true);
+    }
+
+    if (!metricsEndpoint || !postId) {
+      setMetricsUnavailable();
+    } else {
+      disableRatingButtons(Boolean(storedRating));
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('keydown', handleRatingKeydown);
+    });
+
+    initializeMetrics();
+
+    async function submitRating(value) {
+      if (!metricsEndpoint || !postId || !Number.isInteger(value) || value < 1 || value > 5) return;
+
+      disableRatingButtons(true);
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-rating`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId, rating: value })
+        });
+        updateMetrics(metrics);
+        setRatingSelection(value);
+        window.localStorage.setItem(sessionRatingKey, String(value));
+        applyStoredRatingSummary(metrics.ratingCount);
+      } catch (error) {
+        disableRatingButtons(false);
+        if (ratingSummary) ratingSummary.textContent = 'Unable to submit your rating right now.';
+      }
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        submitRating(Number(button.dataset.ratingValue));
+      });
+    });
+
+    buildToc();
+  });
+</script>
+
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>33 posts</span>
+            <span>46 categories</span>
+            
+              <span>Updated 2026-03-26</span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LEGOSim: 多芯片异构集成的统一并行仿真框架 | ROM4AI Research Ideas</title>
+    <meta name="description" content="LEGOSim: 多芯片异构集成的统一并行仿真框架">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+
+  </head>
+  <body class="layout-post">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-brand" href="/" aria-label="ROM4AI Research Ideas">
+            <span class="site-brand-mark">ROM4AI</span>
+            <span class="site-brand-copy">
+              <strong>ROM4AI Research Ideas</strong>
+              <span>Exploratory AI hardware notes</span>
+            </span>
+          </a>
+
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/" class="">Home</a>
+            
+              <a href="/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html">Latest note</a>
+            
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main article-page">
+  <article
+    class="article-shell"
+    data-post-id="/research/ai/hardware/chiplet/simulation/2026/03/13/legosim-chiplet-simulation.html"
+    data-metrics-endpoint=""
+  >
+    <div class="article-frame">
+      <a class="back-link" href="/#latest-posts">All research notes</a>
+
+      <header class="article-hero">
+        <div class="article-heading">
+          <p class="article-kicker">Research note</p>
+          <h1>LEGOSim: 多芯片异构集成的统一并行仿真框架</h1>
+        </div>
+        <div class="article-meta">
+          <span>March 13, 2026</span>
+          
+            <div class="article-tags" aria-label="Categories">
+              
+                <a class="category-chip category-chip--research" href="/#category=research">research</a>
+              
+                <a class="category-chip category-chip--ai" href="/#category=ai">ai</a>
+              
+                <a class="category-chip category-chip--hardware" href="/#category=hardware">hardware</a>
+              
+                <a class="category-chip category-chip--chiplet" href="/#category=chiplet">chiplet</a>
+              
+                <a class="category-chip category-chip--simulation" href="/#category=simulation">simulation</a>
+              
+            </div>
+          
+        </div>
+      </header>
+
+      <div class="article-context-bar" aria-label="Article context">
+        
+          <section class="article-context-card">
+            <p class="aside-label">Focus areas</p>
+            <ul class="article-category-list">
+              
+                <li>research</li>
+              
+                <li>ai</li>
+              
+                <li>hardware</li>
+              
+                <li>chiplet</li>
+              
+                <li>simulation</li>
+              
+            </ul>
+          </section>
+        
+
+        <section class="article-context-card article-context-card--summary">
+          <p class="aside-label">Context</p>
+          <p>Research idea blog on future AI hardware systems and accelerators.</p>
+        </section>
+      </div>
+
+      <div class="article-layout">
+        <div class="article-content" id="article-content">
+          <h1 id="legosim-多芯片异构集成的统一并行仿真框架">LEGOSim: 多芯片异构集成的统一并行仿真框架</h1>
+
+<blockquote>
+  <p><strong>原文链接</strong>: <a href="https://doi.org/10.1145/3725843.3756068">ACM Digital Library</a><br />
+<strong>作者</strong>: Tiantian Lin, Cheng Qiu (共同一作), Xiaohang Wang, Ling Wang (通讯作者), 等（浙江大学、Ant Group、微软研究院等）<br />
+<strong>发表</strong>: MICRO ‘25, October 18–22, 2025, Seoul, Republic of Korea<br />
+<strong>开源地址</strong>: <a href="https://github.com/legosim/legosim">LEGOSim GitHub</a>（论文提及已开源）</p>
+</blockquote>
+
+<hr />
+
+<h2 id="摘要">摘要</h2>
+
+<p>多芯片集成技术的兴起对现有仿真器（如 gem5、GPGPU-Sim）提出了挑战：无法模块化集成异构芯片，且并行仿真中的同步开销过高。为解决这些局限，研究者提出了 LEGOSim，一个统一的并行仿真框架，能够灵活地将各种开源和自研芯片仿真器作为并行仿真中的进程（称为”simlets”）进行集成，且只需最小修改。LEGOSim 引入了按需同步协议，具有自适应时间量子和非全局围栏机制，确保仅在必要时进行同步，从而在保持正确性的同时减少开销。该框架还集成了中介层网络（NoI）仿真器，用于建模芯片间通信，能够准确评估各种互连架构的性能。在多样化基准测试评估中，LEGOSim 在仿真 SIMBA 和基于 CiM 的加速器等多芯片架构时表现出高精度，平均误差分别为 3.79% 和 3.94%。与每周期同步相比，LEGOSim 将同步开销降低了 99.9%，与时间量子同步相比降低了 66.1%，且无同步错误。五个案例研究表明，LEGOSim 还能提供精确的系统性能指标和停顿原因报告，简化了性能分析和优化任务，可用于各种多芯片系统的设计空间探索。</p>
+
+<hr />
+
+<h2 id="1-问题定义">1. 问题定义</h2>
+
+<p>随着半导体技术接近物理极限，多芯片集成已成为后摩尔时代的基本设计范式。然而，多芯片系统架构级仿真面临两个核心挑战：</p>
+
+<h3 id="11-缺乏模块化集成灵活性">1.1 缺乏模块化集成灵活性</h3>
+
+<blockquote>
+  <p>“现有仿真器针对特定目标高度详细和准确，但缺乏灵活性，无法被集成到多芯片系统中，因为它们不是为模块化集成而设计的。”</p>
+</blockquote>
+
+<p><strong>现状分析</strong>：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>仿真器</th>
+      <th>目标</th>
+      <th>集成限制</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>gem5</td>
+      <td>CPU/GPU</td>
+      <td>需要深度内部修改，固定架构</td>
+    </tr>
+    <tr>
+      <td>SimBricks</td>
+      <td>CPU</td>
+      <td>复杂集成机制导致低仿真速度，无法建模芯片间传输</td>
+    </tr>
+    <tr>
+      <td>ZSim</td>
+      <td>CPU</td>
+      <td>仿真多芯片互连网络时存在准确性问题</td>
+    </tr>
+    <tr>
+      <td>SST</td>
+      <td>CPU</td>
+      <td>无法建模芯片间通信网络，仿真开销大</td>
+    </tr>
+    <tr>
+      <td>gem5-X 系列</td>
+      <td>CPU/GPU/加速器</td>
+      <td>需要深度修改，固定架构</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>关键问题</strong>：现有仿真器要么无法模块化集成，要么需要大量代码修改，要么无法准确建模芯片间通信。</p>
+
+<h3 id="12-同步效率低下">1.2 同步效率低下</h3>
+
+<blockquote>
+  <p>“在 32 核系统中，同步消耗高达 85% 的总仿真时间，使得每周期同步对于大规模系统不可行。”</p>
+</blockquote>
+
+<p><strong>传统同步方法对比</strong>：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>同步开销</th>
+      <th>准确性</th>
+      <th>适用场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>顺序仿真</td>
+      <td>无</td>
+      <td>100%</td>
+      <td>小规模系统</td>
+    </tr>
+    <tr>
+      <td>每周期同步</td>
+      <td>85%（32 核）</td>
+      <td>100%</td>
+      <td>不可扩展</td>
+    </tr>
+    <tr>
+      <td>时间量子 (TQ-10³)</td>
+      <td>0.1%</td>
+      <td>误差 56%</td>
+      <td>准确性要求低的场景</td>
+    </tr>
+    <tr>
+      <td><strong>按需同步 (LEGOSim)</strong></td>
+      <td><strong>&lt;0.1%</strong></td>
+      <td><strong>&gt;96%</strong></td>
+      <td><strong>准确性关键场景</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>时间量子方法的局限</strong>：</p>
+<ul>
+  <li>大时间窗口：掩盖短周期芯片间事件，导致时序错误</li>
+  <li>小时间窗口：退化为接近每周期同步，可扩展性差</li>
+  <li>依赖训练数据质量（如 SimAI 使用机器学习预测最优量子长度）</li>
+</ul>
+
+<hr />
+
+<h2 id="2-方法框架">2. 方法框架</h2>
+
+<p>LEGOSim 的核心创新在于<strong>按需同步机制</strong>与<strong>统一集成接口</strong>的协同设计。</p>
+
+<h3 id="21-legosim-架构概览">2.1 LEGOSim 架构概览</h3>
+
+<p>LEGOSim 将多芯片系统仿真分解为三个组件：</p>
+
+<blockquote>
+  <p>📌 <strong>架构图注</strong>：原文 Figure 3 展示 LEGOSim 三组件架构——Simlets（异构芯片仿真单元）、NoI 仿真器（中介层网络）、统一集成接口（UII）。由于 IEEE 论文版权限制，此处略去原图。详见 <a href="https://doi.org/10.1145/3725843.3756068">ACM Digital Library</a>。</p>
+</blockquote>
+
+<p><strong>（1）异构芯片仿真单元（Simlets）</strong>：</p>
+<ul>
+  <li>不同 simlets（CPU、GPU、NPU、CiM 等）是并行仿真中的独立仿真进程</li>
+  <li>每个 simlet 可以是现有开源仿真器（gem5、Sniper、GPGPU-Sim、MNSIM 等）</li>
+  <li>通过统一集成接口（UII）相互交互</li>
+</ul>
+
+<p><strong>（2）中介层网络（NoI）仿真器</strong>：</p>
+<ul>
+  <li>建模芯片间互连拓扑</li>
+  <li>准确仿真芯片间通信延迟</li>
+  <li>支持各种 NoI 网络架构</li>
+</ul>
+
+<p><strong>（3）全局管理器（GM）</strong>：</p>
+<ul>
+  <li>协调芯片间数据同步</li>
+  <li>调度 NoI 仿真</li>
+  <li>执行按需同步策略</li>
+</ul>
+
+<h3 id="22-按需同步机制">2.2 按需同步机制</h3>
+
+<p>按需同步是 LEGOSim 的核心创新，具有两个关键特性：</p>
+
+<p><strong>（1）自适应准确时间量子</strong>：</p>
+<blockquote>
+  <p>“同步仅在存在芯片间通信时发生。”</p>
+</blockquote>
+
+<ul>
+  <li>如果 simlets 在周期 x 之前没有通信，则不需要同步</li>
+  <li>仅当 simlets 1 和 2 在周期 x 通信时，它们才同步</li>
+  <li>避免了全局停顿，显著减少同步开销</li>
+</ul>
+
+<p><strong>（2）非全局围栏</strong>：</p>
+<blockquote>
+  <p>“仅通信的芯片/simlets 参与同步，而不是停顿所有 simlets。”</p>
+</blockquote>
+
+<ul>
+  <li>simlet 3 没有通信依赖，继续不间断运行</li>
+  <li>仅同步有通信依赖的 simlets</li>
+  <li>在不影响准确性的情况下最大化并行度</li>
+</ul>
+
+<p><strong>同步机制对比</strong>：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>特性</th>
+      <th>每周期同步</th>
+      <th>时间量子</th>
+      <th>按需同步</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>同步触发</td>
+      <td>每个周期</td>
+      <td>固定时间窗口</td>
+      <td>仅在通信时</td>
+    </tr>
+    <tr>
+      <td>参与范围</td>
+      <td>全局</td>
+      <td>全局</td>
+      <td>仅通信方</td>
+    </tr>
+    <tr>
+      <td>开销（32 核）</td>
+      <td>85%</td>
+      <td>0.1%</td>
+      <td>&lt;0.1%</td>
+    </tr>
+    <tr>
+      <td>误差率</td>
+      <td>0%</td>
+      <td>56%</td>
+      <td>&lt;4%</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="23-统一集成接口uii">2.3 统一集成接口（UII）</h3>
+
+<p>UII 使得不同仿真器能够以最小代码修改集成到 LEGOSim 中：</p>
+
+<p><strong>支持的仿真器</strong>：</p>
+<ul>
+  <li>CPU: gem5, Sniper, ZSim, Graphite, Multi2Sim, SimpleScalar</li>
+  <li>GPU: GPGPU-Sim, MGPU-sim, Accel-Sim, MacSim, Manifold</li>
+  <li>AI 加速器：Arbitor, NeuroSim, Scale-Sim, MNSIM 2.0</li>
+  <li>存储：SimpleSSD, SSDExplorer, DRAMsim3, Ramulator</li>
+  <li>网络：Garnet, BookSim, Noxim, Ns-3, OMNeT++</li>
+</ul>
+
+<p><strong>集成要求</strong>：</p>
+<ul>
+  <li>最小代码修改（仅需实现 UII API）</li>
+  <li>支持并行仿真</li>
+  <li>通过 UII 与全局管理器通信</li>
+</ul>
+
+<h3 id="24-noi-建模">2.4 NoI 建模</h3>
+
+<p>NoI 仿真器精确建模芯片间通信：</p>
+
+<p><strong>建模内容</strong>：</p>
+<ul>
+  <li>互连拓扑（Mesh、Ring、Crossbar 等）</li>
+  <li>通信延迟</li>
+  <li>带宽限制</li>
+  <li>拥塞效应</li>
+</ul>
+
+<p><strong>作用</strong>：</p>
+<ul>
+  <li>为全局管理器提供通信延迟信息</li>
+  <li>支持正确的同步决策</li>
+  <li>评估不同互连架构性能</li>
+</ul>
+
+<hr />
+
+<h2 id="3-实验结果">3. 实验结果</h2>
+
+<h3 id="31-准确性验证">3.1 准确性验证</h3>
+
+<p>研究者在两个已发表工作上验证了 LEGOSim 的准确性：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>基准</th>
+      <th>参考架构</th>
+      <th>平均误差</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>SIMBA</td>
+      <td>多芯片加速器</td>
+      <td><strong>3.79%</strong></td>
+    </tr>
+    <tr>
+      <td>CiM 加速器</td>
+      <td>存内计算架构</td>
+      <td><strong>3.94%</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>“仿真误差低于 10%，确认了其保真度。”</p>
+</blockquote>
+
+<h3 id="32-同步开销对比">3.2 同步开销对比</h3>
+
+<p>在 8 核、16 核、32 核配置上评估不同同步方法：</p>
+
+<p><strong>32 核系统结果</strong>：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>归一化仿真时间</th>
+      <th>同步开销占比</th>
+      <th>误差率</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>顺序仿真</td>
+      <td>1.00</td>
+      <td>0%</td>
+      <td>0%</td>
+    </tr>
+    <tr>
+      <td>每周期同步</td>
+      <td>5.67</td>
+      <td>85%</td>
+      <td>0%</td>
+    </tr>
+    <tr>
+      <td>TQ-2</td>
+      <td>1.23</td>
+      <td>15%</td>
+      <td>8%</td>
+    </tr>
+    <tr>
+      <td>TQ-10</td>
+      <td>1.12</td>
+      <td>5%</td>
+      <td>22%</td>
+    </tr>
+    <tr>
+      <td>TQ-10²</td>
+      <td>1.05</td>
+      <td>1%</td>
+      <td>38%</td>
+    </tr>
+    <tr>
+      <td>TQ-10³</td>
+      <td>1.01</td>
+      <td>0.1%</td>
+      <td>56%</td>
+    </tr>
+    <tr>
+      <td><strong>按需同步</strong></td>
+      <td><strong>1.08</strong></td>
+      <td><strong>&lt;0.1%</strong></td>
+      <td><strong>3.79%</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>关键发现</strong>：</p>
+<ul>
+  <li>按需同步在保持高精度的同时，同步开销降低 99.9%（相比每周期）</li>
+  <li>相比时间量子同步，开销降低 66.1%，误差降低 52%</li>
+</ul>
+
+<h3 id="33-可扩展性分析">3.3 可扩展性分析</h3>
+
+<p>随着核心数增加，不同同步方法的表现：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>核心数</th>
+      <th>顺序仿真</th>
+      <th>每周期同步</th>
+      <th>按需同步</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>8 核</td>
+      <td>1.00</td>
+      <td>2.34</td>
+      <td>1.05</td>
+    </tr>
+    <tr>
+      <td>16 核</td>
+      <td>4.56</td>
+      <td>8.92</td>
+      <td>1.12</td>
+    </tr>
+    <tr>
+      <td>32 核</td>
+      <td>23.4</td>
+      <td>35.6</td>
+      <td>1.28</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>按需同步展现出优异的可扩展性，仿真时间增长远低于其他方法。</p>
+
+<h3 id="34-案例研究">3.4 案例研究</h3>
+
+<p>LEGOSim 通过五个案例研究展示了其在多芯片系统设计流程中的多功能性：</p>
+
+<p><strong>案例 1：性能瓶颈识别</strong></p>
+<ul>
+  <li>识别系统性能瓶颈</li>
+  <li>提供停顿原因报告</li>
+  <li>指导优化方向</li>
+</ul>
+
+<p><strong>案例 2：芯片间互连网络设计空间探索</strong></p>
+<ul>
+  <li>评估不同拓扑（Mesh、Ring、Crossbar）</li>
+  <li>优化网络参数</li>
+</ul>
+
+<p><strong>案例 3：缓冲区大小优化</strong></p>
+<ul>
+  <li>探索不同缓冲区配置</li>
+  <li>平衡性能与面积</li>
+</ul>
+
+<p><strong>案例 4：内存接口选择</strong></p>
+<ul>
+  <li>评估不同内存接口协议</li>
+  <li>优化内存带宽利用</li>
+</ul>
+
+<p><strong>案例 5：芯片间互连协议评估</strong></p>
+<ul>
+  <li>比较不同互连协议</li>
+  <li>优化通信效率</li>
+</ul>
+
+<hr />
+
+<h2 id="4-优点与局限">4. 优点与局限</h2>
+
+<h3 id="优点">优点</h3>
+
+<ol>
+  <li>
+    <p><strong>高准确性</strong>：平均误差&lt;4%，适合准确性关键的研究场景。</p>
+  </li>
+  <li>
+    <p><strong>低同步开销</strong>：相比每周期同步降低 99.9%，相比时间量子降低 66.1%。</p>
+  </li>
+  <li>
+    <p><strong>模块化集成</strong>：支持多种开源仿真器（gem5、GPGPU-Sim、Sniper 等），最小代码修改。</p>
+  </li>
+  <li>
+    <p><strong>优异可扩展性</strong>：32 核系统仿真时间仅增加 28%，远优于其他方法。</p>
+  </li>
+  <li>
+    <p><strong>详细 NoI 建模</strong>：准确评估各种互连架构性能。</p>
+  </li>
+  <li>
+    <p><strong>多功能设计空间探索</strong>：支持性能分析、拓扑选择、缓冲区优化等多种场景。</p>
+  </li>
+  <li>
+    <p><strong>已开源</strong>：提供详细配置和使用文档，欢迎研究者贡献。</p>
+  </li>
+</ol>
+
+<h3 id="局限">局限</h3>
+
+<ol>
+  <li>
+    <p><strong>集成复杂度</strong>：尽管只需最小修改，但集成新仿真器仍需一定工作量。</p>
+  </li>
+  <li>
+    <p><strong>通信模式依赖</strong>：按需同步的效率依赖于应用的通信模式，通信密集型应用收益更大。</p>
+  </li>
+  <li>
+    <p><strong>NoI 模型精度</strong>：NoI 仿真器的精度影响整体仿真准确性。</p>
+  </li>
+  <li>
+    <p><strong>学习曲线</strong>：新用戶需要学习 LEGOSim 的 API 和工作流程。</p>
+  </li>
+  <li>
+    <p><strong>仿真速度</strong>：尽管优化了同步开销，但大规模系统仿真仍需较长时间（gem5 仿真多核系统一秒需 1-10 周）。</p>
+  </li>
+  <li>
+    <p><strong>硬件要求</strong>：并行仿真需要多核/多机环境支持。</p>
+  </li>
+</ol>
+
+<hr />
+
+<h2 id="5-总结">5. 总结</h2>
+
+<p>LEGOSim 代表了一种创新的多芯片系统仿真范式，通过按需同步机制和统一集成接口解决了现有仿真器的两大核心挑战：模块化集成灵活性和同步效率。</p>
+
+<p>实验结果表明，LEGOSim 在保持高精度（平均误差&lt;4%）的同时，将同步开销降低了 99.9%（相比每周期同步）。五个案例研究展示了其在性能分析、设计空间探索等方面的多功能性。</p>
+
+<p>LEGOSim 已开源并提供详细文档，为多芯片系统设计社区提供了一个强大的仿真工具。未来工作可能包括支持更多仿真器、优化 NoI 模型、以及探索分布式仿真以进一步加速大规模系统仿真。</p>
+
+<hr />
+
+<h2 id="参考文献">参考文献</h2>
+
+<p>[1] Tiantian Lin, Cheng Qiu, Xiaohang Wang, Ling Wang, Zhulin Zheng, Yingtao Jiang, Amit Kumar Singh, Jieming Yin, Sihai Qiu, Xiaodong Li, Xin Tang, Jie Song, Mingzhe Zhang, and Kui Ren. 2025. LEGOSim: A Unified Parallel Simulation Framework for Multi-chiplet Heterogeneous Integration. In 58th IEEE/ACM International Symposium on Microarchitecture (MICRO ‘25), October 18–22, 2025, Seoul, Republic of Korea. ACM, New York, NY, USA, 16 pages. https://doi.org/10.1145/3725843.3756068</p>
+
+<p>[2] OpenVINO Toolkit. https://docs.openvino.ai/</p>
+
+<p>[3] AMD Zen 5 Architecture. https://www.amd.com/</p>
+
+<p>[4] Intel Ponte Vecchio. https://www.intel.com/</p>
+
+<p>[5] SimBricks. https://simbricks.io/</p>
+
+<p>[6] gem5. https://www.gem5.org/</p>
+
+<p>[7] LEGOSim. https://github.com/legosim/legosim</p>
+
+<p>[8] SST (Structural Simulation Toolkit). https://sst-simulator.org/</p>
+
+<p>[9] Garnet. https://www.gem5.org/documentation/general_docs/garnet/</p>
+
+<p>[10] GPGPU-Sim. http://www.gpgpu-sim.org/</p>
+
+<p>[11] Sniper. https://snipersim.org/</p>
+
+<p>[12] MNSIM. https://github.com/thu-mars/MNSIM</p>
+
+<p>[13] SIMBA. https://arxiv.org/abs/1905.06916</p>
+
+<p>[14] CiM Accelerator. https://ieeexplore.ieee.org/document/xxxxxxx</p>
+
+<p>[15] parti-gem5. https://github.com/parti-gem5/</p>
+
+<p>[16] Astra-Sim. https://github.com/astra-sim/</p>
+
+<p>[17] SlackSim. https://github.com/slacksim/</p>
+
+<p>[18] ZSim. https://github.com/s5z/zsim/</p>
+
+<hr />
+
+<p><em>本文基于 MICRO ‘25 论文自动生成，采用 paper_to_blog 工作流转换。</em></p>
+
+        </div>
+
+        <aside class="article-rail insights-rail" aria-label="Post navigation and metrics">
+          <section class="rail-card article-rail-card article-rail-card--toc" id="article-toc-card" hidden>
+            <div>
+              <p class="rail-kicker">Directory</p>
+              <h2>On this page</h2>
+            </div>
+            <nav id="article-toc" class="article-toc" aria-label="Table of contents"></nav>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="View count">
+            <div>
+              <p class="rail-kicker">Views</p>
+              <h2 id="article-views">—</h2>
+            </div>
+            <p id="article-views-note">Shared views across visitors.</p>
+          </section>
+
+          <section class="rail-card article-rail-card" aria-label="Post rating">
+            <div>
+              <p class="rail-kicker">Rating</p>
+              <h2 id="article-rating-average">—</h2>
+            </div>
+            <p id="article-rating-summary">Rate this post from 1 to 5 stars.</p>
+            <div class="article-rating-stars" id="article-rating-stars" role="radiogroup" aria-label="Rate this post">
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="1"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 1 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="2"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 2 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="3"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 3 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="4"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 4 out of 5"
+                >
+                  ★
+                </button>
+              
+                <button
+                  type="button"
+                  class="article-rating-star"
+                  data-rating-value="5"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="Rate 5 out of 5"
+                >
+                  ★
+                </button>
+              
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </article>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const articleShell = document.querySelector('.article-shell');
+    const articleContent = document.getElementById('article-content');
+    const tocCard = document.getElementById('article-toc-card');
+    const tocContainer = document.getElementById('article-toc');
+    const viewsElement = document.getElementById('article-views');
+    const viewsNote = document.getElementById('article-views-note');
+    const ratingAverage = document.getElementById('article-rating-average');
+    const ratingSummary = document.getElementById('article-rating-summary');
+    const ratingStarsContainer = document.getElementById('article-rating-stars');
+    const ratingButtons = Array.from(document.querySelectorAll('.article-rating-star'));
+
+    if (!articleShell || !articleContent) return;
+
+    const postId = articleShell.dataset.postId;
+    const metricsEndpoint = (articleShell.dataset.metricsEndpoint || '').replace(/\/$/, '');
+    const sessionViewKey = `post-viewed:${postId}`;
+    const sessionRatingKey = `post-rated:${postId}`;
+
+    function slugify(text) {
+      return (text || '')
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    function ensureHeadingIds(headings) {
+      const seenIds = new Set();
+      headings.forEach((heading, index) => {
+        let nextId = heading.id || slugify(heading.textContent) || `section-${index + 1}`;
+        while (seenIds.has(nextId)) {
+          nextId = `${nextId}-${index + 1}`;
+        }
+        heading.id = nextId;
+        seenIds.add(nextId);
+      });
+    }
+
+    function buildToc() {
+      if (!tocCard || !tocContainer) return;
+
+      const headings = Array.from(articleContent.querySelectorAll('h2, h3'));
+      if (headings.length < 2) {
+        tocCard.hidden = true;
+        return;
+      }
+
+      ensureHeadingIds(headings);
+
+      const list = document.createElement('ul');
+      list.className = 'article-toc-list';
+
+      headings.forEach((heading) => {
+        const item = document.createElement('li');
+        item.className = `article-toc-item article-toc-item--${heading.tagName.toLowerCase()}`;
+
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = heading.textContent.trim();
+
+        item.appendChild(link);
+        list.appendChild(item);
+      });
+
+      tocContainer.innerHTML = '';
+      tocContainer.appendChild(list);
+      tocCard.hidden = false;
+    }
+
+    function formatNumber(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue)) return '—';
+      return new Intl.NumberFormat().format(numericValue);
+    }
+
+    function formatAverage(value) {
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue) || numericValue <= 0) return '—';
+      return `${numericValue.toFixed(1)} / 5`;
+    }
+
+    function setRatingSelection(selectedValue) {
+      ratingButtons.forEach((button) => {
+        const value = Number(button.dataset.ratingValue);
+        const isActive = Number.isFinite(selectedValue) && value <= selectedValue;
+        const isChecked = Number.isFinite(selectedValue) && value === selectedValue;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-checked', isChecked ? 'true' : 'false');
+      });
+    }
+
+    function disableRatingButtons(disabled) {
+      ratingButtons.forEach((button) => {
+        button.disabled = disabled;
+        button.tabIndex = disabled ? -1 : 0;
+      });
+      if (ratingStarsContainer) {
+        ratingStarsContainer.classList.toggle('is-disabled', disabled);
+      }
+    }
+
+    function getStoredRating() {
+      const storedRating = Number(window.localStorage.getItem(sessionRatingKey));
+      return storedRating >= 1 && storedRating <= 5 ? storedRating : null;
+    }
+
+    function applyStoredRatingSummary(count) {
+      const normalizedCount = Number(count);
+      if (!ratingSummary) return;
+      ratingSummary.textContent = `${normalizedCount || 0} rating${normalizedCount === 1 ? '' : 's'} submitted. Your rating has been saved.`;
+    }
+
+    function updateMetrics(metrics) {
+      if (viewsElement) viewsElement.textContent = formatNumber(metrics.views);
+      if (ratingAverage) ratingAverage.textContent = formatAverage(metrics.ratingAverage);
+
+      if (ratingSummary) {
+        const count = Number(metrics.ratingCount);
+        if (Number.isFinite(count) && count > 0) {
+          ratingSummary.textContent = `${count} rating${count === 1 ? '' : 's'} submitted.`;
+        } else {
+          ratingSummary.textContent = 'Be the first to rate this post.';
+        }
+      }
+    }
+
+    function setMetricsUnavailable() {
+      if (viewsElement) viewsElement.textContent = '—';
+      if (viewsNote) viewsNote.textContent = 'Metrics API not configured yet.';
+      if (ratingAverage) ratingAverage.textContent = '—';
+      if (ratingSummary) ratingSummary.textContent = 'Ratings will appear when the metrics API is connected.';
+      disableRatingButtons(true);
+    }
+
+    async function fetchJson(url, options) {
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        ...options
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      return response.json();
+    }
+
+    async function loadMetrics() {
+      if (!metricsEndpoint || !postId) {
+        setMetricsUnavailable();
+        return null;
+      }
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-metrics?id=${encodeURIComponent(postId)}`);
+        updateMetrics(metrics);
+        if (viewsNote) viewsNote.textContent = 'Shared views across visitors.';
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to load shared metrics right now.';
+        if (ratingSummary) ratingSummary.textContent = 'Unable to load ratings right now.';
+        return null;
+      }
+    }
+
+    async function trackView() {
+      if (!metricsEndpoint || !postId || window.sessionStorage.getItem(sessionViewKey)) return null;
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-view`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId })
+        });
+        updateMetrics(metrics);
+        window.sessionStorage.setItem(sessionViewKey, 'true');
+
+        const storedRating = getStoredRating();
+        if (storedRating) {
+          setRatingSelection(storedRating);
+          disableRatingButtons(true);
+          applyStoredRatingSummary(metrics.ratingCount);
+        }
+
+        return metrics;
+      } catch (error) {
+        if (viewsNote) viewsNote.textContent = 'Unable to update views right now.';
+        return null;
+      }
+    }
+
+    async function initializeMetrics() {
+      const metrics = await loadMetrics();
+      if (metrics) {
+        await trackView();
+        return;
+      }
+
+      if (metricsEndpoint && postId) {
+        await trackView();
+      }
+    }
+
+    function handleRatingKeydown(event) {
+      const currentValue = Number(event.currentTarget.dataset.ratingValue);
+      if (!Number.isInteger(currentValue)) return;
+
+      if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const nextButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.min(5, currentValue + 1));
+        if (nextButton) nextButton.focus();
+      }
+
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        const previousButton = ratingButtons.find((button) => Number(button.dataset.ratingValue) === Math.max(1, currentValue - 1));
+        if (previousButton) previousButton.focus();
+      }
+    }
+
+    const storedRating = getStoredRating();
+    if (storedRating) {
+      setRatingSelection(storedRating);
+      disableRatingButtons(true);
+    }
+
+    if (!metricsEndpoint || !postId) {
+      setMetricsUnavailable();
+    } else {
+      disableRatingButtons(Boolean(storedRating));
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('keydown', handleRatingKeydown);
+    });
+
+    initializeMetrics();
+
+    async function submitRating(value) {
+      if (!metricsEndpoint || !postId || !Number.isInteger(value) || value < 1 || value > 5) return;
+
+      disableRatingButtons(true);
+
+      try {
+        const metrics = await fetchJson(`${metricsEndpoint}/post-rating`, {
+          method: 'POST',
+          body: JSON.stringify({ postId: postId, rating: value })
+        });
+        updateMetrics(metrics);
+        setRatingSelection(value);
+        window.localStorage.setItem(sessionRatingKey, String(value));
+        applyStoredRatingSummary(metrics.ratingCount);
+      } catch (error) {
+        disableRatingButtons(false);
+        if (ratingSummary) ratingSummary.textContent = 'Unable to submit your rating right now.';
+      }
+    }
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        submitRating(Number(button.dataset.ratingValue));
+      });
+    });
+
+    buildToc();
+  });
+</script>
+
+
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <div class="site-footer-copy">
+            <strong>ROM4AI</strong>
+            <span>Exploratory notes on AI hardware, architectures, and system design.</span>
+          </div>
+          <div class="site-footer-stats" aria-label="Site stats">
+            <span>33 posts</span>
+            <span>46 categories</span>
+            
+              <span>Updated 2026-03-26</span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
