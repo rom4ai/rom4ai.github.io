@@ -6,6 +6,17 @@ title: Home
 {% assign sorted_categories = site.categories | sort %}
 {% assign latest_post = site.posts.first %}
 
+<!-- Collect all unique tags -->
+{% assign all_tags = "" | split: "" %}
+{% for post in site.posts %}
+  {% for tag in post.tags %}
+    {% unless all_tags contains tag %}
+      {% assign all_tags = all_tags | push: tag %}
+    {% endunless %}
+  {% endfor %}
+{% endfor %}
+{% assign all_tags = all_tags | sort %}
+
 <div class="page-content home-page">
   <section class="hero">
     <div class="hero-copy">
@@ -40,9 +51,29 @@ title: Home
       <span class="mono" style="color: var(--text-tertiary);">{{ site.posts | size }} posts</span>
     </div>
 
-    <div class="posts-grid">
+    <!-- Tag Filter -->
+    {% if all_tags.size > 0 %}
+    <div class="tag-filter-container">
+      <div class="tag-filter-label">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+        </svg>
+        Filter by tag:
+      </div>
+      <div class="tag-filter-list">
+        <button class="tag-filter-btn active" data-tag="all">All</button>
+        {% for tag in all_tags %}
+          <button class="tag-filter-btn" data-tag="{{ tag }}">{{ tag }}</button>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="posts-grid" id="posts-grid">
       {% for post in site.posts %}
-        <article class="post-card" onclick="window.location.href='{{ post.url | relative_url }}'">
+        <article class="post-card" 
+                 onclick="window.location.href='{{ post.url | relative_url }}'"
+                 data-tags="{{ post.tags | join: ',' }}">
           <div class="post-card-meta">
             <span class="post-card-date">{{ post.date | date: "%Y-%m-%d" }}</span>
             <span class="post-card-categories">
@@ -57,8 +88,229 @@ title: Home
           <p class="post-card-excerpt">
             {{ post.excerpt | strip_html | truncate: 160 }}
           </p>
+          {% if post.tags.size > 0 %}
+          <div class="post-card-tags">
+            {% for tag in post.tags limit:3 %}
+              <span class="post-tag">{{ tag }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="{{ post.url | slugify }}">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       {% endfor %}
     </div>
   </section>
 </div>
+
+<script>
+// Tag Filtering
+(function() {
+  const filterBtns = document.querySelectorAll('.tag-filter-btn');
+  const postCards = document.querySelectorAll('.post-card');
+  
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      
+      // Update active state
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      const selectedTag = btn.dataset.tag;
+      
+      // Filter posts
+      postCards.forEach(card => {
+        if (selectedTag === 'all') {
+          card.style.display = '';
+          card.style.animation = 'fadeIn 0.3s ease';
+        } else {
+          const cardTags = card.dataset.tags ? card.dataset.tags.split(',') : [];
+          if (cardTags.includes(selectedTag)) {
+            card.style.display = '';
+            card.style.animation = 'fadeIn 0.3s ease';
+          } else {
+            card.style.display = 'none';
+          }
+        }
+      });
+    });
+  });
+})();
+
+// Rating System
+(function() {
+  const API_ENDPOINT = '{{ site.post_metrics_endpoint }}';
+  
+  // Load ratings from API
+  async function loadRatings() {
+    try {
+      const response = await fetch(`${API_ENDPOINT}/ratings`);
+      if (response.ok) {
+        const ratings = await response.json();
+        updateRatingDisplays(ratings);
+      }
+    } catch (e) {
+      console.log('Rating API not available');
+    }
+  }
+  
+  function updateRatingDisplays(ratings) {
+    document.querySelectorAll('.post-card-rating').forEach(container => {
+      const postId = container.dataset.postId;
+      if (ratings[postId]) {
+        const { avg, count } = ratings[postId];
+        updateRatingDisplay(container, avg, count);
+      }
+    });
+  }
+  
+  function updateRatingDisplay(container, rating, count) {
+    const stars = container.querySelectorAll('.star');
+    const scoreEl = container.querySelector('.rating-score');
+    const countEl = container.querySelector('.rating-count');
+    
+    // Update stars
+    stars.forEach((star, index) => {
+      if (index < Math.round(rating)) {
+        star.classList.add('filled');
+        star.setAttribute('fill', 'currentColor');
+      } else {
+        star.classList.remove('filled');
+        star.setAttribute('fill', 'none');
+      }
+    });
+    
+    // Update text
+    if (scoreEl) scoreEl.textContent = rating.toFixed(1);
+    if (countEl) countEl.textContent = `(${count} vote${count !== 1 ? 's' : ''})`;
+  }
+  
+  // Load ratings on page load
+  loadRatings();
+})();
+</script>
+
+<style>
+/* Tag Filter Styles */
+.tag-filter-container {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.tag-filter-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tag-filter-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag-filter-btn {
+  padding: 0.4rem 0.8rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.tag-filter-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.tag-filter-btn.active {
+  color: var(--bg-primary);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Post Card Tags */
+.post-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.post-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  padding: 0.2rem 0.5rem;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+/* Rating Styles */
+.post-card-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.rating-stars {
+  display: flex;
+  gap: 0.15rem;
+}
+
+.rating-stars .star {
+  width: 14px;
+  height: 14px;
+  color: var(--text-muted);
+  transition: color var(--transition-fast);
+}
+
+.rating-stars .star.filled {
+  color: var(--accent);
+}
+
+.rating-score {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.rating-count {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
