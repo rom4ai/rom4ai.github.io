@@ -118,63 +118,121 @@ title: Home
 (function() {
   const filterBtns = document.querySelectorAll('.tag-filter-btn');
   const postCards = document.querySelectorAll('.post-card');
-  
+  const allBtn = document.querySelector('.tag-filter-btn[data-tag="all"]');
+  const selectedTags = new Set();
+
+  function updateActiveState() {
+    filterBtns.forEach(btn => {
+      const tag = btn.dataset.tag;
+      const isActive = tag === 'all'
+        ? selectedTags.size === 0
+        : selectedTags.has(tag);
+      btn.classList.toggle('active', isActive);
+    });
+  }
+
+  function applyFilters() {
+    postCards.forEach(card => {
+      const cardTags = card.dataset.tags ? card.dataset.tags.split(',') : [];
+      const matches = selectedTags.size === 0 || cardTags.some(tag => selectedTags.has(tag));
+
+      if (matches) {
+        card.style.display = '';
+        card.style.animation = 'fadeIn 0.3s ease';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  function syncUrl() {
+    const url = new URL(window.location.href);
+    if (selectedTags.size === 0) {
+      url.searchParams.delete('tags');
+    } else {
+      url.searchParams.set('tags', Array.from(selectedTags).join(','));
+    }
+    history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+  }
+
+  function hydrateFromUrl() {
+    const url = new URL(window.location.href);
+    const tagParam = url.searchParams.get('tags');
+    if (!tagParam) return;
+
+    tagParam
+      .split(',')
+      .map(tag => decodeURIComponent(tag).trim())
+      .filter(Boolean)
+      .forEach(tag => {
+        if (document.querySelector(`.tag-filter-btn[data-tag="${CSS.escape(tag)}"]`)) {
+          selectedTags.add(tag);
+        }
+      });
+  }
+
   filterBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      
-      // Update active state
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      
-      const selectedTag = btn.dataset.tag;
-      
-      // Filter posts
-      postCards.forEach(card => {
-        if (selectedTag === 'all') {
-          card.style.display = '';
-          card.style.animation = 'fadeIn 0.3s ease';
-        } else {
-          const cardTags = card.dataset.tags ? card.dataset.tags.split(',') : [];
-          if (cardTags.includes(selectedTag)) {
-            card.style.display = '';
-            card.style.animation = 'fadeIn 0.3s ease';
-          } else {
-            card.style.display = 'none';
-          }
-        }
-      });
+
+      const tag = btn.dataset.tag;
+
+      if (tag === 'all') {
+        selectedTags.clear();
+      } else if (selectedTags.has(tag)) {
+        selectedTags.delete(tag);
+      } else {
+        selectedTags.add(tag);
+      }
+
+      updateActiveState();
+      applyFilters();
+      syncUrl();
     });
   });
+
+  if (allBtn) {
+    hydrateFromUrl();
+    updateActiveState();
+    applyFilters();
+  }
 })();
 
 // Rating System
 (function() {
   const API_ENDPOINT = '{{ site.post_metrics_endpoint }}';
-  
-  // Load ratings from API
+  const ratingContainers = Array.from(document.querySelectorAll('.post-card-rating'));
+
+  if (!API_ENDPOINT || !ratingContainers.length) return;
+
+  async function fetchMetrics(postId) {
+    const response = await fetch(`${API_ENDPOINT}/post-metrics?id=${encodeURIComponent(postId)}`);
+    if (!response.ok) {
+      throw new Error(`Failed to load metrics for ${postId}`);
+    }
+    return response.json();
+  }
+
   async function loadRatings() {
     try {
-      const response = await fetch(`${API_ENDPOINT}/ratings`);
-      if (response.ok) {
-        const ratings = await response.json();
-        updateRatingDisplays(ratings);
-      }
+      const results = await Promise.allSettled(
+        ratingContainers.map(async (container) => ({
+          container,
+          metrics: await fetchMetrics(container.dataset.postId)
+        }))
+      );
+
+      results.forEach((result) => {
+        if (result.status === 'fulfilled') {
+          const { container, metrics } = result.value;
+          updateRatingDisplay(container, metrics.ratingAverage || 0, metrics.ratingCount || 0);
+        }
+      });
     } catch (e) {
       console.log('Rating API not available');
     }
   }
-  
-  function updateRatingDisplays(ratings) {
-    document.querySelectorAll('.post-card-rating').forEach(container => {
-      const postId = container.dataset.postId;
-      if (ratings[postId]) {
-        const { avg, count } = ratings[postId];
-        updateRatingDisplay(container, avg, count);
-      }
-    });
-  }
-  
+
   function updateRatingDisplay(container, rating, count) {
     const stars = container.querySelectorAll('.star');
     const scoreEl = container.querySelector('.rating-score');

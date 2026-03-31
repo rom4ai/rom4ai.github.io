@@ -664,12 +664,18 @@ code, pre, .mono {
   position: sticky;
   top: 100px;
   height: fit-content;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  padding-right: 0.25rem;
 }
 
 @media (max-width: 900px) {
   .article-sidebar {
     position: static;
     order: -1;
+    max-height: none;
+    overflow-y: visible;
+    padding-right: 0;
   }
 }
 
