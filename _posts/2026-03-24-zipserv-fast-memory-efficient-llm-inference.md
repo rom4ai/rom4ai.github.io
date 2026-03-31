@@ -1,13 +1,23 @@
 ---
 layout: post
-title: "ZipServ: Fast and Memory-Efficient LLM Inference with Hardware-Aware Lossless Compression"
-categories: ["llm", "compression", "gpu", "inference", "systems"]
+title: 'ZipServ: Fast and Memory-Efficient LLM Inference with Hardware-Aware Lossless
+  Compression'
+categories:
+- llm
+- compression
+- gpu
+- inference
+- systems
 author: ROM4AI
 date: 2026-03-24
 paper_url: https://arxiv.org/abs/2603.17435
 pdf_url: https://arxiv.org/pdf/2603.17435.pdf
+tags:
+- memory-system
+- llm-inference
+- transformer
+- ai-accelerator
 ---
-
 **原文链接:** [arXiv](https://arxiv.org/abs/2603.17435) | [PDF](https://arxiv.org/pdf/2603.17435.pdf)
 
 # ZipServ: Fast and Memory-Efficient LLM Inference with Hardware-Aware Lossless Compression

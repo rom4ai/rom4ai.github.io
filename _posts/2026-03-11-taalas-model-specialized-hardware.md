@@ -1,9 +1,18 @@
 ---
 layout: post
-title: "Taalas: Model-Specialized Hardware - Turning AI Models into Silicon"
-categories: [llm, accelerator, taalas, hardware]
+title: 'Taalas: Model-Specialized Hardware - Turning AI Models into Silicon'
+categories:
+- llm
+- accelerator
+- taalas
+- hardware
+tags:
+- edge-ai
+- transformer
+- quantization
+- llm-inference
+- ai-accelerator
 ---
-
 ![Taalas Chip Architecture](/assets/taalas-chip-architecture.png)
 
 ## Background

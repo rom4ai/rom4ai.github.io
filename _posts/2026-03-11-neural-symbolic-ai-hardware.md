@@ -1,9 +1,17 @@
 ---
 layout: post
-title: "Neural-Symbolic AI Hardware: Unifying Pattern Learning and Logic"
-categories: [neural-symbolic, ai-hardware, architecture]
+title: 'Neural-Symbolic AI Hardware: Unifying Pattern Learning and Logic'
+categories:
+- neural-symbolic
+- ai-hardware
+- architecture
+tags:
+- ai-accelerator
+- robotics
+- world-model
+- memory-system
+- neural-symbolic
 ---
-
 ## Why this direction matters
 
 Neural models are excellent at representation learning, while symbolic methods are strong in compositional reasoning and constraint satisfaction. Most systems still bind these two worlds at software level, which introduces significant latency and energy overhead.

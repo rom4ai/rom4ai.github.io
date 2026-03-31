@@ -1,13 +1,19 @@
 ---
 layout: post
-title: "HyperOffload: 图驱动的分层内存管理让大模型突破显存限制"
-categories: [research, ai, ml, systems]
+title: 'HyperOffload: 图驱动的分层内存管理让大模型突破显存限制'
+categories:
+- research
+- ai
+- ml
+- systems
 author: ROM4AI
 date: 2026-03-17
-original_paper: "https://arxiv.org/abs/2602.00748"
-tags: ["LLM", "内存管理", "编译器优化", "SuperNode", "MindSpore"]
+original_paper: https://arxiv.org/abs/2602.00748
+tags:
+- memory-system
+- llm-inference
+- transformer
 ---
-
 # HyperOffload: 图驱动的分层内存管理让大模型突破显存限制
 
 > **原文链接**: [arXiv:2602.00748](https://arxiv.org/abs/2602.00748) | [PDF](https://arxiv.org/pdf/2602.00748.pdf)

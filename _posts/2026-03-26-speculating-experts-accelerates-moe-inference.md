@@ -1,13 +1,23 @@
 ---
 layout: post
-title: "Speculating Experts Accelerates Inference for Mixture-of-Experts: 通过专家预取加速 MoE 推理"
-categories: [research, ai, ml, llm, inference]
+title: 'Speculating Experts Accelerates Inference for Mixture-of-Experts: 通过专家预取加速
+  MoE 推理'
+categories:
+- research
+- ai
+- ml
+- llm
+- inference
 author: ROM4AI
 date: 2026-03-26
-original_paper: "https://arxiv.org/abs/2603.19289"
-tags: ["mixture-of-experts", "MoE", "LLM inference", "expert prefetching", "speculative execution", "CPU offloading"]
+original_paper: https://arxiv.org/abs/2603.19289
+tags:
+- transformer
+- llm-inference
+- ai-accelerator
+- training
+- memory-system
 ---
-
 # Speculating Experts Accelerates Inference for Mixture-of-Experts: 通过专家预取加速 MoE 推理
 
 > **原文链接**: [arXiv:2603.19289](https://arxiv.org/abs/2603.19289) | [PDF](https://arxiv.org/pdf/2603.19289.pdf) | [代码](https://github.com/axonn-ai/yalis/tree/offload_prefetch)

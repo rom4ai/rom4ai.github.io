@@ -1,13 +1,19 @@
 ---
 layout: post
-title: "ZipServ: 硬件感知的无损压缩加速 LLM 推理"
-categories: [research, ai, systems]
+title: 'ZipServ: 硬件感知的无损压缩加速 LLM 推理'
+categories:
+- research
+- ai
+- systems
 author: ROM4AI
 date: 2026-03-20
-original_paper: "https://arxiv.org/abs/2603.17435"
-tags: ["LLM Inference", "Lossless Compression", "GPU", "Tensor Core", "ASPLOS 2026"]
+original_paper: https://arxiv.org/abs/2603.17435
+tags:
+- memory-system
+- llm-inference
+- transformer
+- ai-accelerator
 ---
-
 # ZipServ: Fast and Memory-Efficient LLM Inference with Hardware-Aware Lossless Compression
 
 > **原文链接**: [arXiv:2603.17435](https://arxiv.org/abs/2603.17435) | [PDF](https://arxiv.org/pdf/2603.17435.pdf)

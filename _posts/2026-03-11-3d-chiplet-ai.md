@@ -1,9 +1,17 @@
 ---
 layout: post
-title: "3D Chiplet Systems for AI: Bandwidth-Centric Compute Integration"
-categories: [chiplet, 3d-integration, ai-systems]
+title: '3D Chiplet Systems for AI: Bandwidth-Centric Compute Integration'
+categories:
+- chiplet
+- 3d-integration
+- ai-systems
+tags:
+- edge-ai
+- transformer
+- llm-inference
+- multi-modal
+- ai-accelerator
 ---
-
 ## Why chiplets for AI now
 
 Large AI workloads are increasingly memory- and communication-bound. Monolithic dies face reticle limits, poor yield at scale, and escalating cost. 3D chiplet architectures offer a path to scale bandwidth per watt.

@@ -1,13 +1,21 @@
 ---
 layout: post
-title: "PointWorld: Scaling 3D World Models for In-The-Wild Robotic Manipulation"
-categories: [research, ai, robotics, 3d-vision]
+title: 'PointWorld: Scaling 3D World Models for In-The-Wild Robotic Manipulation'
+categories:
+- research
+- ai
+- robotics
+- 3d-vision
 author: ROM4AI
 date: 2026-03-16
-original_paper: "https://arxiv.org/abs/2601.03782"
-tags: ["world-models", "robotics", "3d-learning", "manipulation", "point-clouds"]
+original_paper: https://arxiv.org/abs/2601.03782
+tags:
+- transformer
+- multi-modal
+- llm-inference
+- robotics
+- world-model
 ---
-
 # PointWorld: Scaling 3D World Models for In-The-Wild Robotic Manipulation
 
 > **原文链接**: [arXiv:2601.03782](https://arxiv.org/abs/2601.03782) | [PDF](https://arxiv.org/pdf/2601.03782.pdf)

@@ -1,13 +1,20 @@
 ---
 layout: post
-title: "VLA-Perf: VLA 推理性能全景分析——NVIDIA 首个系统性研究"
-categories: [research, ai, robotics, embodied-ai, vla]
+title: 'VLA-Perf: VLA 推理性能全景分析——NVIDIA 首个系统性研究'
+categories:
+- research
+- ai
+- robotics
+- embodied-ai
+- vla
 author: ROM4AI
 date: 2026-03-25
-original_paper: "https://arxiv.org/abs/2602.18397"
-tags: ["VLA", "Embodied AI", "Inference Performance", "Robotics", "NVIDIA", "Performance Modeling", "Real-time Systems"]
+original_paper: https://arxiv.org/abs/2602.18397
+tags:
+- robotics
+- multi-modal
+- world-model
 ---
-
 # VLA-Perf: VLA 推理性能全景分析——NVIDIA 首个系统性研究
 
 > **原文链接**: [arXiv:2602.18397](https://arxiv.org/abs/2602.18397) | [PDF](https://arxiv.org/pdf/2602.18397.pdf) | [Code](https://github.com/NVlabs/vla-perf)

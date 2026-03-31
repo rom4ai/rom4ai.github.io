@@ -1,13 +1,22 @@
 ---
 layout: post
-title: "TOM: 三元只读存储器加速器赋能边缘智能大模型"
-categories: [research, ai, hardware, edge-computing, quantization]
+title: 'TOM: 三元只读存储器加速器赋能边缘智能大模型'
+categories:
+- research
+- ai
+- hardware
+- edge-computing
+- quantization
 author: ROM4AI
 date: 2026-03-13
-original_paper: "https://arxiv.org/abs/2602.20662"
-tags: ["LLM", "accelerator", "ROM", "ternary", "BitNet", "edge computing", "hardware", "quantization"]
+original_paper: https://arxiv.org/abs/2602.20662
+tags:
+- edge-ai
+- transformer
+- quantization
+- low-power
+- llm-inference
 ---
-
 # TOM: 三元只读存储器加速器赋能边缘智能大模型
 
 > **原文链接**: [arXiv:2602.20662](https://arxiv.org/abs/2602.20662) | [PDF](https://arxiv.org/pdf/2602.20662.pdf)  

@@ -1,13 +1,23 @@
 ---
 layout: post
-title: "The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks"
-categories: [robotics, neuro-symbolic, VLA, manipulation, energy-efficiency]
+title: 'The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured
+  Long-Horizon Manipulation Tasks'
+categories:
+- robotics
+- neuro-symbolic
+- VLA
+- manipulation
+- energy-efficiency
 author: ROM4AI
 date: 2026-03-26
-original_paper: "https://arxiv.org/abs/2602.19260"
-tags: ["vision-language-action", "neuro-symbolic", "robotics", "planning", "energy-efficiency", "Towers-of-Hanoi"]
+original_paper: https://arxiv.org/abs/2602.19260
+tags:
+- multi-modal
+- ai-accelerator
+- robotics
+- world-model
+- training
 ---
-
 # The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks
 
 > **原文链接**: [arXiv:2602.19260](https://arxiv.org/abs/2602.19260) | [PDF](https://arxiv.org/pdf/2602.19260.pdf) | [项目主页](https://price-is-not-right.github.io)

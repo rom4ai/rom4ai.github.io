@@ -1,12 +1,18 @@
 ---
 layout: post
-title: "神经符号 AI 在具身智能领域的深度研究"
-categories: [research, ai, robotics, neuro-symbolic]
+title: 神经符号 AI 在具身智能领域的深度研究
+categories:
+- research
+- ai
+- robotics
+- neuro-symbolic
 author: ROM4AI
 date: 2026-03-17
-tags: ["neuro-symbolic AI", "embodied intelligence", "robotics", "AI reasoning", "knowledge representation"]
+tags:
+- robotics
+- world-model
+- ai-accelerator
 ---
-
 # 神经符号 AI 在具身智能领域的深度研究
 
 > **研究类型**: 深度文献综述 + 技术趋势分析  

@@ -1,13 +1,20 @@
 ---
 layout: post
-title: "DS2SC-Agent: 从数据手册到 SystemC 模型的多智能体自动化生成流水线"
-categories: [research, ai, hardware, chiplet]
+title: 'DS2SC-Agent: 从数据手册到 SystemC 模型的多智能体自动化生成流水线'
+categories:
+- research
+- ai
+- hardware
+- chiplet
 author: ROM4AI
 date: 2026-03-25
-original_paper: "https://arxiv.org/abs/2603.21190"
-tags: ["Chiplet", "SystemC", "LLM", "Multi-Agent", "Hardware Automation", "EDA"]
+original_paper: https://arxiv.org/abs/2603.21190
+tags:
+- chiplet
+- llm-inference
+- transformer
+- ai-accelerator
 ---
-
 # DS2SC-Agent: 从数据手册到 SystemC 模型的多智能体自动化生成流水线
 
 > **原文链接**: [arXiv:2603.21190](https://arxiv.org/abs/2603.21190) | [PDF](https://arxiv.org/pdf/2603.21190.pdf)

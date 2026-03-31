@@ -1,13 +1,22 @@
 ---
 layout: post
-title: "Mozart: Modularized and Efficient MoE Training on 3.5D Wafer-Scale Chiplet Architectures"
-categories: [research, ai, ml, systems]
+title: 'Mozart: Modularized and Efficient MoE Training on 3.5D Wafer-Scale Chiplet
+  Architectures'
+categories:
+- research
+- ai
+- ml
+- systems
 author: ROM4AI
 date: 2026-03-17
-original_paper: "https://arxiv.org/abs/2603.07006"
-tags: ["MoE", "Chiplet", "3.5D Integration", "LLM Training", "Algorithm-Hardware Co-design", "Wafer-Scale"]
+original_paper: https://arxiv.org/abs/2603.07006
+tags:
+- edge-ai
+- transformer
+- llm-inference
+- ai-accelerator
+- training
 ---
-
 # Mozart: Modularized and Efficient MoE Training on 3.5D Wafer-Scale Chiplet Architectures
 
 > **原文链接**: [arXiv:2603.07006](https://arxiv.org/abs/2603.07006) | [PDF](https://arxiv.org/pdf/2603.07006.pdf)

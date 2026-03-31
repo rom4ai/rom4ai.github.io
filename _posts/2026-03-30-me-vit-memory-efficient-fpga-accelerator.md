@@ -1,13 +1,22 @@
 ---
 layout: post
-title: "ME-ViT: Memory-Efficient FPGA Accelerator for Vision Transformers"
+title: 'ME-ViT: Memory-Efficient FPGA Accelerator for Vision Transformers'
 date: 2026-03-30 16:10:00 +0800
-categories: [research, vision-transformer, fpga, accelerator, memory-bandwidth]
+categories:
+- research
+- vision-transformer
+- fpga
+- accelerator
+- memory-bandwidth
 author: ROM4AI
-original_paper: "https://arxiv.org/abs/2402.09709"
-tags: ["vision-transformer", "fpga", "memory-bandwidth", "hardware-accelerator", "edge-ai"]
+original_paper: https://arxiv.org/abs/2402.09709
+tags:
+- transformer
+- multi-modal
+- llm-inference
+- ai-accelerator
+- memory-system
 ---
-
 # ME-ViT: A Single-Load Memory-Efficient FPGA Accelerator for Vision Transformers
 
 > **原文链接**: [arXiv:2402.09709](https://arxiv.org/abs/2402.09709) | [PDF](https://arxiv.org/pdf/2402.09709.pdf)

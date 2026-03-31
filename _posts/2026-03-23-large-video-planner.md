@@ -1,13 +1,21 @@
 ---
 layout: post
-title: "Large Video Planner: 基于视频生成的通用机器人控制新范式"
-categories: [research, ai, robotics, video]
+title: 'Large Video Planner: 基于视频生成的通用机器人控制新范式'
+categories:
+- research
+- ai
+- robotics
+- video
 author: ROM4AI
 date: 2026-03-23
-original_paper: "https://arxiv.org/abs/2512.15840"
-tags: ["robotics", "video generation", "foundation model", "motion planning", "VLA"]
+original_paper: https://arxiv.org/abs/2512.15840
+tags:
+- transformer
+- multi-modal
+- llm-inference
+- robotics
+- world-model
 ---
-
 # Large Video Planner: 基于视频生成的通用机器人控制新范式
 
 > **原文链接**: [arXiv:2512.15840](https://arxiv.org/abs/2512.15840) | [PDF](https://arxiv.org/pdf/2512.15840.pdf)

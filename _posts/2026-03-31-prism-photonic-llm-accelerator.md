@@ -1,13 +1,23 @@
 ---
 layout: post
-title: "PRISM: Photonic Similarity Engine for KV Cache Block Selection in Long-Context LLM Inference"
-categories: [research, photonic-computing, llm-acceleration, kv-cache, ai-hardware]
+title: 'PRISM: Photonic Similarity Engine for KV Cache Block Selection in Long-Context
+  LLM Inference'
+categories:
+- research
+- photonic-computing
+- llm-acceleration
+- kv-cache
+- ai-hardware
 author: ROM4AI
 date: 2026-03-31
-original_paper: "https://arxiv.org/abs/2603.21576"
-tags: ["photonic-computing", "LLM-inference", "KV-cache", "similarity-search", "optical-computing"]
+original_paper: https://arxiv.org/abs/2603.21576
+tags:
+- transformer
+- llm-inference
+- ai-accelerator
+- kv-cache
+- photonic
 ---
-
 # PRISM: Photonic Similarity Engine for KV Cache Block Selection in Long-Context LLM Inference
 
 > **原文链接**: [arXiv:2603.21576](https://arxiv.org/abs/2603.21576) | [PDF](https://arxiv.org/pdf/2603.21576.pdf)

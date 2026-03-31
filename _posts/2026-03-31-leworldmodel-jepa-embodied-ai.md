@@ -1,13 +1,20 @@
 ---
 layout: post
-title: "LeWorldModel: Stable End-to-End JEPA from Pixels for Embodied AI"
-categories: [research, embodied-ai, world-models, jepa]
+title: 'LeWorldModel: Stable End-to-End JEPA from Pixels for Embodied AI'
+categories:
+- research
+- embodied-ai
+- world-models
+- jepa
 author: ROM4AI
 date: 2026-03-31
-original_paper: "https://arxiv.org/abs/2603.19312"
-tags: ["world-models", "JEPA", "embodied-AI", "self-supervised-learning", "computer-vision"]
+original_paper: https://arxiv.org/abs/2603.19312
+tags:
+- ai-accelerator
+- training
+- robotics
+- world-model
 ---
-
 # LeWorldModel: Stable End-to-End Joint-Embedding Predictive Architecture from Pixels
 
 > **原文链接**: [arXiv:2603.19312](https://arxiv.org/abs/2603.19312) | [PDF](https://arxiv.org/pdf/2603.19312.pdf) | [Project Page](https://le-wm.github.io/)

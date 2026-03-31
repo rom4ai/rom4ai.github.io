@@ -1,13 +1,20 @@
 ---
 layout: post
-title: "SNAP-V: 面向小型脉冲神经网络的可配置神经形态 RISC-V SoC"
-categories: [research, ai, hardware, edge-computing, neuromorphic]
+title: 'SNAP-V: 面向小型脉冲神经网络的可配置神经形态 RISC-V SoC'
+categories:
+- research
+- ai
+- hardware
+- edge-computing
+- neuromorphic
 author: ROM4AI
 date: 2026-03-13
-original_paper: "https://arxiv.org/abs/2603.11939"
-tags: ["SNN", "RISC-V", "neuromorphic", "edge computing", "SoC", "low-power"]
+original_paper: https://arxiv.org/abs/2603.11939
+tags:
+- low-power
+- edge-ai
+- neuromorphic
 ---
-
 # SNAP-V: 面向小型脉冲神经网络的可配置神经形态 RISC-V SoC
 
 > **原文链接**: [arXiv:2603.11939](https://arxiv.org/abs/2603.11939) | [PDF](https://arxiv.org/pdf/2603.11939.pdf)  

@@ -1,13 +1,19 @@
 ---
 layout: post
-title: "Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展"
-categories: [research, ai, hardware, risc-v]
+title: 'Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展'
+categories:
+- research
+- ai
+- hardware
+- risc-v
 author: ROM4AI
 date: 2026-03-23
-original_paper: "https://arxiv.org/abs/2603.08716"
-tags: ["AI Agent", "Chip Design", "RISC-V", "Design Automation", "LLM"]
+original_paper: https://arxiv.org/abs/2603.08716
+tags:
+- llm-inference
+- transformer
+- ai-accelerator
 ---
-
 # Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展
 
 > **原文链接**: [arXiv:2603.08716](https://arxiv.org/abs/2603.08716) | [PDF](https://arxiv.org/pdf/2603.08716.pdf)

@@ -1,13 +1,21 @@
 ---
 layout: post
-title: "Orion: 苹果神经引擎 (ANE) 上的 LLM 训练与推理系统"
-categories: [research, ai, ml, hardware]
+title: 'Orion: 苹果神经引擎 (ANE) 上的 LLM 训练与推理系统'
+categories:
+- research
+- ai
+- ml
+- hardware
 author: ROM4AI
 date: 2026-03-16
-original_paper: "https://arxiv.org/abs/2603.06728"
-tags: ["Apple Neural Engine", "LLM Training", "On-device AI", "NPU", "CoreML", "Delta Compilation"]
+original_paper: https://arxiv.org/abs/2603.06728
+tags:
+- edge-ai
+- transformer
+- llm-inference
+- ai-accelerator
+- training
 ---
-
 # Orion: Characterizing and Programming Apple's Neural Engine for LLM Training and Inference
 
 > **原文链接**: [arXiv:2603.06728](https://arxiv.org/abs/2603.06728) | [PDF](https://arxiv.org/pdf/2603.06728.pdf) | [GitHub](https://github.com/mechramc/Orion)

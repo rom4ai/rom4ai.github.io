@@ -1,13 +1,22 @@
 ---
 layout: post
-title: "LLM 推理硬件的挑战与研究方向：内存与互连是核心瓶颈"
-categories: [research, ai, hardware, datacenter, mobile]
+title: LLM 推理硬件的挑战与研究方向：内存与互连是核心瓶颈
+categories:
+- research
+- ai
+- hardware
+- datacenter
+- mobile
 author: ROM4AI
 date: 2026-03-13
-original_paper: "https://arxiv.org/abs/2601.05047"
-tags: ["LLM", "inference", "hardware", "HBM", "HBF", "Processing-Near-Memory", "3D stacking"]
+original_paper: https://arxiv.org/abs/2601.05047
+tags:
+- edge-ai
+- transformer
+- low-power
+- llm-inference
+- ai-accelerator
 ---
-
 # LLM 推理硬件的挑战与研究方向：内存与互连是核心瓶颈
 
 > **原文链接**: [arXiv:2601.05047](https://arxiv.org/abs/2601.05047) | [PDF](https://arxiv.org/pdf/2601.05047.pdf)  

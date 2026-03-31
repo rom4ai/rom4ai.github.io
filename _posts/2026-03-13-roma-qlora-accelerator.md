@@ -1,13 +1,21 @@
 ---
 layout: post
-title: "ROMA: 基于只读存储器的 QLoRA 边缘设备 LLM 加速器"
-categories: [research, ai, hardware, edge-computing]
+title: 'ROMA: 基于只读存储器的 QLoRA 边缘设备 LLM 加速器'
+categories:
+- research
+- ai
+- hardware
+- edge-computing
 author: ROM4AI
 date: 2026-03-13
-original_paper: "https://arxiv.org/abs/2503.12988"
-tags: ["LLM", "accelerator", "ROM", "SRAM", "QLoRA", "edge computing", "hardware"]
+original_paper: https://arxiv.org/abs/2503.12988
+tags:
+- edge-ai
+- transformer
+- low-power
+- llm-inference
+- memory-system
 ---
-
 # ROMA: 基于只读存储器的 QLoRA 边缘设备 LLM 加速器
 
 > **原文链接**: [arXiv:2503.12988](https://arxiv.org/abs/2503.12988) | [PDF](https://arxiv.org/pdf/2503.12988.pdf)  

@@ -1,13 +1,21 @@
 ---
 layout: post
-title: "Large Video Planner: 用视频生成实现通用机器人控制"
-categories: [research, ai, robotics, video-generation]
+title: 'Large Video Planner: 用视频生成实现通用机器人控制'
+categories:
+- research
+- ai
+- robotics
+- video-generation
 author: ROM4AI
 date: 2026-03-23
-original_paper: "https://arxiv.org/abs/2512.15840"
-tags: ["Robot Foundation Model", "Video Generation", "Diffusion Model", "Embodied AI", "Zero-shot Planning"]
+original_paper: https://arxiv.org/abs/2512.15840
+tags:
+- transformer
+- multi-modal
+- llm-inference
+- robotics
+- diffusion-model
 ---
-
 # Large Video Planner: 用视频生成实现通用机器人控制
 
 > **原文链接**: [arXiv:2512.15840](https://arxiv.org/abs/2512.15840) | [PDF](https://arxiv.org/pdf/2512.15840.pdf)

@@ -1,13 +1,21 @@
 ---
 layout: post
-title: "Understanding Bottlenecks for Efficiently Serving LLM Inference With KV Offloading"
-categories: [research, ai, ml, systems]
+title: Understanding Bottlenecks for Efficiently Serving LLM Inference With KV Offloading
+categories:
+- research
+- ai
+- ml
+- systems
 author: ROM4AI
 date: 2026-03-26
-original_paper: "https://arxiv.org/abs/2601.19910"
-tags: ["LLM", "KV Cache", "Inference", "PCIe", "Memory Bottleneck", "GPU", "vLLM", "Prefix Caching"]
+original_paper: https://arxiv.org/abs/2601.19910
+tags:
+- transformer
+- llm-inference
+- ai-accelerator
+- training
+- memory-system
 ---
-
 # Understanding Bottlenecks for Efficiently Serving LLM Inference With KV Offloading
 
 > **原文链接**: [arXiv:2601.19910](https://arxiv.org/abs/2601.19910) | [PDF](https://arxiv.org/pdf/2601.19910.pdf)

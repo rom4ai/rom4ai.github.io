@@ -1,9 +1,17 @@
 ---
 layout: post
-title: "Hardwired LLM Accelerators: From Programmable Kernels to Fixed-Flow Inference"
-categories: [llm, accelerator, inference]
+title: 'Hardwired LLM Accelerators: From Programmable Kernels to Fixed-Flow Inference'
+categories:
+- llm
+- accelerator
+- inference
+tags:
+- edge-ai
+- transformer
+- quantization
+- low-power
+- llm-inference
 ---
-
 ## Motivation
 
 Current LLM inference stacks rely on general-purpose GPU kernels and runtime orchestration, causing excess overhead for token-by-token decoding. For edge and low-latency deployment, a hardwired path for dominant compute patterns could be far more efficient.

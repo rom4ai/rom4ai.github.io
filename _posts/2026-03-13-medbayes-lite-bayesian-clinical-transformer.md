@@ -1,13 +1,20 @@
 ---
 layout: post
-title: "MedBayes-Lite: 临床 Transformer 的轻量级贝叶斯不确定性量化框架"
-categories: [research, ai, healthcare, bayesian, transformers]
+title: 'MedBayes-Lite: 临床 Transformer 的轻量级贝叶斯不确定性量化框架'
+categories:
+- research
+- ai
+- healthcare
+- bayesian
+- transformers
 author: ROM4AI
 date: 2026-03-13
-original_paper: "https://arxiv.org/abs/2511.16625"
-tags: ["Bayesian", "Transformer", "clinical AI", "uncertainty quantification", "medical NLP", "MedBayes-Lite"]
+original_paper: https://arxiv.org/abs/2511.16625
+tags:
+- llm-inference
+- transformer
+- ai-accelerator
 ---
-
 # MedBayes-Lite: 临床 Transformer 的轻量级贝叶斯不确定性量化框架
 
 > **原文链接**: [arXiv:2511.16625](https://arxiv.org/abs/2511.16625) | [PDF](https://arxiv.org/pdf/2511.16625.pdf)  

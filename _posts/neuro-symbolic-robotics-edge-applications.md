@@ -1,12 +1,19 @@
 ---
 layout: post
-title: "神经符号 AI 在机器人与边缘应用中的实践指南"
-categories: [research, ai, robotics, edge-computing]
+title: 神经符号 AI 在机器人与边缘应用中的实践指南
+categories:
+- research
+- ai
+- robotics
+- edge-computing
 author: ROM4AI
 date: 2026-03-17
-tags: ["neuro-symbolic AI", "robotics", "edge computing", "real-time systems", "autonomous robots"]
+tags:
+- low-power
+- robotics
+- edge-ai
+- world-model
 ---
-
 # 神经符号 AI 在机器人与边缘应用中的实践指南
 
 > **研究类型**: 技术深度分析 + 系统架构 + 实践指南  

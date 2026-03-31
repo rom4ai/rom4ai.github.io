@@ -1,13 +1,21 @@
 ---
 layout: post
-title: "Synthesis-in-the-Loop Evaluation of LLMs for RTL Generation: Quality, Reliability, and Failure Modes"
-categories: [research, ai, hardware]
+title: 'Synthesis-in-the-Loop Evaluation of LLMs for RTL Generation: Quality, Reliability,
+  and Failure Modes'
+categories:
+- research
+- ai
+- hardware
 author: ROM4AI
 date: 2026-03-14
-original_paper: "https://arxiv.org/abs/2603.11287"
-tags: ["LLM", "RTL generation", "hardware design", "synthesis", "Verilog", "AI for EDA"]
+original_paper: https://arxiv.org/abs/2603.11287
+tags:
+- transformer
+- llm-inference
+- ai-accelerator
+- training
+- benchmark
 ---
-
 # Synthesis-in-the-Loop Evaluation of LLMs for RTL Generation: Quality, Reliability, and Failure Modes
 
 > **原文链接**: [arXiv:2603.11287](https://arxiv.org/abs/2603.11287) | [PDF](https://arxiv.org/pdf/2603.11287.pdf)

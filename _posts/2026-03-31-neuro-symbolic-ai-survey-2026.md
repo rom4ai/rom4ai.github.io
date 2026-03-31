@@ -1,13 +1,21 @@
 ---
 layout: post
-title: "Neuro-Symbolic AI Survey: Task-Directed Advances in the Black-Box Era"
-categories: [research, neuro-symbolic-ai, survey, explainable-ai]
+title: 'Neuro-Symbolic AI Survey: Task-Directed Advances in the Black-Box Era'
+categories:
+- research
+- neuro-symbolic-ai
+- survey
+- explainable-ai
 author: ROM4AI
 date: 2026-03-31
-original_paper: "https://arxiv.org/abs/2603.03177"
-tags: ["neuro-symbolic", "NeSy", "explainability", "reasoning", "survey"]
+original_paper: https://arxiv.org/abs/2603.03177
+tags:
+- edge-ai
+- transformer
+- low-power
+- llm-inference
+- robotics
 ---
-
 # Neuro-Symbolic Artificial Intelligence: A Task-Directed Survey in the Black-Box Models Era
 
 > **原文链接**: [arXiv:2603.03177](https://arxiv.org/abs/2603.03177) | [PDF](https://arxiv.org/pdf/2603.03177.pdf)

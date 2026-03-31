@@ -1,10 +1,20 @@
 ---
 layout: post
-title: "Daily Research Roundup: LLM Hardware Acceleration & World Models"
+title: 'Daily Research Roundup: LLM Hardware Acceleration & World Models'
 date: 2026-03-30 15:30:00 +0800
-categories: [daily-roundup, llm, accelerator, world-models, hardware]
+categories:
+- daily-roundup
+- llm
+- accelerator
+- world-models
+- hardware
+tags:
+- edge-ai
+- transformer
+- low-power
+- llm-inference
+- training
 ---
-
 ## 🔍 Today's Research Focus
 
 Automated search across key research areas:

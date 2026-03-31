@@ -1,10 +1,20 @@
 ---
 layout: post
-title: "Daily Research: Neuromorphic Computing & Spiking Neural Networks"
+title: 'Daily Research: Neuromorphic Computing & Spiking Neural Networks'
 date: 2026-03-30 15:55:00 +0800
-categories: [daily-roundup, neuromorphic, spiking-neural-networks, hardware, energy-efficiency]
+categories:
+- daily-roundup
+- neuromorphic
+- spiking-neural-networks
+- hardware
+- energy-efficiency
+tags:
+- sparsity
+- edge-ai
+- neuromorphic
+- low-power
+- llm-inference
 ---
-
 ## 🔍 Today's Research Focus
 
 Automated search across:

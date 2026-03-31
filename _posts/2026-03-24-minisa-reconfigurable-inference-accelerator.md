@@ -1,13 +1,22 @@
 ---
 layout: post
-title: "MINISA: Minimal Instruction Set Architecture for Next-gen Reconfigurable Inference Accelerator"
-categories: ["accelerator", "isa", "hardware", "ai", "reconfigurable"]
+title: 'MINISA: Minimal Instruction Set Architecture for Next-gen Reconfigurable Inference
+  Accelerator'
+categories:
+- accelerator
+- isa
+- hardware
+- ai
+- reconfigurable
 author: ROM4AI
 date: 2026-03-24
 paper_url: https://arxiv.org/abs/2603.20623
 pdf_url: https://arxiv.org/pdf/2603.20623.pdf
+tags:
+- llm-inference
+- ai-accelerator
+- edge-ai
 ---
-
 **原文链接:** [arXiv](https://arxiv.org/abs/2603.20623) | [PDF](https://arxiv.org/pdf/2603.20623.pdf)
 
 # MINISA: Minimal Instruction Set Architecture for Next-gen Reconfigurable Inference Accelerator

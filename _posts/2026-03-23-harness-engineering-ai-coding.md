@@ -1,12 +1,17 @@
 ---
 layout: post
-title: "模型够聪明之后，工程师该做什么：Harness Engineering 实战指南"
-categories: [engineering, ai, productivity]
+title: 模型够聪明之后，工程师该做什么：Harness Engineering 实战指南
+categories:
+- engineering
+- ai
+- productivity
 author: ROM4AI
 date: 2026-03-23
-tags: ["harness-engineering", "ai-coding", "claude-code", "developer-productivity", "context-engineering"]
+tags:
+- memory-system
+- ai-accelerator
+- llm-inference
 ---
-
 # 模型够聪明之后，工程师该做什么：Harness Engineering 实战指南
 
 > **原文来源**: [小红书 - 模型够聪明之后，工程师该做什么](https://www.xiaohongshu.com/discovery/item/69ba69d8000000001d01ede6)

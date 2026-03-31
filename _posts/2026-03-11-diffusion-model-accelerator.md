@@ -1,9 +1,17 @@
 ---
 layout: post
-title: "Diffusion Model Accelerators: Efficient Sampling Beyond Brute-Force Denoising"
-categories: [diffusion, accelerator, generative-ai]
+title: 'Diffusion Model Accelerators: Efficient Sampling Beyond Brute-Force Denoising'
+categories:
+- diffusion
+- accelerator
+- generative-ai
+tags:
+- transformer
+- multi-modal
+- llm-inference
+- ai-accelerator
+- diffusion-model
 ---
-
 ## Problem framing
 
 Diffusion models demand repeated denoising steps, making inference latency and energy expensive. Even with fewer-step samplers, deployment at scale remains challenging.

@@ -1,13 +1,20 @@
 ---
 layout: post
-title: "History-Guided Video Diffusion: 用历史引导实现超长视频生成"
-categories: [research, ai, ml, cv]
+title: 'History-Guided Video Diffusion: 用历史引导实现超长视频生成'
+categories:
+- research
+- ai
+- ml
+- cv
 author: ROM4AI
 date: 2026-03-16
-original_paper: "https://arxiv.org/abs/2502.06764"
-tags: ["video diffusion", "generative AI", "classifier-free guidance", "DFoT", "long video generation"]
+original_paper: https://arxiv.org/abs/2502.06764
+tags:
+- multi-modal
+- diffusion-model
+- llm-inference
+- transformer
 ---
-
 # History-Guided Video Diffusion: 用历史引导实现超长视频生成
 
 > **原文链接**: [arXiv:2502.06764](https://arxiv.org/abs/2502.06764) | [PDF](https://arxiv.org/pdf/2502.06764.pdf) | [项目主页](https://boyuan.space/history-guidance)

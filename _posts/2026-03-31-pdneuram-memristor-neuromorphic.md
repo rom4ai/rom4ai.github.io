@@ -1,13 +1,22 @@
 ---
 layout: post
-title: "PdNeuRAM: Forming-Free Multi-Bit ReRAM for Energy-Efficient Neuromorphic Computing"
-categories: [research, neuromorphic-computing, memristor, reram, ai-hardware]
+title: 'PdNeuRAM: Forming-Free Multi-Bit ReRAM for Energy-Efficient Neuromorphic Computing'
+categories:
+- research
+- neuromorphic-computing
+- memristor
+- reram
+- ai-hardware
 author: ROM4AI
 date: 2026-03-31
-original_paper: "https://www.nature.com/articles/s44172-026-00650-3"
-tags: ["memristor", "ReRAM", "neuromorphic", "in-memory-computing", "analog-computing"]
+original_paper: https://www.nature.com/articles/s44172-026-00650-3
+tags:
+- edge-ai
+- neuromorphic
+- low-power
+- ai-accelerator
+- memory-system
 ---
-
 # PdNeuRAM: Forming-Free, Multi-bit Pd/HfO₂ ReRAM for Energy-Efficient Neuromorphic Computing
 
 > **原文链接**: [Nature Communications Engineering](https://www.nature.com/articles/s44172-026-00650-3) | [DOI: 10.1038/s44172-026-00650-3](https://doi.org/10.1038/s44172-026-00650-3)

@@ -1,11 +1,21 @@
 ---
 layout: post
-title: "ROMA: 基于ROM的QLoRA边缘设备LLM加速器"
-categories: ["llm", "accelerator", "hardware", "qlora", "edge-computing"]
+title: 'ROMA: 基于ROM的QLoRA边缘设备LLM加速器'
+categories:
+- llm
+- accelerator
+- hardware
+- qlora
+- edge-computing
 author: ROM4AI
 date: 2026-03-11
+tags:
+- edge-ai
+- transformer
+- low-power
+- llm-inference
+- memory-system
 ---
-
 # ROMA: 基于ROM的QLoRA边缘设备LLM加速器
 
 ## 摘要

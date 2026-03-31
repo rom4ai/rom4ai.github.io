@@ -1,13 +1,20 @@
 ---
 layout: post
-title: "LEGOSim: 多芯片异构集成的统一并行仿真框架"
-categories: [research, ai, hardware, chiplet, simulation]
+title: 'LEGOSim: 多芯片异构集成的统一并行仿真框架'
+categories:
+- research
+- ai
+- hardware
+- chiplet
+- simulation
 author: ROM4AI
 date: 2026-03-13
-original_paper: "https://doi.org/10.1145/3725843.3756068"
-tags: ["chiplet", "simulation", "gem5", "parallel simulation", "heterogeneous integration", "MICRO25"]
+original_paper: https://doi.org/10.1145/3725843.3756068
+tags:
+- chiplet
+- ai-accelerator
+- llm-inference
 ---
-
 # LEGOSim: 多芯片异构集成的统一并行仿真框架
 
 > **原文链接**: [ACM Digital Library](https://doi.org/10.1145/3725843.3756068)  

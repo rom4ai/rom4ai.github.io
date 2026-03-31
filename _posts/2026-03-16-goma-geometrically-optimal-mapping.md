@@ -1,13 +1,19 @@
 ---
 layout: post
-title: "GOMA: 通过解析建模实现空间加速器的几何最优映射"
-categories: [research, ai, hardware, accelerator]
+title: 'GOMA: 通过解析建模实现空间加速器的几何最优映射'
+categories:
+- research
+- ai
+- hardware
+- accelerator
 author: ROM4AI
 date: 2026-03-16
-original_paper: "https://arxiv.org/abs/2603.07962"
-tags: ["GEMM", "spatial accelerator", "mapping optimization", "analytical modeling", "global optimum", "LLM"]
+original_paper: https://arxiv.org/abs/2603.07962
+tags:
+- llm-inference
+- transformer
+- ai-accelerator
 ---
-
 # GOMA: Geometrically Optimal Mapping via Analytical Modeling for Spatial Accelerators
 
 > **原文链接**: [arXiv:2603.07962](https://arxiv.org/abs/2603.07962) | [PDF](https://arxiv.org/pdf/2603.07962.pdf)
