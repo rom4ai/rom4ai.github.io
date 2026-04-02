@@ -40,7 +40,7 @@ paper_url: "https://arxiv.org/abs/2601.20706"
 
 ### 1.2 采样阶段成为瓶颈
 
-![延迟分解](/assets/d-plena-2026/fig1-latency-breakdown.png)
+![延迟分解](/assets/d-plena-2026/_page_0_Figure_8.jpeg)
 *图1: LLaDA 模型在 A6000 GPU 上的延迟分解，评估参数空间：batch size 1-32，去噪步数 1-32，生成长度 64-1024 tokens，块大小 8-64。*
 
 **关键发现**:

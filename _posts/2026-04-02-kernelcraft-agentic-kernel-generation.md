@@ -60,7 +60,7 @@ paper_url: "https://arxiv.org/abs/2603.08721"
 
 ### 2.1 三层任务设计
 
-![KernelCraft 概览](/assets/kernelcraft-2026/fig1-overview.png)
+![KernelCraft 概览](/assets/kernelcraft-2026/_page_0_Picture_10.jpeg)
 *图1: KernelCraft 概览 - 三层任务：原始操作、复合操作、端到端系统*
 
 **任务层次**:
