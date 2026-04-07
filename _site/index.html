@@ -24,7 +24,7 @@
           <nav class="site-nav" aria-label="Primary">
             <a href="/" class="is-active">Home</a>
             
-              <a href="/research/vision-transformer/fpga/accelerator/memory-bandwidth/2026/03/30/me-vit-memory-efficient-fpga-accelerator.html">Latest</a>
+              <a href="/paper/llm-inference/kv-cache/2026/04/05/sals-sparse-attention-latent-space-kv-cache-compression.html">Latest</a>
             
             <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode">
               <svg class="sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
@@ -40,6 +40,11 @@
 
       <div class="site-main">
   
+
+
+<!-- Collect all unique tags -->
+
+
 
 
 <div class="page-content home-page">
@@ -58,7 +63,7 @@
       <div class="hero-actions">
         <a class="button button-primary" href="#posts">Browse Articles</a>
         
-          <a class="button button-secondary" href="/research/vision-transformer/fpga/accelerator/memory-bandwidth/2026/03/30/me-vit-memory-efficient-fpga-accelerator.html">Read Latest</a>
+          <a class="button button-secondary" href="/paper/llm-inference/kv-cache/2026/04/05/sals-sparse-attention-latent-space-kv-cache-compression.html">Read Latest</a>
         
       </div>
     </div>
@@ -73,12 +78,1561 @@
   <section class="posts-section" id="posts">
     <div class="section-header">
       <span class="section-title">Latest Articles</span>
-      <span class="mono" style="color: var(--text-tertiary);">36 posts</span>
+      <span class="mono" style="color: var(--text-tertiary);">67 posts</span>
     </div>
 
-    <div class="posts-grid">
+    <!-- Tag Filter -->
+    
+    <div class="tag-filter-container">
+      <div class="tag-filter-label">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+        </svg>
+        Filter by tag:
+      </div>
+      <div class="tag-filter-list">
+        <button class="tag-filter-btn active" data-tag="all">All</button>
+        
+          <button class="tag-filter-btn" data-tag="agentic-ai">agentic-ai</button>
+        
+          <button class="tag-filter-btn" data-tag="ai-accelerator">ai-accelerator</button>
+        
+          <button class="tag-filter-btn" data-tag="ai-agent">ai-agent</button>
+        
+          <button class="tag-filter-btn" data-tag="algorithm-architecture-co-design">algorithm-architecture-co-design</button>
+        
+          <button class="tag-filter-btn" data-tag="algorithm-hardware-co-design">algorithm-hardware-co-design</button>
+        
+          <button class="tag-filter-btn" data-tag="amd-versal">amd-versal</button>
+        
+          <button class="tag-filter-btn" data-tag="assembly">assembly</button>
+        
+          <button class="tag-filter-btn" data-tag="attention-optimization">attention-optimization</button>
+        
+          <button class="tag-filter-btn" data-tag="autonomous-driving">autonomous-driving</button>
+        
+          <button class="tag-filter-btn" data-tag="benchmark">benchmark</button>
+        
+          <button class="tag-filter-btn" data-tag="chiplet">chiplet</button>
+        
+          <button class="tag-filter-btn" data-tag="datacenter">datacenter</button>
+        
+          <button class="tag-filter-btn" data-tag="diffusion-model">diffusion-model</button>
+        
+          <button class="tag-filter-btn" data-tag="edge-ai">edge-ai</button>
+        
+          <button class="tag-filter-btn" data-tag="embodied-ai">embodied-ai</button>
+        
+          <button class="tag-filter-btn" data-tag="emerging-hardware">emerging-hardware</button>
+        
+          <button class="tag-filter-btn" data-tag="fpga">fpga</button>
+        
+          <button class="tag-filter-btn" data-tag="hardware-verification">hardware-verification</button>
+        
+          <button class="tag-filter-btn" data-tag="heterogeneous-computing">heterogeneous-computing</button>
+        
+          <button class="tag-filter-btn" data-tag="inference">inference</button>
+        
+          <button class="tag-filter-btn" data-tag="jepa">jepa</button>
+        
+          <button class="tag-filter-btn" data-tag="kernel-generation">kernel-generation</button>
+        
+          <button class="tag-filter-btn" data-tag="kv-cache">kv-cache</button>
+        
+          <button class="tag-filter-btn" data-tag="llm-inference">llm-inference</button>
+        
+          <button class="tag-filter-btn" data-tag="low-power">low-power</button>
+        
+          <button class="tag-filter-btn" data-tag="memory-efficiency">memory-efficiency</button>
+        
+          <button class="tag-filter-btn" data-tag="memory-system">memory-system</button>
+        
+          <button class="tag-filter-btn" data-tag="moe">moe</button>
+        
+          <button class="tag-filter-btn" data-tag="multi-modal">multi-modal</button>
+        
+          <button class="tag-filter-btn" data-tag="neural-symbolic">neural-symbolic</button>
+        
+          <button class="tag-filter-btn" data-tag="neuromorphic">neuromorphic</button>
+        
+          <button class="tag-filter-btn" data-tag="non-gemm">non-gemm</button>
+        
+          <button class="tag-filter-btn" data-tag="npu">npu</button>
+        
+          <button class="tag-filter-btn" data-tag="open-source">open-source</button>
+        
+          <button class="tag-filter-btn" data-tag="photonic">photonic</button>
+        
+          <button class="tag-filter-btn" data-tag="quantization">quantization</button>
+        
+          <button class="tag-filter-btn" data-tag="reasoning">reasoning</button>
+        
+          <button class="tag-filter-btn" data-tag="reconfigurable">reconfigurable</button>
+        
+          <button class="tag-filter-btn" data-tag="reinforcement-learning">reinforcement-learning</button>
+        
+          <button class="tag-filter-btn" data-tag="risc-v">risc-v</button>
+        
+          <button class="tag-filter-btn" data-tag="riscv">riscv</button>
+        
+          <button class="tag-filter-btn" data-tag="roadmap">roadmap</button>
+        
+          <button class="tag-filter-btn" data-tag="robotics">robotics</button>
+        
+          <button class="tag-filter-btn" data-tag="rocketchip">rocketchip</button>
+        
+          <button class="tag-filter-btn" data-tag="scaling">scaling</button>
+        
+          <button class="tag-filter-btn" data-tag="self-supervised">self-supervised</button>
+        
+          <button class="tag-filter-btn" data-tag="software-native">software-native</button>
+        
+          <button class="tag-filter-btn" data-tag="sparsity">sparsity</button>
+        
+          <button class="tag-filter-btn" data-tag="spatial-similarity">spatial-similarity</button>
+        
+          <button class="tag-filter-btn" data-tag="spiking-neural-network">spiking-neural-network</button>
+        
+          <button class="tag-filter-btn" data-tag="spiking-neural-networks">spiking-neural-networks</button>
+        
+          <button class="tag-filter-btn" data-tag="superconducting">superconducting</button>
+        
+          <button class="tag-filter-btn" data-tag="training">training</button>
+        
+          <button class="tag-filter-btn" data-tag="transformer">transformer</button>
+        
+          <button class="tag-filter-btn" data-tag="ucv">ucv</button>
+        
+          <button class="tag-filter-btn" data-tag="world-model">world-model</button>
+        
+          <button class="tag-filter-btn" data-tag="xiangshan">xiangshan</button>
+        
+      </div>
+    </div>
+    
+
+    <div class="posts-grid" id="posts-grid">
       
-        <article class="post-card" onclick="window.location.href='/research/vision-transformer/fpga/accelerator/memory-bandwidth/2026/03/30/me-vit-memory-efficient-fpga-accelerator.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/paper/llm-inference/kv-cache/2026/04/05/sals-sparse-attention-latent-space-kv-cache-compression.html'"
+                 data-tags="llm-inference,kv-cache,sparsity,quantization,attention-optimization">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-05</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#paper</span>
+              
+                <span class="category-tag">#llm-inference</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/paper/llm-inference/kv-cache/2026/04/05/sals-sparse-attention-latent-space-kv-cache-compression.html">SALS: 潜在空间稀疏注意力实现 KV Cache 压缩</a>
+          </h3>
+          <p class="post-card-excerpt">
+            
+  
+    
+      
+        原文链接: arXiv:2510.24273
+        PDF
+      
+    
+  
+
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">llm-inference</span>
+            
+              <span class="post-tag">kv-cache</span>
+            
+              <span class="post-tag">sparsity</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="paper-llm-inference-kv-cache-2026-04-05-sals-sparse-attention-latent-space-kv-cache-compression-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/world-model/diffusion-model/edge-ai/2026/04/04/video-world-models-efficiency-survey.html'"
+                 data-tags="world-model,diffusion-model,edge-ai,autonomous-driving,robotics">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-04</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#world-model</span>
+              
+                <span class="category-tag">#diffusion-model</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/world-model/diffusion-model/edge-ai/2026/04/04/video-world-models-efficiency-survey.html">Video Generation Models as World Models: Efficient Paradigms, Architectures and Algorithms Survey</a>
+          </h3>
+          <p class="post-card-excerpt">
+            Video Generation Models as World Models: Efficient Paradigms, Architectures and Algorithms Survey
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">world-model</span>
+            
+              <span class="post-tag">diffusion-model</span>
+            
+              <span class="post-tag">edge-ai</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="world-model-diffusion-model-edge-ai-2026-04-04-video-world-models-efficiency-survey-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/ai-accelerator/llm-inference/memory-system/2026/04/04/heterogeneous-llm-memory-pipeline.html'"
+                 data-tags="ai-accelerator,llm-inference,memory-system,heterogeneous-computing,fpga">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-04</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#ai-accelerator</span>
+              
+                <span class="category-tag">#llm-inference</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/ai-accelerator/llm-inference/memory-system/2026/04/04/heterogeneous-llm-memory-pipeline.html">GPU-FPGA Heterogeneous Systems for Disaggregated LLM Inference: Memory Processing Pipeline Acceleration</a>
+          </h3>
+          <p class="post-card-excerpt">
+            GPU-FPGA Heterogeneous Systems for Disaggregated LLM Inference: Memory Processing Pipeline Acceleration
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+              <span class="post-tag">memory-system</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="ai-accelerator-llm-inference-memory-system-2026-04-04-heterogeneous-llm-memory-pipeline-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/world-model/robotics/embodied-ai/2026/04/04/eva-executable-video-alignment-robotics.html'"
+                 data-tags="world-model,robotics,embodied-ai,diffusion-model,reinforcement-learning">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-04</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#world-model</span>
+              
+                <span class="category-tag">#robotics</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/world-model/robotics/embodied-ai/2026/04/04/eva-executable-video-alignment-robotics.html">EVA: Aligning Video World Models with Executable Robot Actions via Inverse Dynamics Rewards</a>
+          </h3>
+          <p class="post-card-excerpt">
+            EVA: Aligning Video World Models with Executable Robot Actions via Inverse Dynamics Rewards
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">world-model</span>
+            
+              <span class="post-tag">robotics</span>
+            
+              <span class="post-tag">embodied-ai</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="world-model-robotics-embodied-ai-2026-04-04-eva-executable-video-alignment-robotics-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/neuromorphic/ai-accelerator/low-power/2026/04/03/spinic-superconducting-neuromorphic-computing.html'"
+                 data-tags="neuromorphic,ai-accelerator,low-power,superconducting,spiking-neural-networks">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-03</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#neuromorphic</span>
+              
+                <span class="category-tag">#ai-accelerator</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/neuromorphic/ai-accelerator/low-power/2026/04/03/spinic-superconducting-neuromorphic-computing.html">SPINIC: Programmable Superconducting Neuron with In-Memory Computation for Ultra-Efficient Neuromorphic Computing</a>
+          </h3>
+          <p class="post-card-excerpt">
+            SPINIC: Programmable Superconducting Neuron with In-Memory Computation for Ultra-Efficient Neuromorphic Computing
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">neuromorphic</span>
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+              <span class="post-tag">low-power</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="neuromorphic-ai-accelerator-low-power-2026-04-03-spinic-superconducting-neuromorphic-computing-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/world-model/robotics/embodied-ai/2026/04/03/robostereo-4d-world-models-robotics.html'"
+                 data-tags="world-model,robotics,embodied-ai,diffusion-model,multi-modal">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-03</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#world-model</span>
+              
+                <span class="category-tag">#robotics</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/world-model/robotics/embodied-ai/2026/04/03/robostereo-4d-world-models-robotics.html">RoboStereo: Dual-Tower 4D Embodied World Models for Unified Policy Optimization</a>
+          </h3>
+          <p class="post-card-excerpt">
+            RoboStereo: Dual-Tower 4D Embodied World Models for Unified Policy Optimization
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">world-model</span>
+            
+              <span class="post-tag">robotics</span>
+            
+              <span class="post-tag">embodied-ai</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="world-model-robotics-embodied-ai-2026-04-03-robostereo-4d-world-models-robotics-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/hardware/llm-inference/2026/04/03/gpu-fpga-heterogeneous-llm-inference.html'"
+                 data-tags="ai-accelerator,llm-inference,edge-ai,memory-system,heterogeneous-computing">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-03</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#research</span>
+              
+                <span class="category-tag">#ai</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/research/ai/hardware/llm-inference/2026/04/03/gpu-fpga-heterogeneous-llm-inference.html">GPU-FPGA 异构系统加速 LLM 推理中的内存处理</a>
+          </h3>
+          <p class="post-card-excerpt">
+            GPU-FPGA 异构系统加速 LLM 推理中的内存处理
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+              <span class="post-tag">edge-ai</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-hardware-llm-inference-2026-04-03-gpu-fpga-heterogeneous-llm-inference-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/neural-symbolic/ai-accelerator/llm-inference/2026/04/03/as2-neuro-symbolic-reasoning.html'"
+                 data-tags="neural-symbolic,llm-inference,reasoning,transformer,multi-modal">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-03</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#neural-symbolic</span>
+              
+                <span class="category-tag">#ai-accelerator</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/neural-symbolic/ai-accelerator/llm-inference/2026/04/03/as2-neuro-symbolic-reasoning.html">AS2: Attention-Based Soft Answer Sets for End-to-End Differentiable Neuro-Soft-Symbolic Reasoning</a>
+          </h3>
+          <p class="post-card-excerpt">
+            AS2: Attention-Based Soft Answer Sets for End-to-End Differentiable Neuro-Soft-Symbolic Reasoning
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">neural-symbolic</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+              <span class="post-tag">reasoning</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="neural-symbolic-ai-accelerator-llm-inference-2026-04-03-as2-neuro-symbolic-reasoning-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/paper/diffusion-llm/npu-architecture/sampling-optimization/2026/04/02/d-plena-diffusion-llm-sampling.html'"
+                 data-tags="ai-accelerator,diffusion-model,llm-inference,npu,non-gemm,memory-system">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-02</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#paper</span>
+              
+                <span class="category-tag">#diffusion-llm</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/paper/diffusion-llm/npu-architecture/sampling-optimization/2026/04/02/d-plena-diffusion-llm-sampling.html">Beyond GEMM-Centric NPUs: 高效扩散 LLM 采样架构</a>
+          </h3>
+          <p class="post-card-excerpt">
+            
+  原文: arXiv:2601.20706 | PDF
+作者: Binglei Lou, Haoran Wu, Yao Lai, et al. (Imperial College London, University of Cambridge)
+核心贡献: 针对扩散 LLM 采样优化 NPU 架构，提出 d-...
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+              <span class="post-tag">diffusion-model</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="paper-diffusion-llm-npu-architecture-sampling-optimization-2026-04-02-d-plena-diffusion-llm-sampling-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/paper/heterogeneous-computing/ai-agent/system-architecture/2026/04/02/heterogeneous-computing-ai-agent.html'"
+                 data-tags="ai-accelerator,heterogeneous-computing,ai-agent,memory-system,datacenter,inference">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-02</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#paper</span>
+              
+                <span class="category-tag">#heterogeneous-computing</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/paper/heterogeneous-computing/ai-agent/system-architecture/2026/04/02/heterogeneous-computing-ai-agent.html">异构计算：AI Agent 推理的未来关键</a>
+          </h3>
+          <p class="post-card-excerpt">
+            
+  原文: arXiv:2601.22001 | PDF
+作者: Aaron Zhao (Imperial College London), Junyi Liu (Microsoft Research)
+核心贡献: 提出系统级异构计算是 AI Agent 推理的关键，识别”内存容量墙”问题
+
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+              <span class="post-tag">heterogeneous-computing</span>
+            
+              <span class="post-tag">ai-agent</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="paper-heterogeneous-computing-ai-agent-system-architecture-2026-04-02-heterogeneous-computing-ai-agent-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/paper/kernel-generation/llm-agent/emerging-hardware/2026/04/02/kernelcraft-agentic-kernel-generation.html'"
+                 data-tags="ai-accelerator,llm-inference,kernel-generation,emerging-hardware,agentic-ai,assembly">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-02</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#paper</span>
+              
+                <span class="category-tag">#kernel-generation</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/paper/kernel-generation/llm-agent/emerging-hardware/2026/04/02/kernelcraft-agentic-kernel-generation.html">KernelCraft: 面向新兴硬件的Agentic底层内核生成基准测试</a>
+          </h3>
+          <p class="post-card-excerpt">
+            
+  原文: arXiv:2603.08721 | PDF
+作者: Jiayi Nie, Haoran Wu, et al. (University of Cambridge, Imperial College London, AMD, University of Edinburgh)
+核心贡献: 首个评估 LL...
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+              <span class="post-tag">kernel-generation</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="paper-kernel-generation-llm-agent-emerging-hardware-2026-04-02-kernelcraft-agentic-kernel-generation-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/paper/vision-transformer/hardware-acceleration/esweek/2026/04/02/eq-vit-esweek2024.html'"
+                 data-tags="ai-accelerator,algorithm-hardware-co-design,transformer,edge-ai,quantization,amd-versal">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-02</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#paper</span>
+              
+                <span class="category-tag">#vision-transformer</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/paper/vision-transformer/hardware-acceleration/esweek/2026/04/02/eq-vit-esweek2024.html">EQ-ViT: Algorithm-Hardware Co-Design for Real-Time Vision Transformer Acceleration on Versal ACAP</a>
+          </h3>
+          <p class="post-card-excerpt">
+            
+  原文: EQ-ViT: Algorithm-Hardware Co-Design for End-to-End Acceleration of Real-Time Vision Transformer Inference on Versal ACAP Architecture
+会议: ESWEEK 2024...
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+              <span class="post-tag">algorithm-hardware-co-design</span>
+            
+              <span class="post-tag">transformer</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="paper-vision-transformer-hardware-acceleration-esweek-2026-04-02-eq-vit-esweek2024-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/research/neuromorphic-computing/survey/ai-accelerator/2026/04/02/neuromorphic-roadmap-scaling.html'"
+                 data-tags="neuromorphic,scaling,roadmap,edge-ai,low-power">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-02</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#research</span>
+              
+                <span class="category-tag">#neuromorphic-computing</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/research/neuromorphic-computing/survey/ai-accelerator/2026/04/02/neuromorphic-roadmap-scaling.html">Neuromorphic Computing Roadmap: Scaling Brain-Inspired AI to Production</a>
+          </h3>
+          <p class="post-card-excerpt">
+            Neuromorphic Computing Roadmap: Scaling Brain-Inspired AI to Production
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">neuromorphic</span>
+            
+              <span class="post-tag">scaling</span>
+            
+              <span class="post-tag">roadmap</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-neuromorphic-computing-survey-ai-accelerator-2026-04-02-neuromorphic-roadmap-scaling-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/research/edge-ai/robotics/ai-accelerator/2026/04/02/mediatek-genio-pro-edge-robotics-chip.html'"
+                 data-tags="edge-ai,robotics,npu,embodied-ai,llm-inference">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-02</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#research</span>
+              
+                <span class="category-tag">#edge-ai</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/research/edge-ai/robotics/ai-accelerator/2026/04/02/mediatek-genio-pro-edge-robotics-chip.html">MediaTek Genio Pro: 50+ TOPS Edge AI Chip for Robotics and Embodied Intelligence</a>
+          </h3>
+          <p class="post-card-excerpt">
+            MediaTek Genio Pro: 50+ TOPS Edge AI Chip for Robotics and Embodied Intelligence
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">edge-ai</span>
+            
+              <span class="post-tag">robotics</span>
+            
+              <span class="post-tag">npu</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-edge-ai-robotics-ai-accelerator-2026-04-02-mediatek-genio-pro-edge-robotics-chip-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/research/neuromorphic-computing/edge-ai/ai-accelerator/2026/04/02/innatera-synfire-neuromorphic-platform.html'"
+                 data-tags="neuromorphic,spiking-neural-networks,edge-ai,open-source">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-02</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#research</span>
+              
+                <span class="category-tag">#neuromorphic-computing</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/research/neuromorphic-computing/edge-ai/ai-accelerator/2026/04/02/innatera-synfire-neuromorphic-platform.html">Innatera Synfire: Unifying the Neuromorphic Ecosystem for Edge AI</a>
+          </h3>
+          <p class="post-card-excerpt">
+            Innatera Synfire: Unifying the Neuromorphic Ecosystem for Edge AI
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">neuromorphic</span>
+            
+              <span class="post-tag">spiking-neural-networks</span>
+            
+              <span class="post-tag">edge-ai</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-neuromorphic-computing-edge-ai-ai-accelerator-2026-04-02-innatera-synfire-neuromorphic-platform-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai-accelerator/llm-inference/memory-optimization/2026/04/02/google-turboquant-kv-cache-compression.html'"
+                 data-tags="kv-cache,quantization,memory-efficiency,edge-ai">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-02</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#research</span>
+              
+                <span class="category-tag">#ai-accelerator</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/research/ai-accelerator/llm-inference/memory-optimization/2026/04/02/google-turboquant-kv-cache-compression.html">Google TurboQuant: 6x KV Cache Compression with Near-Optimal Distortion Rate</a>
+          </h3>
+          <p class="post-card-excerpt">
+            TurboQuant: Online Vector Quantization with Near-Optimal Distortion Rate
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">kv-cache</span>
+            
+              <span class="post-tag">quantization</span>
+            
+              <span class="post-tag">memory-efficiency</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-accelerator-llm-inference-memory-optimization-2026-04-02-google-turboquant-kv-cache-compression-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/paper/hardware-verification/isca/2026/04/01/ucv-software-native-hardware-verification.html'"
+                 data-tags="ai-accelerator,chiplet,edge-ai,hardware-verification,ucv,software-native,riscv">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-01</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#paper</span>
+              
+                <span class="category-tag">#hardware-verification</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/paper/hardware-verification/isca/2026/04/01/ucv-software-native-hardware-verification.html">UCV: 通过软件原生优化普及和加速硬件验证</a>
+          </h3>
+          <p class="post-card-excerpt">
+            
+  论文: Democratizing and Accelerating Hardware Verification with Software-Native Optimization
+会议: ISCA 2026
+核心贡献: UnityChip Verification (UCV) - 软件原生硬件验证平台
+
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+              <span class="post-tag">chiplet</span>
+            
+              <span class="post-tag">edge-ai</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="paper-hardware-verification-isca-2026-04-01-ucv-software-native-hardware-verification-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai-accelerator/risc-v/quantization/2026/04/01/vmxdotp-risc-v-mx-acceleration.html'"
+                 data-tags="risc-v,quantization,ai-accelerator,low-power,edge-ai">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-01</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#research</span>
+              
+                <span class="category-tag">#ai-accelerator</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/research/ai-accelerator/risc-v/quantization/2026/04/01/vmxdotp-risc-v-mx-acceleration.html">VMXDOTP: RISC-V Vector ISA Extension for Efficient Microscaling (MX) Format Acceleration</a>
+          </h3>
+          <p class="post-card-excerpt">
+            VMXDOTP: RISC-V Vector ISA Extension for Efficient Microscaling (MX) Format Acceleration
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">risc-v</span>
+            
+              <span class="post-tag">quantization</span>
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-accelerator-risc-v-quantization-2026-04-01-vmxdotp-risc-v-mx-acceleration-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai-accelerator/chiplet/edge-ai/2026/04/01/ucv-isca2026-software-native-hardware-verification.html'"
+                 data-tags="ai-accelerator,chiplet,edge-ai,hardware-verification,ucv,xiangshan,rocketchip">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-01</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#research</span>
+              
+                <span class="category-tag">#ai-accelerator</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/research/ai-accelerator/chiplet/edge-ai/2026/04/01/ucv-isca2026-software-native-hardware-verification.html">UCV: 软件原生硬件验证平台 - ISCA 2026</a>
+          </h3>
+          <p class="post-card-excerpt">
+            UCV: 通过软件原生优化实现硬件验证的民主化与加速
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+              <span class="post-tag">chiplet</span>
+            
+              <span class="post-tag">edge-ai</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-accelerator-chiplet-edge-ai-2026-04-01-ucv-isca2026-software-native-hardware-verification-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/research/neuromorphic/ai-hardware/superconducting/2026/04/01/superconducting-neuron-neuromorphic.html'"
+                 data-tags="neuromorphic,superconducting,ai-accelerator,low-power,spiking-neural-network">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-01</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#research</span>
+              
+                <span class="category-tag">#neuromorphic</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/research/neuromorphic/ai-hardware/superconducting/2026/04/01/superconducting-neuron-neuromorphic.html">Programmable Superconducting Neuron for Ultra-Efficient Neuromorphic Computing</a>
+          </h3>
+          <p class="post-card-excerpt">
+            Programmable Superconducting Neuron for Ultra-Efficient Neuromorphic Computing
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">neuromorphic</span>
+            
+              <span class="post-tag">superconducting</span>
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-neuromorphic-ai-hardware-superconducting-2026-04-01-superconducting-neuron-neuromorphic-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai-accelerator/risc-v/edge-ai/2026/04/01/renn-rv-risc-v-dnn-accelerator.html'"
+                 data-tags="risc-v,ai-accelerator,edge-ai,low-power,reconfigurable">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-01</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#research</span>
+              
+                <span class="category-tag">#ai-accelerator</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/research/ai-accelerator/risc-v/edge-ai/2026/04/01/renn-rv-risc-v-dnn-accelerator.html">ReNN-RV: Run-time PE Reconfiguration for DNN Inference Acceleration with Custom RISC-V ISA</a>
+          </h3>
+          <p class="post-card-excerpt">
+            ReNN-RV: Run-time PE Reconfiguration for DNN Inference Acceleration with Custom RISC-V ISA
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">risc-v</span>
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+              <span class="post-tag">edge-ai</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-accelerator-risc-v-edge-ai-2026-04-01-renn-rv-risc-v-dnn-accelerator-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/research/world-model/embodied-ai/self-supervised/2026/04/01/leworldmodel-jepa-stable.html'"
+                 data-tags="world-model,jepa,embodied-ai,self-supervised,robotics">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-01</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#research</span>
+              
+                <span class="category-tag">#world-model</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/research/world-model/embodied-ai/self-supervised/2026/04/01/leworldmodel-jepa-stable.html">LeWorldModel: Stable End-to-End JEPA World Models from Pixels</a>
+          </h3>
+          <p class="post-card-excerpt">
+            LeWorldModel: Stable End-to-End JEPA World Models from Pixels
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">world-model</span>
+            
+              <span class="post-tag">jepa</span>
+            
+              <span class="post-tag">embodied-ai</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-world-model-embodied-ai-self-supervised-2026-04-01-leworldmodel-jepa-stable-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai-accelerator/memory-system/llm-inference/2026/04/01/helios-3d-dram-llm-serving.html'"
+                 data-tags="memory-system,llm-inference,ai-accelerator,kv-cache,edge-ai">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-01</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#research</span>
+              
+                <span class="category-tag">#ai-accelerator</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/research/ai-accelerator/memory-system/llm-inference/2026/04/01/helios-3d-dram-llm-serving.html">Helios: Hardware-Software Co-design for 3D-DRAM-based LLM Serving Accelerator</a>
+          </h3>
+          <p class="post-card-excerpt">
+            Helios: Hardware-Software Co-design for 3D-DRAM-based LLM Serving Accelerator
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">memory-system</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-accelerator-memory-system-llm-inference-2026-04-01-helios-3d-dram-llm-serving-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai-accelerator/memory-system/llm-agent/2026/04/01/chatneurosim-llm-cim-agent.html'"
+                 data-tags="memory-system,ai-accelerator,llm-inference,edge-ai,benchmark">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-01</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#research</span>
+              
+                <span class="category-tag">#ai-accelerator</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/research/ai-accelerator/memory-system/llm-agent/2026/04/01/chatneurosim-llm-cim-agent.html">ChatNeuroSim: LLM Agent Framework for Automated CIM Accelerator Deployment</a>
+          </h3>
+          <p class="post-card-excerpt">
+            ChatNeuroSim: LLM Agent Framework for Automated CIM Accelerator Deployment and Optimization
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">memory-system</span>
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-accelerator-memory-system-llm-agent-2026-04-01-chatneurosim-llm-cim-agent-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai-accelerator/diffusion-model/transformer/2026/04/01/aa-dit-diffusion-transformer-accelerator.html'"
+                 data-tags="diffusion-model,ai-accelerator,transformer,algorithm-architecture-co-design,spatial-similarity">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-04-01</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#research</span>
+              
+                <span class="category-tag">#ai-accelerator</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/research/ai-accelerator/diffusion-model/transformer/2026/04/01/aa-dit-diffusion-transformer-accelerator.html">AA-DiT: Algorithm-Architecture Co-Design for Diffusion Transformer Acceleration</a>
+          </h3>
+          <p class="post-card-excerpt">
+            AA-DiT: Algorithm-Architecture Co-Design for Diffusion Transformer Acceleration
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">diffusion-model</span>
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+              <span class="post-tag">transformer</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-accelerator-diffusion-model-transformer-2026-04-01-aa-dit-diffusion-transformer-accelerator-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/research/photonic-computing/llm-acceleration/kv-cache/ai-hardware/2026/03/31/prism-photonic-llm-accelerator.html'"
+                 data-tags="transformer,llm-inference,ai-accelerator,kv-cache,photonic">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-03-31</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#research</span>
+              
+                <span class="category-tag">#photonic-computing</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/research/photonic-computing/llm-acceleration/kv-cache/ai-hardware/2026/03/31/prism-photonic-llm-accelerator.html">PRISM: Photonic Similarity Engine for KV Cache Block Selection in Long-Context LLM Inference</a>
+          </h3>
+          <p class="post-card-excerpt">
+            PRISM: Photonic Similarity Engine for KV Cache Block Selection in Long-Context LLM Inference
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-photonic-computing-llm-acceleration-kv-cache-ai-hardware-2026-03-31-prism-photonic-llm-accelerator-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/research/neuromorphic-computing/memristor/reram/ai-hardware/2026/03/31/pdneuram-memristor-neuromorphic.html'"
+                 data-tags="edge-ai,neuromorphic,low-power,ai-accelerator,memory-system">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-03-31</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#research</span>
+              
+                <span class="category-tag">#neuromorphic-computing</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/research/neuromorphic-computing/memristor/reram/ai-hardware/2026/03/31/pdneuram-memristor-neuromorphic.html">PdNeuRAM: Forming-Free Multi-Bit ReRAM for Energy-Efficient Neuromorphic Computing</a>
+          </h3>
+          <p class="post-card-excerpt">
+            PdNeuRAM: Forming-Free, Multi-bit Pd/HfO₂ ReRAM for Energy-Efficient Neuromorphic Computing
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">edge-ai</span>
+            
+              <span class="post-tag">neuromorphic</span>
+            
+              <span class="post-tag">low-power</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-neuromorphic-computing-memristor-reram-ai-hardware-2026-03-31-pdneuram-memristor-neuromorphic-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/research/neuro-symbolic-ai/survey/explainable-ai/2026/03/31/neuro-symbolic-ai-survey-2026.html'"
+                 data-tags="edge-ai,transformer,low-power,llm-inference,robotics">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-03-31</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#research</span>
+              
+                <span class="category-tag">#neuro-symbolic-ai</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/research/neuro-symbolic-ai/survey/explainable-ai/2026/03/31/neuro-symbolic-ai-survey-2026.html">Neuro-Symbolic AI Survey: Task-Directed Advances in the Black-Box Era</a>
+          </h3>
+          <p class="post-card-excerpt">
+            Neuro-Symbolic Artificial Intelligence: A Task-Directed Survey in the Black-Box Models Era
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">edge-ai</span>
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">low-power</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-neuro-symbolic-ai-survey-explainable-ai-2026-03-31-neuro-symbolic-ai-survey-2026-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/research/embodied-ai/world-models/jepa/2026/03/31/leworldmodel-jepa-embodied-ai.html'"
+                 data-tags="ai-accelerator,training,robotics,world-model">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-03-31</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#research</span>
+              
+                <span class="category-tag">#embodied-ai</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/research/embodied-ai/world-models/jepa/2026/03/31/leworldmodel-jepa-embodied-ai.html">LeWorldModel: Stable End-to-End JEPA from Pixels for Embodied AI</a>
+          </h3>
+          <p class="post-card-excerpt">
+            LeWorldModel: Stable End-to-End Joint-Embedding Predictive Architecture from Pixels
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+              <span class="post-tag">training</span>
+            
+              <span class="post-tag">robotics</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-embodied-ai-world-models-jepa-2026-03-31-leworldmodel-jepa-embodied-ai-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/ml/2026/03/31/hummingbird-plus-fpga-llm-edge-product.html'"
+                 data-tags="ai-accelerator,llm-inference,edge-ai,quantization,memory-system,moe">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-03-31</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#research</span>
+              
+                <span class="category-tag">#ai</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/research/ai/ml/2026/03/31/hummingbird-plus-fpga-llm-edge-product.html">Hummingbird+: Advancing FPGA-based LLM Deployment from Research Prototype to Edge Product</a>
+          </h3>
+          <p class="post-card-excerpt">
+            Hummingbird+: Advancing FPGA-based LLM Deployment from Research Prototype to Edge Product
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+              <span class="post-tag">edge-ai</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-ml-2026-03-31-hummingbird-plus-fpga-llm-edge-product-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/ml/2026/03/31/hummingbird-fpga-llm-accelerator.html'"
+                 data-tags="ai-accelerator,llm-inference,edge-ai,quantization,memory-system">
+          <div class="post-card-meta">
+            <span class="post-card-date">2026-03-31</span>
+            <span class="post-card-categories">
+              
+                <span class="category-tag">#research</span>
+              
+                <span class="category-tag">#ai</span>
+              
+            </span>
+          </div>
+          <h3>
+            <a href="/research/ai/ml/2026/03/31/hummingbird-fpga-llm-accelerator.html">Hummingbird: A Smaller and Faster Large Language Model Accelerator on Embedded FPGA</a>
+          </h3>
+          <p class="post-card-excerpt">
+            Hummingbird: A Smaller and Faster Large Language Model Accelerator on Embedded FPGA
+
+          </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+              <span class="post-tag">edge-ai</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-ml-2026-03-31-hummingbird-fpga-llm-accelerator-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+        </article>
+      
+        <article class="post-card" 
+                 onclick="window.location.href='/research/vision-transformer/fpga/accelerator/memory-bandwidth/2026/03/30/me-vit-memory-efficient-fpga-accelerator.html'"
+                 data-tags="transformer,multi-modal,llm-inference,ai-accelerator,memory-system">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-30</span>
             <span class="post-card-categories">
@@ -96,9 +1650,34 @@
             ME-ViT: A Single-Load Memory-Efficient FPGA Accelerator for Vision Transformers
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">multi-modal</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-vision-transformer-fpga-accelerator-memory-bandwidth-2026-03-30-me-vit-memory-efficient-fpga-accelerator-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/daily-roundup/neuromorphic/spiking-neural-networks/hardware/energy-efficiency/2026/03/30/daily-research-neuromorphic-snn.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/daily-roundup/neuromorphic/spiking-neural-networks/hardware/energy-efficiency/2026/03/30/daily-research-neuromorphic-snn.html'"
+                 data-tags="sparsity,edge-ai,neuromorphic,low-power,llm-inference">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-30</span>
             <span class="post-card-categories">
@@ -116,9 +1695,34 @@
             🔍 Today’s Research Focus
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">sparsity</span>
+            
+              <span class="post-tag">edge-ai</span>
+            
+              <span class="post-tag">neuromorphic</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="daily-roundup-neuromorphic-spiking-neural-networks-hardware-energy-efficiency-2026-03-30-daily-research-neuromorphic-snn-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/daily-roundup/llm/accelerator/world-models/hardware/2026/03/30/daily-research-roundup.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/daily-roundup/llm/accelerator/world-models/hardware/2026/03/30/daily-research-roundup.html'"
+                 data-tags="edge-ai,transformer,low-power,llm-inference,training">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-30</span>
             <span class="post-card-categories">
@@ -136,9 +1740,34 @@
             🔍 Today’s Research Focus
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">edge-ai</span>
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">low-power</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="daily-roundup-llm-accelerator-world-models-hardware-2026-03-30-daily-research-roundup-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/ml/systems/2026/03/26/understanding-kv-offloading.html'"
+                 data-tags="transformer,llm-inference,ai-accelerator,training,memory-system">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-26</span>
             <span class="post-card-categories">
@@ -156,9 +1785,34 @@
             Understanding Bottlenecks for Efficiently Serving LLM Inference With KV Offloading
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-ml-systems-2026-03-26-understanding-kv-offloading-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/ml/llm/inference/2026/03/26/speculating-experts-accelerates-moe-inference.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/ml/llm/inference/2026/03/26/speculating-experts-accelerates-moe-inference.html'"
+                 data-tags="transformer,llm-inference,ai-accelerator,training,memory-system">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-26</span>
             <span class="post-card-categories">
@@ -176,9 +1830,34 @@
             Speculating Experts Accelerates Inference for Mixture-of-Experts: 通过专家预取加速 MoE 推理
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-ml-llm-inference-2026-03-26-speculating-experts-accelerates-moe-inference-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/robotics/neuro-symbolic/vla/manipulation/energy-efficiency/2026/03/26/price-is-not-right-neuro-symbolic-vs-vla.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/robotics/neuro-symbolic/vla/manipulation/energy-efficiency/2026/03/26/price-is-not-right-neuro-symbolic-vs-vla.html'"
+                 data-tags="multi-modal,ai-accelerator,robotics,world-model,training">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-26</span>
             <span class="post-card-categories">
@@ -196,9 +1875,34 @@
             The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">multi-modal</span>
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+              <span class="post-tag">robotics</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="robotics-neuro-symbolic-vla-manipulation-energy-efficiency-2026-03-26-price-is-not-right-neuro-symbolic-vs-vla-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/robotics/embodied-ai/vla/2026/03/25/vla-perf-vla-inference-performance-analysis.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/robotics/embodied-ai/vla/2026/03/25/vla-perf-vla-inference-performance-analysis.html'"
+                 data-tags="robotics,multi-modal,world-model">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-25</span>
             <span class="post-card-categories">
@@ -216,9 +1920,34 @@
             VLA-Perf: VLA 推理性能全景分析——NVIDIA 首个系统性研究
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">robotics</span>
+            
+              <span class="post-tag">multi-modal</span>
+            
+              <span class="post-tag">world-model</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-robotics-embodied-ai-vla-2026-03-25-vla-perf-vla-inference-performance-analysis-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/hardware/chiplet/2026/03/25/ds2sc-agent-multi-agent-chiplet-generation.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/hardware/chiplet/2026/03/25/ds2sc-agent-multi-agent-chiplet-generation.html'"
+                 data-tags="chiplet,llm-inference,transformer,ai-accelerator">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-25</span>
             <span class="post-card-categories">
@@ -236,9 +1965,34 @@
             DS2SC-Agent: 从数据手册到 SystemC 模型的多智能体自动化生成流水线
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">chiplet</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+              <span class="post-tag">transformer</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-hardware-chiplet-2026-03-25-ds2sc-agent-multi-agent-chiplet-generation-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/llm/compression/gpu/inference/systems/2026/03/24/zipserv-fast-memory-efficient-llm-inference.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/llm/compression/gpu/inference/systems/2026/03/24/zipserv-fast-memory-efficient-llm-inference.html'"
+                 data-tags="memory-system,llm-inference,transformer,ai-accelerator">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-24</span>
             <span class="post-card-categories">
@@ -263,9 +2017,34 @@
 
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">memory-system</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+              <span class="post-tag">transformer</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="llm-compression-gpu-inference-systems-2026-03-24-zipserv-fast-memory-efficient-llm-inference-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/accelerator/isa/hardware/ai/reconfigurable/2026/03/24/minisa-reconfigurable-inference-accelerator.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/accelerator/isa/hardware/ai/reconfigurable/2026/03/24/minisa-reconfigurable-inference-accelerator.html'"
+                 data-tags="llm-inference,ai-accelerator,edge-ai">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-24</span>
             <span class="post-card-categories">
@@ -290,9 +2069,34 @@
 
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">llm-inference</span>
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+              <span class="post-tag">edge-ai</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="accelerator-isa-hardware-ai-reconfigurable-2026-03-24-minisa-reconfigurable-inference-accelerator-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/robotics/video/2026/03/23/large-video-planner.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/robotics/video/2026/03/23/large-video-planner.html'"
+                 data-tags="transformer,multi-modal,llm-inference,robotics,world-model">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-23</span>
             <span class="post-card-categories">
@@ -310,9 +2114,34 @@
             Large Video Planner: 基于视频生成的通用机器人控制新范式
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">multi-modal</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-robotics-video-2026-03-23-large-video-planner-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/robotics/video-generation/2026/03/23/large-video-planner-robot-control.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/robotics/video-generation/2026/03/23/large-video-planner-robot-control.html'"
+                 data-tags="transformer,multi-modal,llm-inference,robotics,diffusion-model">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-23</span>
             <span class="post-card-categories">
@@ -330,9 +2159,34 @@
             Large Video Planner: 用视频生成实现通用机器人控制
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">multi-modal</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-robotics-video-generation-2026-03-23-large-video-planner-robot-control-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/video-generation/diffusion-models/2026/03/23/history-guided-video-diffusion.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/video-generation/diffusion-models/2026/03/23/history-guided-video-diffusion.html'"
+                 data-tags="multi-modal,diffusion-model,llm-inference,transformer">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-23</span>
             <span class="post-card-categories">
@@ -350,9 +2204,34 @@
             History-Guided Video Diffusion: 用历史引导实现超长视频生成
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">multi-modal</span>
+            
+              <span class="post-tag">diffusion-model</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-video-generation-diffusion-models-2026-03-23-history-guided-video-diffusion-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/engineering/ai/productivity/2026/03/23/harness-engineering-ai-coding.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/engineering/ai/productivity/2026/03/23/harness-engineering-ai-coding.html'"
+                 data-tags="memory-system,ai-accelerator,llm-inference">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-23</span>
             <span class="post-card-categories">
@@ -370,9 +2249,34 @@
             模型够聪明之后，工程师该做什么：Harness Engineering 实战指南
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">memory-system</span>
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="engineering-ai-productivity-2026-03-23-harness-engineering-ai-coding-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/hardware/risc-v/2026/03/23/design-conductor-autonomous-riscv-cpu.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/hardware/risc-v/2026/03/23/design-conductor-autonomous-riscv-cpu.html'"
+                 data-tags="llm-inference,transformer,ai-accelerator">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-23</span>
             <span class="post-card-categories">
@@ -390,9 +2294,34 @@
             Design Conductor: AI 自主构建 1.5GHz RISC-V CPU 的突破性进展
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">llm-inference</span>
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-hardware-risc-v-2026-03-23-design-conductor-autonomous-riscv-cpu-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/systems/2026/03/20/zipserv-fast-memory-efficient-llm-inference.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/systems/2026/03/20/zipserv-fast-memory-efficient-llm-inference.html'"
+                 data-tags="memory-system,llm-inference,transformer,ai-accelerator">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-20</span>
             <span class="post-card-categories">
@@ -410,9 +2339,34 @@
             ZipServ: Fast and Memory-Efficient LLM Inference with Hardware-Aware Lossless Compression
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">memory-system</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+              <span class="post-tag">transformer</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-systems-2026-03-20-zipserv-fast-memory-efficient-llm-inference-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/ml/systems/2026/03/17/mozart-moe-training-3d-chiplet.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/ml/systems/2026/03/17/mozart-moe-training-3d-chiplet.html'"
+                 data-tags="edge-ai,transformer,llm-inference,ai-accelerator,training">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-17</span>
             <span class="post-card-categories">
@@ -430,9 +2384,34 @@
             Mozart: Modularized and Efficient MoE Training on 3.5D Wafer-Scale Chiplet Architectures
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">edge-ai</span>
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-ml-systems-2026-03-17-mozart-moe-training-3d-chiplet-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/ml/systems/2026/03/17/hyperoffload-graph-driven-memory-management.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/ml/systems/2026/03/17/hyperoffload-graph-driven-memory-management.html'"
+                 data-tags="memory-system,llm-inference,transformer">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-17</span>
             <span class="post-card-categories">
@@ -450,9 +2429,34 @@
             HyperOffload: 图驱动的分层内存管理让大模型突破显存限制
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">memory-system</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+              <span class="post-tag">transformer</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-ml-systems-2026-03-17-hyperoffload-graph-driven-memory-management-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/robotics/3d-vision/2026/03/16/pointworld-3d-world-models-robotics.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/robotics/3d-vision/2026/03/16/pointworld-3d-world-models-robotics.html'"
+                 data-tags="transformer,multi-modal,llm-inference,robotics,world-model">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-16</span>
             <span class="post-card-categories">
@@ -470,9 +2474,34 @@
             PointWorld: Scaling 3D World Models for In-The-Wild Robotic Manipulation
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">multi-modal</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-robotics-3d-vision-2026-03-16-pointworld-3d-world-models-robotics-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/ml/hardware/2026/03/16/orion-apple-neural-engine-llm.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/ml/hardware/2026/03/16/orion-apple-neural-engine-llm.html'"
+                 data-tags="edge-ai,transformer,llm-inference,ai-accelerator,training">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-16</span>
             <span class="post-card-categories">
@@ -490,9 +2519,34 @@
             Orion: Characterizing and Programming Apple’s Neural Engine for LLM Training and Inference
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">edge-ai</span>
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-ml-hardware-2026-03-16-orion-apple-neural-engine-llm-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/ml/cv/2026/03/16/history-guided-video-diffusion.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/ml/cv/2026/03/16/history-guided-video-diffusion.html'"
+                 data-tags="multi-modal,diffusion-model,llm-inference,transformer">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-16</span>
             <span class="post-card-categories">
@@ -510,9 +2564,34 @@
             History-Guided Video Diffusion: 用历史引导实现超长视频生成
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">multi-modal</span>
+            
+              <span class="post-tag">diffusion-model</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-ml-cv-2026-03-16-history-guided-video-diffusion-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/hardware/accelerator/2026/03/16/goma-geometrically-optimal-mapping.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/hardware/accelerator/2026/03/16/goma-geometrically-optimal-mapping.html'"
+                 data-tags="llm-inference,transformer,ai-accelerator">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-16</span>
             <span class="post-card-categories">
@@ -530,9 +2609,34 @@
             GOMA: Geometrically Optimal Mapping via Analytical Modeling for Spatial Accelerators
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">llm-inference</span>
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-hardware-accelerator-2026-03-16-goma-geometrically-optimal-mapping-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/hardware/2026/03/14/llm-rtl-generation-evaluation.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/hardware/2026/03/14/llm-rtl-generation-evaluation.html'"
+                 data-tags="transformer,llm-inference,ai-accelerator,training,benchmark">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-14</span>
             <span class="post-card-categories">
@@ -550,9 +2654,34 @@
             Synthesis-in-the-Loop Evaluation of LLMs for RTL Generation: Quality, Reliability, and Failure Modes
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-hardware-2026-03-14-llm-rtl-generation-evaluation-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/hardware/edge-computing/quantization/2026/03/13/tom-ternary-rom-accelerator.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/hardware/edge-computing/quantization/2026/03/13/tom-ternary-rom-accelerator.html'"
+                 data-tags="edge-ai,transformer,quantization,low-power,llm-inference">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-13</span>
             <span class="post-card-categories">
@@ -570,9 +2699,34 @@
             TOM: 三元只读存储器加速器赋能边缘智能大模型
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">edge-ai</span>
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">quantization</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-hardware-edge-computing-quantization-2026-03-13-tom-ternary-rom-accelerator-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/hardware/edge-computing/neuromorphic/2026/03/13/snapv-riscv-neuromorphic-soc.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/hardware/edge-computing/neuromorphic/2026/03/13/snapv-riscv-neuromorphic-soc.html'"
+                 data-tags="low-power,edge-ai,neuromorphic">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-13</span>
             <span class="post-card-categories">
@@ -590,9 +2744,34 @@
             SNAP-V: 面向小型脉冲神经网络的可配置神经形态 RISC-V SoC
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">low-power</span>
+            
+              <span class="post-tag">edge-ai</span>
+            
+              <span class="post-tag">neuromorphic</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-hardware-edge-computing-neuromorphic-2026-03-13-snapv-riscv-neuromorphic-soc-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/hardware/edge-computing/2026/03/13/roma-qlora-accelerator.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/hardware/edge-computing/2026/03/13/roma-qlora-accelerator.html'"
+                 data-tags="edge-ai,transformer,low-power,llm-inference,memory-system">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-13</span>
             <span class="post-card-categories">
@@ -610,9 +2789,34 @@
             ROMA: 基于只读存储器的 QLoRA 边缘设备 LLM 加速器
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">edge-ai</span>
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">low-power</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-hardware-edge-computing-2026-03-13-roma-qlora-accelerator-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/healthcare/bayesian/transformers/2026/03/13/medbayes-lite-bayesian-clinical-transformer.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/healthcare/bayesian/transformers/2026/03/13/medbayes-lite-bayesian-clinical-transformer.html'"
+                 data-tags="llm-inference,transformer,ai-accelerator">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-13</span>
             <span class="post-card-categories">
@@ -630,9 +2834,34 @@
             MedBayes-Lite: 临床 Transformer 的轻量级贝叶斯不确定性量化框架
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">llm-inference</span>
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-healthcare-bayesian-transformers-2026-03-13-medbayes-lite-bayesian-clinical-transformer-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/hardware/datacenter/mobile/2026/03/13/llm-inference-hardware-challenges.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/hardware/datacenter/mobile/2026/03/13/llm-inference-hardware-challenges.html'"
+                 data-tags="edge-ai,transformer,low-power,llm-inference,ai-accelerator">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-13</span>
             <span class="post-card-categories">
@@ -650,9 +2879,34 @@
             LLM 推理硬件的挑战与研究方向：内存与互连是核心瓶颈
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">edge-ai</span>
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">low-power</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-hardware-datacenter-mobile-2026-03-13-llm-inference-hardware-challenges-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/research/ai/hardware/chiplet/simulation/2026/03/13/legosim-chiplet-simulation.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/research/ai/hardware/chiplet/simulation/2026/03/13/legosim-chiplet-simulation.html'"
+                 data-tags="chiplet,ai-accelerator,llm-inference">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-13</span>
             <span class="post-card-categories">
@@ -670,9 +2924,34 @@
             LEGOSim: 多芯片异构集成的统一并行仿真框架
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">chiplet</span>
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="research-ai-hardware-chiplet-simulation-2026-03-13-legosim-chiplet-simulation-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/llm/accelerator/hardware/taalas/2026/03/11/taalas-%E6%A8%A1%E5%9E%8B%E4%B8%93%E7%94%A8%E7%A1%AC%E4%BB%B6.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/llm/accelerator/hardware/taalas/2026/03/11/taalas-%E6%A8%A1%E5%9E%8B%E4%B8%93%E7%94%A8%E7%A1%AC%E4%BB%B6.html'"
+                 data-tags="memory-system,edge-ai,llm-inference,transformer">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-11</span>
             <span class="post-card-categories">
@@ -690,9 +2969,34 @@
             Taalas: 模型专用硬件 - 将AI模型转化为硅芯片
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">memory-system</span>
+            
+              <span class="post-tag">edge-ai</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="llm-accelerator-hardware-taalas-2026-03-11-taalas-e6-a8-a1-e5-9e-8b-e4-b8-93-e7-94-a8-e7-a1-ac-e4-bb-b6-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/llm/accelerator/taalas/hardware/2026/03/11/taalas-model-specialized-hardware.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/llm/accelerator/taalas/hardware/2026/03/11/taalas-model-specialized-hardware.html'"
+                 data-tags="edge-ai,transformer,quantization,llm-inference,ai-accelerator">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-11</span>
             <span class="post-card-categories">
@@ -710,9 +3014,34 @@
             
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">edge-ai</span>
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">quantization</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="llm-accelerator-taalas-hardware-2026-03-11-taalas-model-specialized-hardware-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/llm/accelerator/hardware/qlora/edge-computing/2026/03/11/roma-qlora-accelerator.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/llm/accelerator/hardware/qlora/edge-computing/2026/03/11/roma-qlora-accelerator.html'"
+                 data-tags="edge-ai,transformer,low-power,llm-inference,memory-system">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-11</span>
             <span class="post-card-categories">
@@ -730,9 +3059,34 @@
             ROMA: 基于ROM的QLoRA边缘设备LLM加速器
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">edge-ai</span>
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">low-power</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="llm-accelerator-hardware-qlora-edge-computing-2026-03-11-roma-qlora-accelerator-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/neural-symbolic/ai-hardware/architecture/2026/03/11/neural-symbolic-ai-hardware.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/neural-symbolic/ai-hardware/architecture/2026/03/11/neural-symbolic-ai-hardware.html'"
+                 data-tags="ai-accelerator,robotics,world-model,memory-system,neural-symbolic">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-11</span>
             <span class="post-card-categories">
@@ -750,9 +3104,34 @@
             Why this direction matters
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">ai-accelerator</span>
+            
+              <span class="post-tag">robotics</span>
+            
+              <span class="post-tag">world-model</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="neural-symbolic-ai-hardware-architecture-2026-03-11-neural-symbolic-ai-hardware-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/llm/accelerator/inference/2026/03/11/hardwired-llm-accelerators.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/llm/accelerator/inference/2026/03/11/hardwired-llm-accelerators.html'"
+                 data-tags="edge-ai,transformer,quantization,low-power,llm-inference">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-11</span>
             <span class="post-card-categories">
@@ -770,9 +3149,34 @@
             Motivation
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">edge-ai</span>
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">quantization</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="llm-accelerator-inference-2026-03-11-hardwired-llm-accelerators-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/diffusion/accelerator/generative-ai/2026/03/11/diffusion-model-accelerator.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/diffusion/accelerator/generative-ai/2026/03/11/diffusion-model-accelerator.html'"
+                 data-tags="transformer,multi-modal,llm-inference,ai-accelerator,diffusion-model">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-11</span>
             <span class="post-card-categories">
@@ -790,9 +3194,34 @@
             Problem framing
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">multi-modal</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="diffusion-accelerator-generative-ai-2026-03-11-diffusion-model-accelerator-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
-        <article class="post-card" onclick="window.location.href='/chiplet/3d-integration/ai-systems/2026/03/11/3d-chiplet-ai.html'">
+        <article class="post-card" 
+                 onclick="window.location.href='/chiplet/3d-integration/ai-systems/2026/03/11/3d-chiplet-ai.html'"
+                 data-tags="edge-ai,transformer,llm-inference,multi-modal,ai-accelerator">
           <div class="post-card-meta">
             <span class="post-card-date">2026-03-11</span>
             <span class="post-card-categories">
@@ -810,11 +3239,294 @@
             Why chiplets for AI now
 
           </p>
+          
+          <div class="post-card-tags">
+            
+              <span class="post-tag">edge-ai</span>
+            
+              <span class="post-tag">transformer</span>
+            
+              <span class="post-tag">llm-inference</span>
+            
+          </div>
+          
+          <!-- Rating Display -->
+          <div class="post-card-rating" data-post-id="chiplet-3d-integration-ai-systems-2026-03-11-3d-chiplet-ai-html">
+            <div class="rating-stars readonly" data-rating="0">
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
         </article>
       
     </div>
   </section>
 </div>
+
+<script>
+// Tag Filtering
+(function() {
+  const filterBtns = document.querySelectorAll('.tag-filter-btn');
+  const postCards = document.querySelectorAll('.post-card');
+  const allBtn = document.querySelector('.tag-filter-btn[data-tag="all"]');
+  const selectedTags = new Set();
+
+  function updateActiveState() {
+    filterBtns.forEach(btn => {
+      const tag = btn.dataset.tag;
+      const isActive = tag === 'all'
+        ? selectedTags.size === 0
+        : selectedTags.has(tag);
+      btn.classList.toggle('active', isActive);
+    });
+  }
+
+  function applyFilters() {
+    postCards.forEach(card => {
+      const cardTags = card.dataset.tags ? card.dataset.tags.split(',') : [];
+      const matches = selectedTags.size === 0 || cardTags.some(tag => selectedTags.has(tag));
+
+      if (matches) {
+        card.style.display = '';
+        card.style.animation = 'fadeIn 0.3s ease';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  function syncUrl() {
+    const url = new URL(window.location.href);
+    if (selectedTags.size === 0) {
+      url.searchParams.delete('tags');
+    } else {
+      url.searchParams.set('tags', Array.from(selectedTags).join(','));
+    }
+    history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+  }
+
+  function hydrateFromUrl() {
+    const url = new URL(window.location.href);
+    const tagParam = url.searchParams.get('tags');
+    if (!tagParam) return;
+
+    tagParam
+      .split(',')
+      .map(tag => decodeURIComponent(tag).trim())
+      .filter(Boolean)
+      .forEach(tag => {
+        if (document.querySelector(`.tag-filter-btn[data-tag="${CSS.escape(tag)}"]`)) {
+          selectedTags.add(tag);
+        }
+      });
+  }
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+
+      const tag = btn.dataset.tag;
+
+      if (tag === 'all') {
+        selectedTags.clear();
+      } else if (selectedTags.has(tag)) {
+        selectedTags.delete(tag);
+      } else {
+        selectedTags.add(tag);
+      }
+
+      updateActiveState();
+      applyFilters();
+      syncUrl();
+    });
+  });
+
+  if (allBtn) {
+    hydrateFromUrl();
+    updateActiveState();
+    applyFilters();
+  }
+})();
+
+// Rating System
+(function() {
+  const API_ENDPOINT = 'https://rom4ai-blog-metrics.shiruizhao-pro.workers.dev';
+  const ratingContainers = Array.from(document.querySelectorAll('.post-card-rating'));
+
+  if (!API_ENDPOINT || !ratingContainers.length) return;
+
+  async function fetchMetrics(postId) {
+    const response = await fetch(`${API_ENDPOINT}/post-metrics?id=${encodeURIComponent(postId)}`);
+    if (!response.ok) {
+      throw new Error(`Failed to load metrics for ${postId}`);
+    }
+    return response.json();
+  }
+
+  async function loadRatings() {
+    try {
+      const results = await Promise.allSettled(
+        ratingContainers.map(async (container) => ({
+          container,
+          metrics: await fetchMetrics(container.dataset.postId)
+        }))
+      );
+
+      results.forEach((result) => {
+        if (result.status === 'fulfilled') {
+          const { container, metrics } = result.value;
+          updateRatingDisplay(container, metrics.ratingAverage || 0, metrics.ratingCount || 0);
+        }
+      });
+    } catch (e) {
+      console.log('Rating API not available');
+    }
+  }
+
+  function updateRatingDisplay(container, rating, count) {
+    const stars = container.querySelectorAll('.star');
+    const scoreEl = container.querySelector('.rating-score');
+    const countEl = container.querySelector('.rating-count');
+    
+    // Update stars
+    stars.forEach((star, index) => {
+      if (index < Math.round(rating)) {
+        star.classList.add('filled');
+        star.setAttribute('fill', 'currentColor');
+      } else {
+        star.classList.remove('filled');
+        star.setAttribute('fill', 'none');
+      }
+    });
+    
+    // Update text
+    if (scoreEl) scoreEl.textContent = rating.toFixed(1);
+    if (countEl) countEl.textContent = `(${count} vote${count !== 1 ? 's' : ''})`;
+  }
+  
+  // Load ratings on page load
+  loadRatings();
+})();
+</script>
+
+<style>
+/* Tag Filter Styles */
+.tag-filter-container {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.tag-filter-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tag-filter-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag-filter-btn {
+  padding: 0.4rem 0.8rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.tag-filter-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.tag-filter-btn.active {
+  color: var(--bg-primary);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Post Card Tags */
+.post-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.post-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  padding: 0.2rem 0.5rem;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+/* Rating Styles */
+.post-card-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.rating-stars {
+  display: flex;
+  gap: 0.15rem;
+}
+
+.rating-stars .star {
+  width: 14px;
+  height: 14px;
+  color: var(--text-muted);
+  transition: color var(--transition-fast);
+}
+
+.rating-stars .star.filled {
+  color: var(--accent);
+}
+
+.rating-score {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.rating-count {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
 </div>
 
 
@@ -826,7 +3538,7 @@
           <div class="site-footer-links">
             <a href="/">Home</a>
             
-              <a href="/research/vision-transformer/fpga/accelerator/memory-bandwidth/2026/03/30/me-vit-memory-efficient-fpga-accelerator.html">Latest Post</a>
+              <a href="/paper/llm-inference/kv-cache/2026/04/05/sals-sparse-attention-latent-space-kv-cache-compression.html">Latest Post</a>
             
           </div>
         </div>

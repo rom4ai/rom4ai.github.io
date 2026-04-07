@@ -11,3 +11,17 @@ author:
 
 header_pages:
   - index.html
+
+# Ensure all assets are included in the build
+include:
+  - assets
+
+# Exclude only specific directories that shouldn't be in the build
+exclude:
+  - _site/
+  - vendor/
+  - .bundle/
+  - .claude/
+  - metrics-api/
+  - Gemfile
+  - Gemfile.lock

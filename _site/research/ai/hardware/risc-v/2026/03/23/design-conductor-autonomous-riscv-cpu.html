@@ -24,7 +24,7 @@
           <nav class="site-nav" aria-label="Primary">
             <a href="/" class="">Home</a>
             
-              <a href="/research/vision-transformer/fpga/accelerator/memory-bandwidth/2026/03/30/me-vit-memory-efficient-fpga-accelerator.html">Latest</a>
+              <a href="/paper/llm-inference/kv-cache/2026/04/05/sals-sparse-attention-latent-space-kv-cache-compression.html">Latest</a>
             
             <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode">
               <svg class="sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
@@ -52,6 +52,33 @@
             <span>·</span>
             <span>research, ai, hardware, risc-v</span>
           
+        </div>
+        
+        <!-- Interactive Rating -->
+        <div class="article-rating-section" data-post-id="research-ai-hardware-risc-v-2026-03-23-design-conductor-autonomous-riscv-cpu-html">
+          <div class="rating-label">Rate this article:</div>
+          <div class="rating-stars interactive" data-rating="0">
+            <svg class="star" data-value="1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            <svg class="star" data-value="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            <svg class="star" data-value="3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            <svg class="star" data-value="4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            <svg class="star" data-value="5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+          </div>
+          <div class="rating-result">
+            <span class="rating-score">0.0</span>
+            <span class="rating-count">(0 votes)</span>
+          </div>
+          <div class="rating-message"></div>
         </div>
       </header>
 
@@ -370,6 +397,21 @@
           </div>
         </div>
       
+      
+      
+        <div class="sidebar-section">
+          <h4 class="sidebar-title">Tags</h4>
+          <div class="sidebar-tags">
+            
+              <a href="/?tags=llm-inference#posts" class="sidebar-tag" data-tag="llm-inference">llm-inference</a>
+            
+              <a href="/?tags=transformer#posts" class="sidebar-tag" data-tag="transformer">transformer</a>
+            
+              <a href="/?tags=ai-accelerator#posts" class="sidebar-tag" data-tag="ai-accelerator">ai-accelerator</a>
+            
+          </div>
+        </div>
+      
     </aside>
   </article>
 </main>
@@ -415,7 +457,227 @@
     
     toc.appendChild(list);
   })();
+
+  // Interactive Rating System
+  (function() {
+    const API_ENDPOINT = 'https://rom4ai-blog-metrics.shiruizhao-pro.workers.dev';
+    const ratingSection = document.querySelector('.article-rating-section');
+    if (!ratingSection || !API_ENDPOINT) return;
+
+    const postId = ratingSection.dataset.postId;
+    const stars = ratingSection.querySelectorAll('.star');
+    const scoreEl = ratingSection.querySelector('.rating-score');
+    const countEl = ratingSection.querySelector('.rating-count');
+    const messageEl = ratingSection.querySelector('.rating-message');
+
+    let currentRating = 0;
+    let currentCount = 0;
+    let hasVoted = localStorage.getItem('rated_' + postId);
+
+    // Load existing rating
+    async function loadRating() {
+      try {
+        const response = await fetch(`${API_ENDPOINT}/post-metrics?id=${encodeURIComponent(postId)}`);
+        if (response.ok) {
+          const metrics = await response.json();
+          updateDisplay(metrics.ratingAverage || 0, metrics.ratingCount || 0);
+        }
+      } catch (e) {
+        console.log('Rating API not available');
+      }
+    }
+
+    function updateDisplay(avg, count) {
+      currentRating = avg;
+      currentCount = count;
+      stars.forEach((star, index) => {
+        if (index < Math.round(avg)) {
+          star.classList.add('filled');
+          star.setAttribute('fill', 'currentColor');
+        } else {
+          star.classList.remove('filled');
+          star.setAttribute('fill', 'none');
+        }
+        star.classList.remove('hover');
+        star.style.color = '';
+      });
+
+      if (scoreEl) scoreEl.textContent = avg.toFixed(1);
+      if (countEl) countEl.textContent = `(${count} vote${count !== 1 ? 's' : ''})`;
+    }
+
+    // Hover effects
+    stars.forEach((star, index) => {
+      star.addEventListener('mouseenter', () => {
+        if (hasVoted) return;
+        highlightStars(index + 1);
+      });
+
+      star.addEventListener('click', async () => {
+        if (hasVoted) {
+          showMessage('You have already rated this article', 'info');
+          return;
+        }
+
+        const rating = index + 1;
+
+        try {
+          const response = await fetch(`${API_ENDPOINT}/post-rating`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ postId, rating })
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            updateDisplay(result.ratingAverage || 0, result.ratingCount || 0);
+            localStorage.setItem('rated_' + postId, 'true');
+            hasVoted = true;
+            showMessage('Thank you for rating!', 'success');
+          }
+        } catch (e) {
+          showMessage('Failed to submit rating. Please try again.', 'error');
+        }
+      });
+    });
+
+    ratingSection.addEventListener('mouseleave', () => {
+      if (hasVoted) return;
+      updateDisplay(currentRating, currentCount);
+    });
+
+    function highlightStars(count) {
+      stars.forEach((star, index) => {
+        if (index < count) {
+          star.classList.add('hover');
+          star.style.color = 'var(--accent)';
+        } else {
+          star.classList.remove('hover');
+          star.style.color = '';
+        }
+      });
+    }
+
+    function showMessage(text, type) {
+      if (!messageEl) return;
+      messageEl.textContent = text;
+      messageEl.className = 'rating-message ' + type;
+      setTimeout(() => {
+        messageEl.textContent = '';
+        messageEl.className = 'rating-message';
+      }, 3000);
+    }
+
+    // Initialize
+    loadRating();
+  })();
 </script>
+
+<style>
+  /* Article Rating Styles */
+  .article-rating-section {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+  }
+  
+  .rating-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .rating-stars.interactive {
+    display: flex;
+    gap: 0.25rem;
+    cursor: pointer;
+  }
+  
+  .rating-stars.interactive .star {
+    width: 24px;
+    height: 24px;
+    color: var(--text-muted);
+    transition: all var(--transition-fast);
+  }
+  
+  .rating-stars.interactive .star:hover,
+  .rating-stars.interactive .star.hover {
+    color: var(--accent);
+    transform: scale(1.1);
+  }
+  
+  .rating-stars.interactive .star.filled {
+    color: var(--accent);
+    fill: currentColor;
+  }
+  
+  .rating-result {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  .rating-score {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  
+  .rating-count {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+  }
+  
+  .rating-message {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    min-height: 1.2em;
+  }
+  
+  .rating-message.success {
+    color: #4ade80;
+  }
+  
+  .rating-message.error {
+    color: #f87171;
+  }
+  
+  .rating-message.info {
+    color: var(--text-secondary);
+  }
+  
+  /* Sidebar Tags */
+  .sidebar-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .sidebar-tag {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    padding: 0.3rem 0.6rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+  }
+  
+  .sidebar-tag:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    text-decoration: none;
+  }
+</style>
 
       <footer class="site-footer">
         <div class="site-footer-inner">
@@ -425,7 +687,7 @@
           <div class="site-footer-links">
             <a href="/">Home</a>
             
-              <a href="/research/vision-transformer/fpga/accelerator/memory-bandwidth/2026/03/30/me-vit-memory-efficient-fpga-accelerator.html">Latest Post</a>
+              <a href="/paper/llm-inference/kv-cache/2026/04/05/sals-sparse-attention-latent-space-kv-cache-compression.html">Latest Post</a>
             
           </div>
         </div>
